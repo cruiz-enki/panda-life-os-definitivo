@@ -53,13 +53,8 @@ const hogarGroupItems: NavItem[] = [
 
 const crecimientoItems: NavItem[] = [
   { to: "/identity", label: "Identidad", icon: Target },
-  { to: "/dreams", label: "Grandes Sueños", icon: Mountain },
-  { to: "/vision-board", label: "Vision Board", icon: LayoutGrid },
-  { to: "/future-letters", label: "Carta del Futuro", icon: Mail },
-  { to: "/horizons", label: "Horizontes", icon: Compass },
-  { to: "/life-trajectory", label: "Life Trajectory", icon: Activity },
+  { to: "/future", label: "Futuro", icon: Sparkles },
   { to: "/goals", label: "Goal Breakdown", icon: Workflow },
-  { to: "/future-simulation", label: "Future Simulation", icon: Sparkles },
 ];
 
 
