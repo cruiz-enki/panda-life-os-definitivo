@@ -71,6 +71,7 @@ const misionesItems: NavItem[] = [
 // Items sueltos abajo
 const bottomItems: NavItem[] = [
   { to: "/finance", label: "Finanzas", icon: Wallet },
+  { to: "/scheduled", label: "Mensajes al futuro", icon: Clock },
   { to: "/notifications", label: "Notificaciones", icon: Bell },
   { to: "/settings", label: "Ajustes", icon: Settings },
   { to: "/import", label: "Importar", icon: Download },
