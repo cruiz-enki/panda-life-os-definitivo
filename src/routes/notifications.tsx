@@ -68,6 +68,9 @@ function NotificationsPage() {
         </p>
       </header>
 
+      {/* Instalar como PWA */}
+      <InstallPWA />
+
       {/* Onboarding */}
       {showOnboarding && (
         <Card className="p-6 border-l-4 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
