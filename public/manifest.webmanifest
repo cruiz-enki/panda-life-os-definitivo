@@ -1,6 +1,7 @@
 {
   "name": "Panda's LIFE OS",
   "short_name": "Panda OS",
+  "id": "/",
   "description": "Tu sistema operativo personal gamificado: hábitos, energía, tareas y aprendizaje.",
   "start_url": "/",
   "scope": "/",

@@ -12,6 +12,7 @@ import { useNotificationsEngine } from "@/hooks/use-notifications-engine";
 import { initOneSignal, requestPushPermission, isOneSignalConfigured } from "@/lib/onesignal-client";
 import { sendOneSignalTest } from "@/lib/onesignal-test.functions";
 import { MODULE_EMOJI, MODULE_LABELS, STREAK_STATUS_LABEL, type ModuleKey } from "@/lib/notifications-engine-types";
+import { InstallPWA } from "@/components/InstallPWA";
 
 export const Route = createFileRoute("/notifications")({
   component: NotificationsPage,
@@ -66,6 +67,9 @@ function NotificationsPage() {
           Panda te recuerda lo importante, protege tus rachas y respeta tu tiempo.
         </p>
       </header>
+
+      {/* Instalar como PWA */}
+      <InstallPWA />
 
       {/* Onboarding */}
       {showOnboarding && (
