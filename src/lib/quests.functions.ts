@@ -33,7 +33,7 @@ export const sendQuestTestNotification = createServerFn({ method: "POST" })
     const copy = MODULE_COPY.learning;
     const res = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Basic ${restKey}` },
+      headers: { "Content-Type": "application/json", Authorization: `Key ${restKey}` },
       body: JSON.stringify({
         app_id: appId,
         include_subscription_ids: [playerId],

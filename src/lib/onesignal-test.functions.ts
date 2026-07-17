@@ -41,7 +41,7 @@ export const sendOneSignalTest = createServerFn({ method: "POST" })
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${restKey}`,
+        Authorization: `Key ${restKey}`,
       },
       body: JSON.stringify({
         app_id: appId,
@@ -93,7 +93,7 @@ export const runOneSignalDeliveryDiagnostic = createServerFn({ method: "POST" })
 
     const sendRes = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Basic ${restKey}` },
+      headers: { "Content-Type": "application/json", Authorization: `Key ${restKey}` },
       body: JSON.stringify({
         app_id: appId,
         target_channel: "push",
@@ -111,7 +111,7 @@ export const runOneSignalDeliveryDiagnostic = createServerFn({ method: "POST" })
     if (messageId) {
       await new Promise((resolve) => setTimeout(resolve, 2500));
       const msgRes = await fetch(`https://onesignal.com/api/v1/notifications/${messageId}?app_id=${appId}`, {
-        headers: { Authorization: `Basic ${restKey}` },
+        headers: { Authorization: `Key ${restKey}` },
       });
       messageJson = await safeJson(msgRes);
     }
@@ -141,7 +141,7 @@ async function safeJson(res: Response): Promise<JsonValue> {
 
 async function fetchPlayer(appId: string, restKey: string, subscriptionId: string): Promise<JsonValue> {
   const res = await fetch(`https://onesignal.com/api/v1/players/${subscriptionId}?app_id=${appId}`, {
-    headers: { Authorization: `Basic ${restKey}` },
+    headers: { Authorization: `Key ${restKey}` },
   });
   return safeJson(res);
 }
@@ -154,7 +154,7 @@ async function repairSubscription(
 ): Promise<JsonValue> {
   const res = await fetch(`https://onesignal.com/api/v1/players/${subscriptionId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json", Authorization: `Basic ${restKey}` },
+    headers: { "Content-Type": "application/json", Authorization: `Key ${restKey}` },
     body: JSON.stringify({ app_id: appId, identifier: token, notification_types: 1 }),
   });
   return safeJson(res);

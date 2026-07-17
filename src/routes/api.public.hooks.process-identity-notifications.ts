@@ -176,7 +176,7 @@ async function processOne(
       const fullUrl = `https://os.cmrs.mx${copy.link}`;
       const res = await fetch("https://onesignal.com/api/v1/notifications", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Basic ${ctx.restKey}` },
+        headers: { "Content-Type": "application/json", Authorization: `Key ${ctx.restKey}` },
         body: JSON.stringify({
           app_id: ctx.appId,
           include_subscription_ids: [prefs.onesignal_player_id],
