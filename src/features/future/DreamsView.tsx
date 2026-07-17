@@ -1,8 +1,6 @@
 /**
- * **Ruta** — Sueños y aspiraciones de vida.
+ * **Vista** — Grandes Sueños (subvista de /future).
  */
-
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useGrowth } from "@/hooks/use-growth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,14 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Mountain, Plus, Trash2, Loader2, Sparkles, Clock, Tag, MessageCircle, Image as ImageIcon, Target, Calendar } from "lucide-react";
+import { Mountain, Plus, Trash2, Loader2, Sparkles, Clock, Tag, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/dreams")({
-  component: DreamsPage,
-});
-
-function DreamsPage() {
+export function DreamsView() {
   const { dreams, addDream, deleteDream, loading } = useGrowth();
   const [isAdding, setIsAdding] = useState(false);
   const [newDream, setNewDream] = useState({
@@ -55,12 +49,12 @@ function DreamsPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight flex items-center gap-2">
-            <Mountain className="w-8 h-8 text-primary" /> Grandes Sueños
-          </h1>
+          <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-2">
+            <Mountain className="w-7 h-7 text-primary" /> Grandes Sueños
+          </h2>
           <p className="text-muted-foreground text-sm mt-1">
             Define tus aspiraciones más grandes y el porqué detrás de ellas.
           </p>
@@ -79,63 +73,35 @@ function DreamsPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>¿Cuál es tu sueño?</Label>
-              <Input 
-                value={newDream.title} 
-                onChange={(e) => setNewDream({ ...newDream, title: e.target.value })} 
-                placeholder="Ej: Dar la vuelta al mundo, Escribir un libro..."
-              />
+              <Input value={newDream.title} onChange={(e) => setNewDream({ ...newDream, title: e.target.value })} placeholder="Ej: Dar la vuelta al mundo, Escribir un libro..." />
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Categoría</Label>
-                <Input 
-                  value={newDream.category} 
-                  onChange={(e) => setNewDream({ ...newDream, category: e.target.value })} 
-                  placeholder="Ej: Viajes, Carrera, Salud..."
-                />
+                <Input value={newDream.category} onChange={(e) => setNewDream({ ...newDream, category: e.target.value })} placeholder="Ej: Viajes, Carrera, Salud..." />
               </div>
               <div className="space-y-2">
                 <Label>Ventana de tiempo</Label>
-                <Input 
-                  value={newDream.timeframe} 
-                  onChange={(e) => setNewDream({ ...newDream, timeframe: e.target.value })} 
-                  placeholder="Ej: 5 años, Diciembre 2028..."
-                />
+                <Input value={newDream.timeframe} onChange={(e) => setNewDream({ ...newDream, timeframe: e.target.value })} placeholder="Ej: 5 años, Diciembre 2028..." />
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Fecha límite (opcional)</Label>
-                <Input 
-                  type="date"
-                  value={newDream.deadline} 
-                  onChange={(e) => setNewDream({ ...newDream, deadline: e.target.value })} 
-                />
+                <Input type="date" value={newDream.deadline} onChange={(e) => setNewDream({ ...newDream, deadline: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label>Imagen URL (Unsplash, etc.)</Label>
-                <Input 
-                  value={newDream.image_url} 
-                  onChange={(e) => setNewDream({ ...newDream, image_url: e.target.value })} 
-                  placeholder="https://images.unsplash.com/..."
-                />
+                <Input value={newDream.image_url} onChange={(e) => setNewDream({ ...newDream, image_url: e.target.value })} placeholder="https://images.unsplash.com/..." />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Motivación (Lo que te impulsa)</Label>
-              <Textarea 
-                value={newDream.motivation} 
-                onChange={(e) => setNewDream({ ...newDream, motivation: e.target.value })} 
-                placeholder="Describe qué sentiras al lograrlo..."
-              />
+              <Textarea value={newDream.motivation} onChange={(e) => setNewDream({ ...newDream, motivation: e.target.value })} placeholder="Describe qué sentirás al lograrlo..." />
             </div>
             <div className="space-y-2">
               <Label>Descripción / El porqué</Label>
-              <Textarea 
-                value={newDream.description} 
-                onChange={(e) => setNewDream({ ...newDream, description: e.target.value })} 
-                placeholder="Conecta con tu propósito profundo..."
-              />
+              <Textarea value={newDream.description} onChange={(e) => setNewDream({ ...newDream, description: e.target.value })} placeholder="Conecta con tu propósito profundo..." />
             </div>
             <Button onClick={handleAdd} className="w-full">Guardar Sueño</Button>
           </CardContent>

@@ -1,8 +1,6 @@
 /**
- * **Ruta** — Horizontes de planeación (90 días, 1/3/5/10 años).
+ * **Vista** — Horizontes de planeación (subvista de /future).
  */
-
-import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useGrowth } from "@/hooks/use-growth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,21 +10,17 @@ import { Compass, Loader2, Save, Calendar, Milestone, Flag, Target, Rocket, Chec
 import { format, formatDistanceStrict } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-import { HorizonType } from "@/lib/growth-types";
-
-export const Route = createFileRoute("/horizons")({
-  component: HorizonsPage,
-});
+import type { HorizonType } from "@/lib/growth-types";
 
 const HORIZON_CONFIG: { type: HorizonType; label: string; description: string; icon: any; color: string }[] = [
-  { type: "90_days", label: "Horizonte 90 días", description: "Corto plazo y enfoque inmediato.", icon: Target, color: "text-blue-500" },
-  { type: "1_year", label: "Horizonte 1 año", description: "Metas anuales y hitos de crecimiento.", icon: Flag, color: "text-emerald-500" },
-  { type: "3_years", label: "Horizonte 3 años", description: "Construcción de base y visión intermedia.", icon: Milestone, color: "text-amber-500" },
-  { type: "5_years", label: "Horizonte 5 años", description: "Cambios transformacionales.", icon: Rocket, color: "text-purple-500" },
-  { type: "10_years", label: "Horizonte 10 años", description: "Legado y visión a largo plazo.", icon: Calendar, color: "text-rose-500" },
+  { type: "90_days", label: "90 días", description: "Corto plazo y enfoque inmediato.", icon: Target, color: "text-blue-500" },
+  { type: "1_year", label: "1 año", description: "Metas anuales y hitos de crecimiento.", icon: Flag, color: "text-emerald-500" },
+  { type: "3_years", label: "3 años", description: "Construcción de base y visión intermedia.", icon: Milestone, color: "text-amber-500" },
+  { type: "5_years", label: "5 años", description: "Cambios transformacionales.", icon: Rocket, color: "text-purple-500" },
+  { type: "10_years", label: "10 años", description: "Legado y visión a largo plazo.", icon: Calendar, color: "text-rose-500" },
 ];
 
-function HorizonsPage() {
+export function HorizonsView() {
   const { horizons, upsertHorizon, updateHorizonStatus, loading } = useGrowth();
   const [activeType, setActiveType] = useState<HorizonType>("90_days");
   const [content, setContent] = useState("");
@@ -41,11 +35,8 @@ function HorizonsPage() {
     setSaving(true);
     const error = await upsertHorizon(activeType, content);
     setSaving(false);
-    if (error) {
-      toast.error("Error al guardar horizonte");
-    } else {
-      toast.success("¡Horizonte actualizado!");
-    }
+    if (error) toast.error("Error al guardar horizonte");
+    else toast.success("¡Horizonte actualizado!");
   };
 
   const toggleStatus = async () => {
@@ -56,11 +47,8 @@ function HorizonsPage() {
     }
     const newStatus = horizon.status === 'completed' ? 'pending' : 'completed';
     const error = await updateHorizonStatus(horizon.id, newStatus);
-    if (error) {
-      toast.error("Error al actualizar estado");
-    } else {
-      toast.success(newStatus === 'completed' ? "¡Horizonte cumplido! 🎉" : "Horizonte reabierto");
-    }
+    if (error) toast.error("Error al actualizar estado");
+    else toast.success(newStatus === 'completed' ? "¡Horizonte cumplido! 🎉" : "Horizonte reabierto");
   };
 
   if (loading && horizons.length === 0) {
@@ -72,41 +60,33 @@ function HorizonsPage() {
 
   const getDuration = () => {
     if (!currentHorizon || !currentHorizon.completed_at) return null;
-    return formatDistanceStrict(
-      new Date(currentHorizon.created_at),
-      new Date(currentHorizon.completed_at),
-      { locale: es }
-    );
+    return formatDistanceStrict(new Date(currentHorizon.created_at), new Date(currentHorizon.completed_at), { locale: es });
   };
 
   return (
-    <div className="p-4 md:p-6 max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6">
       <header>
-        <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight flex items-center gap-2">
-          <Compass className="w-8 h-8 text-primary" /> Sistema de Horizontes
-        </h1>
+        <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-2">
+          <Compass className="w-7 h-7 text-primary" /> Horizontes
+        </h2>
         <p className="text-muted-foreground text-sm mt-1">
           Planifica tu vida en diferentes escalas temporales para mantener el rumbo.
         </p>
       </header>
 
-      <div className="grid md:grid-cols-[240px_1fr] gap-6">
+      <div className="grid md:grid-cols-[220px_1fr] gap-6">
         <div className="space-y-2">
           {HORIZON_CONFIG.map((config) => (
             <button
               key={config.type}
               onClick={() => setActiveType(config.type)}
               className={`w-full text-left p-3 rounded-xl transition-all border ${
-                activeType === config.type
-                  ? "bg-primary/10 border-primary/30 shadow-sm"
-                  : "hover:bg-muted border-transparent"
+                activeType === config.type ? "bg-primary/10 border-primary/30 shadow-sm" : "hover:bg-muted border-transparent"
               }`}
             >
               <div className="flex items-center gap-3">
                 <config.icon className={`w-4 h-4 ${activeType === config.type ? "text-primary" : "text-muted-foreground"}`} />
-                <span className={`text-sm font-medium ${activeType === config.type ? "text-primary" : ""}`}>
-                  {config.label}
-                </span>
+                <span className={`text-sm font-medium ${activeType === config.type ? "text-primary" : ""}`}>{config.label}</span>
               </div>
             </button>
           ))}
@@ -116,8 +96,7 @@ function HorizonsPage() {
           <CardHeader className="flex flex-row items-start justify-between">
             <div className="space-y-1">
               <CardTitle className="flex items-center gap-2">
-                <activeConfig.icon className={`w-5 h-5 ${activeConfig.color}`} />
-                {activeConfig.label}
+                <activeConfig.icon className={`w-5 h-5 ${activeConfig.color}`} /> Horizonte {activeConfig.label}
               </CardTitle>
               <CardDescription>{activeConfig.description}</CardDescription>
             </div>
@@ -128,11 +107,7 @@ function HorizonsPage() {
                 onClick={toggleStatus}
                 className={currentHorizon?.status === 'completed' ? "bg-emerald-500 hover:bg-emerald-600 border-none" : ""}
               >
-                {currentHorizon?.status === 'completed' ? (
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                ) : (
-                  <Circle className="w-4 h-4 mr-2" />
-                )}
+                {currentHorizon?.status === 'completed' ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <Circle className="w-4 h-4 mr-2" />}
                 {currentHorizon?.status === 'completed' ? "Cumplido" : "Pendiente"}
               </Button>
               <Button onClick={handleSave} disabled={saving} size="sm">
@@ -159,7 +134,7 @@ function HorizonsPage() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={`¿Qué quieres haber logrado en ${activeConfig.label.toLowerCase()}? Describe tus metas, cambios de estilo de vida, etc.`}
-              className="min-h-[400px] text-base leading-relaxed resize-none border-none bg-transparent focus-visible:ring-0 p-0"
+              className="min-h-[320px] text-base leading-relaxed resize-none border-none bg-transparent focus-visible:ring-0 p-0"
             />
           </CardContent>
         </Card>

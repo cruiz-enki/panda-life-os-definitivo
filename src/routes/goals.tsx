@@ -76,7 +76,7 @@ function GoalsPage() {
           <h3 className="text-lg font-medium">Primero define un sueño</h3>
           <p className="text-sm text-muted-foreground mb-6">Para empezar con el desglose, necesitas tener al menos un sueño activo.</p>
           <Button asChild>
-            <a href="/dreams">Ir a Grandes Sueños</a>
+            <a href="/future?tab=suenos">Ir a Grandes Sueños</a>
           </Button>
         </Card>
       ) : (

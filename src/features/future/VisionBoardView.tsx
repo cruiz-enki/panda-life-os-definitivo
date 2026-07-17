@@ -1,22 +1,14 @@
 /**
- * **Ruta** — Tablero de visión (vision board).
+ * **Vista** — Vision Board (subvista de /future).
  */
-
-import { createFileRoute } from "@tanstack/react-router";
 import { useGrowth } from "@/hooks/use-growth";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { LayoutGrid, Loader2, Sparkles, Clock, Target, MessageCircle, Calendar, Plus, ExternalLink, Mountain } from "lucide-react";
+import { LayoutGrid, Loader2, Sparkles, Clock, Target, MessageCircle, Calendar, Mountain } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/vision-board")({
-  component: VisionBoardPage,
-});
-
-function VisionBoardPage() {
+export function VisionBoardView() {
   const { dreams, loading } = useGrowth();
 
   if (loading && dreams.length === 0) {
@@ -24,37 +16,23 @@ function VisionBoardPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight flex items-center gap-2">
-            <LayoutGrid className="w-8 h-8 text-primary" /> Vision Board Dinámico
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Visualiza tus metas más grandes y mantén el enfoque en tu propósito.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link to="/dreams">
-            <Button variant="outline" size="sm">
-              <Plus className="w-4 h-4 mr-2" /> Gestionar Sueños
-            </Button>
-          </Link>
-        </div>
+    <div className="space-y-6">
+      <header>
+        <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-2">
+          <LayoutGrid className="w-7 h-7 text-primary" /> Vision Board
+        </h2>
+        <p className="text-muted-foreground text-sm mt-1">
+          Visualiza tus metas más grandes y mantén el enfoque en tu propósito. Los sueños se gestionan en la pestaña <strong>Sueños</strong>.
+        </p>
       </header>
 
       {dreams.length === 0 ? (
-        <div className="text-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-muted">
+        <div className="text-center py-16 bg-muted/20 rounded-3xl border-2 border-dashed border-muted">
           <Sparkles className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-20" />
-          <h2 className="text-xl font-bold mb-2">Tu Vision Board está vacío</h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Comienza por registrar tus aspiraciones más profundas en la sección de Grandes Sueños.
+          <h3 className="text-xl font-bold mb-2">Tu Vision Board está vacío</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Cambia a la pestaña <strong>Sueños</strong> para registrar tus aspiraciones y verlas aquí.
           </p>
-          <Link to="/dreams">
-            <Button>
-              <Mountain className="w-4 h-4 mr-2" /> Ir a Grandes Sueños
-            </Button>
-          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -62,11 +40,7 @@ function VisionBoardPage() {
             <Card key={dream.id} className="group overflow-hidden border-primary/10 hover:border-primary/30 transition-all hover:shadow-glow">
               <div className="relative aspect-video overflow-hidden bg-muted">
                 {dream.image_url ? (
-                  <img 
-                    src={dream.image_url} 
-                    alt={dream.title} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
+                  <img src={dream.image_url} alt={dream.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
                     <Mountain className="w-12 h-12" />
@@ -87,20 +61,15 @@ function VisionBoardPage() {
                       <span className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-1.5">
                         <Target className="w-3 h-3" /> Motivación
                       </span>
-                      <p className="text-sm italic leading-relaxed text-foreground/90 bg-primary/5 p-3 rounded-xl border border-primary/10">
-                        "{dream.motivation}"
-                      </p>
+                      <p className="text-sm italic leading-relaxed text-foreground/90 bg-primary/5 p-3 rounded-xl border border-primary/10">"{dream.motivation}"</p>
                     </div>
                   )}
-                  
                   {dream.description && (
                     <div className="space-y-1">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
                         <MessageCircle className="w-3 h-3" /> Descripción
                       </span>
-                      <p className="text-sm text-muted-foreground line-clamp-3">
-                        {dream.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground line-clamp-3">{dream.description}</p>
                     </div>
                   )}
                 </div>
@@ -126,12 +95,6 @@ function VisionBoardPage() {
                       </div>
                     )}
                   </div>
-                  
-                  <Link to="/dreams">
-                    <Button variant="ghost" size="sm" className="h-8 px-2 text-xs hover:text-primary">
-                      Editar <ExternalLink className="w-3 h-3 ml-1.5" />
-                    </Button>
-                  </Link>
                 </div>
               </CardContent>
             </Card>
