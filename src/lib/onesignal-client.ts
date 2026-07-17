@@ -73,7 +73,7 @@ export async function isOneSignalConfigured(): Promise<boolean> {
   }
 }
 
-const ALLOWED_HOSTS = ["app.cmrs.mx"];
+const ALLOWED_HOSTS = ["os.cmrs.mx"];
 
 export function isOneSignalAllowedHost(): boolean {
   if (typeof window === "undefined") return false;

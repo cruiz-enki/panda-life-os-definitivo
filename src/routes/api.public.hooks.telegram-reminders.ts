@@ -205,7 +205,7 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
               const status = (plan as any)?.completed ? " ✅" : "";
               await fire(
                 key,
-                `${meal.emoji} *${meal.label}*\nHora de comer: _${planned}_${status}\n\nhttps://app.cmrs.mx/meals`,
+                `${meal.emoji} *${meal.label}*\nHora de comer: _${planned}_${status}\n\nhttps://os.cmrs.mx/meals`,
                 { title: `${meal.emoji} ${meal.label}`, body: `Hora de comer: ${planned}${status}`, url: "/meals", tag: `meal-${meal.key}` },
               );
             }
@@ -229,8 +229,8 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
               const text = isRest
                 ? `🧘 *Día de descanso*\nDescansa y recupérate.`
                 : routine
-                  ? `🏋️ *Ejercicio*\nHoy toca: *${routine}*\n\nhttps://app.cmrs.mx/exercise`
-                  : `🏃 *Ejercicio*\nNo tienes rutina programada hoy. ¿Movemos el cuerpo?\n\nhttps://app.cmrs.mx/exercise`;
+                  ? `🏋️ *Ejercicio*\nHoy toca: *${routine}*\n\nhttps://os.cmrs.mx/exercise`
+                  : `🏃 *Ejercicio*\nNo tienes rutina programada hoy. ¿Movemos el cuerpo?\n\nhttps://os.cmrs.mx/exercise`;
               const pushBody = isRest
                 ? "Día de descanso. Recupérate."
                 : routine
@@ -265,7 +265,7 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                   .join("\n");
                 await fire(
                   key,
-                  `⏰ *Tienes ${tasks.length} tarea${tasks.length === 1 ? "" : "s"} vencida${tasks.length === 1 ? "" : "s"}:*\n\n${lines}\n\nhttps://app.cmrs.mx/tasks`,
+                  `⏰ *Tienes ${tasks.length} tarea${tasks.length === 1 ? "" : "s"} vencida${tasks.length === 1 ? "" : "s"}:*\n\n${lines}\n\nhttps://os.cmrs.mx/tasks`,
                   {
                     title: `⏰ ${tasks.length} tarea${tasks.length === 1 ? "" : "s"} vencida${tasks.length === 1 ? "" : "s"}`,
                     body: (tasks as any[]).map((t) => t.title).slice(0, 3).join(", "),
@@ -328,7 +328,7 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                 const lines = pending.map(p => `• ${p.name}`).join("\n");
                 await fire(
                   key,
-                  `✨ *Hábitos pendientes*\nNo olvides completar tus hábitos de hoy:\n\n${lines}\n\nhttps://app.cmrs.mx/habits`,
+                  `✨ *Hábitos pendientes*\nNo olvides completar tus hábitos de hoy:\n\n${lines}\n\nhttps://os.cmrs.mx/habits`,
                   { title: "✨ Hábitos", body: `Te quedan ${pending.length} hábitos hoy.`, url: "/habits", tag: "habits-rem" }
                 );
               }

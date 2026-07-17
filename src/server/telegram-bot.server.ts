@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { createHash, timingSafeEqual } from "crypto";
 import { sendTelegramMessage, getUpdates, type TgUpdate } from "./telegram.server";
 
-const DEFAULT_BASE_URL = "https://app.cmrs.mx";
+const DEFAULT_BASE_URL = "https://os.cmrs.mx";
 const MAX_RUNTIME_MS = 55_000;
 const MIN_REMAINING_MS = 5_000;
 

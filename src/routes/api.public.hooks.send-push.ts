@@ -94,7 +94,7 @@ export const Route = createFileRoute("/api/public/hooks/send-push")({
         const externalUserIds = eligible.map((p: any) => p.user_id);
 
         const url = payload.url || "/";
-        const fullUrl = url.startsWith("http") ? url : `https://app.cmrs.mx${url}`;
+        const fullUrl = url.startsWith("http") ? url : `https://os.cmrs.mx${url}`;
 
         const body: Record<string, unknown> = {
           app_id: onesignalAppId,
@@ -104,8 +104,8 @@ export const Route = createFileRoute("/api/public/hooks/send-push")({
           contents: { en: payload.body, es: payload.body },
           url: fullUrl,
           web_url: fullUrl,
-          chrome_web_icon: "https://app.cmrs.mx/icon-192.png",
-          chrome_web_badge: "https://app.cmrs.mx/icon-192.png",
+          chrome_web_icon: "https://os.cmrs.mx/icon-192.png",
+          chrome_web_badge: "https://os.cmrs.mx/icon-192.png",
         };
         if (tag) body.web_push_topic = tag;
 

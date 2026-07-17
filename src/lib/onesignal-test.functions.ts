@@ -53,7 +53,7 @@ export const sendOneSignalTest = createServerFn({ method: "POST" })
           en: "¡Funciona! OneSignal está enviando push reales.",
           es: "¡Funciona! OneSignal está enviando push reales.",
         },
-        web_url: "https://app.cmrs.mx/",
+        web_url: "https://os.cmrs.mx/",
       }),
     });
     const json = (await res.json()) as {
@@ -101,7 +101,7 @@ export const runOneSignalDeliveryDiagnostic = createServerFn({ method: "POST" })
         channel_for_external_user_ids: "push",
         headings: { en: "🐼 Diagnóstico Panda", es: "🐼 Diagnóstico Panda" },
         contents: { en: "Prueba técnica de entrega Android.", es: "Prueba técnica de entrega Android." },
-        web_url: "https://app.cmrs.mx/notifications",
+        web_url: "https://os.cmrs.mx/notifications",
         data: { kind: "diagnostic", deep_link: "/notifications", at: new Date().toISOString() },
       }),
     });

@@ -39,7 +39,7 @@ export const sendQuestTestNotification = createServerFn({ method: "POST" })
         include_subscription_ids: [playerId],
         headings: { en: `${copy.emoji} Misión de prueba`, es: `${copy.emoji} Misión de prueba` },
         contents: { en: copy.body, es: copy.body },
-        web_url: `https://app.cmrs.mx${copy.link}`,
+        web_url: `https://os.cmrs.mx${copy.link}`,
         data: { kind: "quest", deep_link: copy.link, test: true },
       }),
     });
