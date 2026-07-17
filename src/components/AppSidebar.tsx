@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell } from "lucide-react";
+import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell, Moon, Smile, Clock } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
@@ -35,6 +35,7 @@ const productividadItems: NavItem[] = [
   { to: "/calendar", label: "Calendario", icon: CalendarIcon },
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/habits", label: "Hábitos", icon: Repeat },
+  { to: "/time", label: "Tiempo", icon: Clock },
   { to: "/notes", label: "Notas", icon: NotebookPen },
   { to: "/projects", label: "Proyectos", icon: FolderKanban },
 ];
@@ -81,6 +82,8 @@ const healthSubItems = [
   { to: "/health", hash: "insights", label: "Insights", icon: Activity },
   { to: "/exercise", hash: "", label: "Ejercicio", icon: Dumbbell },
   { to: "/energy", hash: "", label: "Energía", icon: Battery },
+  { to: "/sleep", hash: "", label: "Sueño", icon: Moon },
+  { to: "/mood", hash: "", label: "Mood", icon: Smile },
   { to: "/labs", hash: "", label: "Laboratorios", icon: Beaker },
   { to: "/psychology", hash: "", label: "Psicología", icon: Brain },
 ] as const;
