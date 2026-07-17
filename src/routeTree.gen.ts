@@ -18,6 +18,7 @@ import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SkillTreeRouteImport } from './routes/skill-tree'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ScheduledRouteImport } from './routes/scheduled'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as PsychologyRouteImport } from './routes/psychology'
 import { Route as ProjectsRouteImport } from './routes/projects'
@@ -70,6 +71,7 @@ import { Route as ApiPublicHooksTelegramPollRouteImport } from './routes/api.pub
 import { Route as ApiPublicHooksSyncCronSecretRouteImport } from './routes/api.public.hooks.sync-cron-secret'
 import { Route as ApiPublicHooksStreakRiskSweepRouteImport } from './routes/api.public.hooks.streak-risk-sweep'
 import { Route as ApiPublicHooksSendPushRouteImport } from './routes/api.public.hooks.send-push'
+import { Route as ApiPublicHooksProcessScheduledMessagesRouteImport } from './routes/api.public.hooks.process-scheduled-messages'
 import { Route as ApiPublicHooksProcessQuestNotificationsRouteImport } from './routes/api.public.hooks.process-quest-notifications'
 import { Route as ApiPublicHooksProcessNotificationsRouteImport } from './routes/api.public.hooks.process-notifications'
 import { Route as ApiPublicHooksProcessIdentityNotificationsRouteImport } from './routes/api.public.hooks.process-identity-notifications'
@@ -118,6 +120,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScheduledRoute = ScheduledRouteImport.update({
+  id: '/scheduled',
+  path: '/scheduled',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RewardsRoute = RewardsRouteImport.update({
@@ -390,6 +397,12 @@ const ApiPublicHooksSendPushRoute = ApiPublicHooksSendPushRouteImport.update({
   path: '/api/public/hooks/send-push',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksProcessScheduledMessagesRoute =
+  ApiPublicHooksProcessScheduledMessagesRouteImport.update({
+    id: '/api/public/hooks/process-scheduled-messages',
+    path: '/api/public/hooks/process-scheduled-messages',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksProcessQuestNotificationsRoute =
   ApiPublicHooksProcessQuestNotificationsRouteImport.update({
     id: '/api/public/hooks/process-quest-notifications',
@@ -449,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/projects': typeof ProjectsRouteWithChildren
   '/psychology': typeof PsychologyRoute
   '/rewards': typeof RewardsRoute
+  '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
@@ -473,6 +487,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
   '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
+  '/api/public/hooks/process-scheduled-messages': typeof ApiPublicHooksProcessScheduledMessagesRoute
   '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
   '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
   '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
@@ -514,6 +529,7 @@ export interface FileRoutesByTo {
   '/pomodoro': typeof PomodoroRoute
   '/psychology': typeof PsychologyRoute
   '/rewards': typeof RewardsRoute
+  '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
@@ -538,6 +554,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
   '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
+  '/api/public/hooks/process-scheduled-messages': typeof ApiPublicHooksProcessScheduledMessagesRoute
   '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
   '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
   '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
@@ -582,6 +599,7 @@ export interface FileRoutesById {
   '/projects': typeof ProjectsRouteWithChildren
   '/psychology': typeof PsychologyRoute
   '/rewards': typeof RewardsRoute
+  '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
@@ -606,6 +624,7 @@ export interface FileRoutesById {
   '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
   '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
+  '/api/public/hooks/process-scheduled-messages': typeof ApiPublicHooksProcessScheduledMessagesRoute
   '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
   '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
   '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
@@ -651,6 +670,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/psychology'
     | '/rewards'
+    | '/scheduled'
     | '/services'
     | '/settings'
     | '/skill-tree'
@@ -675,6 +695,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/process-identity-notifications'
     | '/api/public/hooks/process-notifications'
     | '/api/public/hooks/process-quest-notifications'
+    | '/api/public/hooks/process-scheduled-messages'
     | '/api/public/hooks/send-push'
     | '/api/public/hooks/streak-risk-sweep'
     | '/api/public/hooks/sync-cron-secret'
@@ -716,6 +737,7 @@ export interface FileRouteTypes {
     | '/pomodoro'
     | '/psychology'
     | '/rewards'
+    | '/scheduled'
     | '/services'
     | '/settings'
     | '/skill-tree'
@@ -740,6 +762,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/process-identity-notifications'
     | '/api/public/hooks/process-notifications'
     | '/api/public/hooks/process-quest-notifications'
+    | '/api/public/hooks/process-scheduled-messages'
     | '/api/public/hooks/send-push'
     | '/api/public/hooks/streak-risk-sweep'
     | '/api/public/hooks/sync-cron-secret'
@@ -783,6 +806,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/psychology'
     | '/rewards'
+    | '/scheduled'
     | '/services'
     | '/settings'
     | '/skill-tree'
@@ -807,6 +831,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/process-identity-notifications'
     | '/api/public/hooks/process-notifications'
     | '/api/public/hooks/process-quest-notifications'
+    | '/api/public/hooks/process-scheduled-messages'
     | '/api/public/hooks/send-push'
     | '/api/public/hooks/streak-risk-sweep'
     | '/api/public/hooks/sync-cron-secret'
@@ -851,6 +876,7 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRouteWithChildren
   PsychologyRoute: typeof PsychologyRoute
   RewardsRoute: typeof RewardsRoute
+  ScheduledRoute: typeof ScheduledRoute
   ServicesRoute: typeof ServicesRoute
   SettingsRoute: typeof SettingsRoute
   SkillTreeRoute: typeof SkillTreeRoute
@@ -869,6 +895,7 @@ export interface RootRouteChildren {
   ApiPublicHooksProcessIdentityNotificationsRoute: typeof ApiPublicHooksProcessIdentityNotificationsRoute
   ApiPublicHooksProcessNotificationsRoute: typeof ApiPublicHooksProcessNotificationsRoute
   ApiPublicHooksProcessQuestNotificationsRoute: typeof ApiPublicHooksProcessQuestNotificationsRoute
+  ApiPublicHooksProcessScheduledMessagesRoute: typeof ApiPublicHooksProcessScheduledMessagesRoute
   ApiPublicHooksSendPushRoute: typeof ApiPublicHooksSendPushRoute
   ApiPublicHooksStreakRiskSweepRoute: typeof ApiPublicHooksStreakRiskSweepRoute
   ApiPublicHooksSyncCronSecretRoute: typeof ApiPublicHooksSyncCronSecretRoute
@@ -942,6 +969,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scheduled': {
+      id: '/scheduled'
+      path: '/scheduled'
+      fullPath: '/scheduled'
+      preLoaderRoute: typeof ScheduledRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rewards': {
@@ -1308,6 +1342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSendPushRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/process-scheduled-messages': {
+      id: '/api/public/hooks/process-scheduled-messages'
+      path: '/api/public/hooks/process-scheduled-messages'
+      fullPath: '/api/public/hooks/process-scheduled-messages'
+      preLoaderRoute: typeof ApiPublicHooksProcessScheduledMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/process-quest-notifications': {
       id: '/api/public/hooks/process-quest-notifications'
       path: '/api/public/hooks/process-quest-notifications'
@@ -1405,6 +1446,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRouteWithChildren,
   PsychologyRoute: PsychologyRoute,
   RewardsRoute: RewardsRoute,
+  ScheduledRoute: ScheduledRoute,
   ServicesRoute: ServicesRoute,
   SettingsRoute: SettingsRoute,
   SkillTreeRoute: SkillTreeRoute,
@@ -1426,6 +1468,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicHooksProcessNotificationsRoute,
   ApiPublicHooksProcessQuestNotificationsRoute:
     ApiPublicHooksProcessQuestNotificationsRoute,
+  ApiPublicHooksProcessScheduledMessagesRoute:
+    ApiPublicHooksProcessScheduledMessagesRoute,
   ApiPublicHooksSendPushRoute: ApiPublicHooksSendPushRoute,
   ApiPublicHooksStreakRiskSweepRoute: ApiPublicHooksStreakRiskSweepRoute,
   ApiPublicHooksSyncCronSecretRoute: ApiPublicHooksSyncCronSecretRoute,
@@ -1438,13 +1482,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
