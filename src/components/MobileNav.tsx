@@ -46,6 +46,7 @@ import {
   Moon,
   Smile,
   Clock,
+  MapPin,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -76,6 +77,7 @@ const productividad: MoreItem[] = [
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
+  { to: "/locations", label: "Ubicaciones", icon: MapPin },
   { to: "/notes", label: "Notas", icon: NotebookPen },
 ];
 

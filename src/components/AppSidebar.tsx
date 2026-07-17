@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell, Moon, Smile, Clock } from "lucide-react";
+import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
@@ -36,6 +36,7 @@ const productividadItems: NavItem[] = [
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
+  { to: "/locations", label: "Ubicaciones", icon: MapPin },
   { to: "/notes", label: "Notas", icon: NotebookPen },
   { to: "/projects", label: "Proyectos", icon: FolderKanban },
 ];
