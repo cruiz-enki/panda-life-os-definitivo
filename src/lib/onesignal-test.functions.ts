@@ -37,7 +37,7 @@ export const sendOneSignalTest = createServerFn({ method: "POST" })
       await repairSubscription(appId, restKey, playerId, prefs.onesignal_push_token);
     }
 
-    const res = await fetch("https://onesignal.com/api/v1/notifications", {
+    const res = await fetch("https://api.onesignal.com/notifications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export const runOneSignalDeliveryDiagnostic = createServerFn({ method: "POST" })
     if (repairResponse) await new Promise((resolve) => setTimeout(resolve, 1500));
     const playerAfter = await fetchPlayer(appId, restKey, subscriptionId);
 
-    const sendRes = await fetch("https://onesignal.com/api/v1/notifications", {
+    const sendRes = await fetch("https://api.onesignal.com/notifications", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Key ${restKey}` },
       body: JSON.stringify({

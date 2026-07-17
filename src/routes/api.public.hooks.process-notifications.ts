@@ -379,7 +379,7 @@ async function sendOneSignal(opts: {
   url: string;
   notificationId: string;
 }): Promise<{ id?: string; recipients?: number; errors?: unknown }> {
-  const res = await fetch("https://onesignal.com/api/v1/notifications", {
+  const res = await fetch("https://api.onesignal.com/notifications", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
