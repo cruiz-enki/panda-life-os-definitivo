@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as TimeRouteImport } from './routes/time'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SkillTreeRouteImport } from './routes/skill-tree'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ServicesRouteImport } from './routes/services'
@@ -20,6 +22,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PomodoroRouteImport } from './routes/pomodoro'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
 import { Route as LearningsHistoryRouteImport } from './routes/learnings-history'
@@ -73,9 +76,19 @@ const WishlistRoute = WishlistRouteImport.update({
   path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TimeRoute = TimeRouteImport.update({
+  id: '/time',
+  path: '/time',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SleepRoute = SleepRouteImport.update({
+  id: '/sleep',
+  path: '/sleep',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SkillTreeRoute = SkillTreeRouteImport.update({
@@ -121,6 +134,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const NotesRoute = NotesRouteImport.update({
   id: '/notes',
   path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoodRoute = MoodRouteImport.update({
+  id: '/mood',
+  path: '/mood',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MealsRoute = MealsRouteImport.update({
@@ -398,6 +416,7 @@ export interface FileRoutesByFullPath {
   '/learnings-history': typeof LearningsHistoryRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/mood': typeof MoodRoute
   '/notes': typeof NotesRoute
   '/notifications': typeof NotificationsRoute
   '/pomodoro': typeof PomodoroRoute
@@ -407,7 +426,9 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
+  '/sleep': typeof SleepRoute
   '/tasks': typeof TasksRoute
+  '/time': typeof TimeRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -457,6 +478,7 @@ export interface FileRoutesByTo {
   '/learnings-history': typeof LearningsHistoryRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/mood': typeof MoodRoute
   '/notes': typeof NotesRoute
   '/notifications': typeof NotificationsRoute
   '/pomodoro': typeof PomodoroRoute
@@ -465,7 +487,9 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
+  '/sleep': typeof SleepRoute
   '/tasks': typeof TasksRoute
+  '/time': typeof TimeRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -517,6 +541,7 @@ export interface FileRoutesById {
   '/learnings-history': typeof LearningsHistoryRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/mood': typeof MoodRoute
   '/notes': typeof NotesRoute
   '/notifications': typeof NotificationsRoute
   '/pomodoro': typeof PomodoroRoute
@@ -526,7 +551,9 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
+  '/sleep': typeof SleepRoute
   '/tasks': typeof TasksRoute
+  '/time': typeof TimeRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -579,6 +606,7 @@ export interface FileRouteTypes {
     | '/learnings-history'
     | '/maintenance'
     | '/meals'
+    | '/mood'
     | '/notes'
     | '/notifications'
     | '/pomodoro'
@@ -588,7 +616,9 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/skill-tree'
+    | '/sleep'
     | '/tasks'
+    | '/time'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -638,6 +668,7 @@ export interface FileRouteTypes {
     | '/learnings-history'
     | '/maintenance'
     | '/meals'
+    | '/mood'
     | '/notes'
     | '/notifications'
     | '/pomodoro'
@@ -646,7 +677,9 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/skill-tree'
+    | '/sleep'
     | '/tasks'
+    | '/time'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -697,6 +730,7 @@ export interface FileRouteTypes {
     | '/learnings-history'
     | '/maintenance'
     | '/meals'
+    | '/mood'
     | '/notes'
     | '/notifications'
     | '/pomodoro'
@@ -706,7 +740,9 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/skill-tree'
+    | '/sleep'
     | '/tasks'
+    | '/time'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -758,6 +794,7 @@ export interface RootRouteChildren {
   LearningsHistoryRoute: typeof LearningsHistoryRoute
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
+  MoodRoute: typeof MoodRoute
   NotesRoute: typeof NotesRoute
   NotificationsRoute: typeof NotificationsRoute
   PomodoroRoute: typeof PomodoroRoute
@@ -767,7 +804,9 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   SettingsRoute: typeof SettingsRoute
   SkillTreeRoute: typeof SkillTreeRoute
+  SleepRoute: typeof SleepRoute
   TasksRoute: typeof TasksRoute
+  TimeRoute: typeof TimeRoute
   WishlistRoute: typeof WishlistRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminResetRoute: typeof AdminResetRoute
@@ -797,11 +836,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/time': {
+      id: '/time'
+      path: '/time'
+      fullPath: '/time'
+      preLoaderRoute: typeof TimeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tasks': {
       id: '/tasks'
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sleep': {
+      id: '/sleep'
+      path: '/sleep'
+      fullPath: '/sleep'
+      preLoaderRoute: typeof SleepRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/skill-tree': {
@@ -865,6 +918,13 @@ declare module '@tanstack/react-router' {
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mood': {
+      id: '/mood'
+      path: '/mood'
+      fullPath: '/mood'
+      preLoaderRoute: typeof MoodRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meals': {
@@ -1256,6 +1316,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearningsHistoryRoute: LearningsHistoryRoute,
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
+  MoodRoute: MoodRoute,
   NotesRoute: NotesRoute,
   NotificationsRoute: NotificationsRoute,
   PomodoroRoute: PomodoroRoute,
@@ -1265,7 +1326,9 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesRoute: ServicesRoute,
   SettingsRoute: SettingsRoute,
   SkillTreeRoute: SkillTreeRoute,
+  SleepRoute: SleepRoute,
   TasksRoute: TasksRoute,
+  TimeRoute: TimeRoute,
   WishlistRoute: WishlistRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminResetRoute: AdminResetRoute,

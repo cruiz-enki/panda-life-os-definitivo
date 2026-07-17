@@ -43,6 +43,9 @@ import {
   LayoutGrid,
   Mail,
   Beaker,
+  Moon,
+  Smile,
+  Clock,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -72,6 +75,7 @@ const conocimiento: MoreItem[] = [
 const productividad: MoreItem[] = [
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
+  { to: "/time", label: "Tiempo", icon: Clock },
   { to: "/notes", label: "Notas", icon: NotebookPen },
 ];
 
@@ -113,6 +117,8 @@ const healthSubItems = [
   { to: "/health", hash: "insights", label: "Insights", icon: Activity },
   { to: "/exercise", hash: "", label: "Ejercicio", icon: Dumbbell },
   { to: "/energy", hash: "", label: "Energía", icon: Battery },
+  { to: "/sleep", hash: "", label: "Sueño", icon: Moon },
+  { to: "/mood", hash: "", label: "Mood", icon: Smile },
   { to: "/labs", hash: "", label: "Laboratorios", icon: Beaker },
   { to: "/psychology", hash: "", label: "Psicología", icon: Brain },
 ] as const;
