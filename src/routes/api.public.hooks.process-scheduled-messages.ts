@@ -23,8 +23,8 @@ async function sendPush(userId: string, title: string, body: string) {
     headers: { "Content-Type": "application/json", Authorization: `Key ${key}` },
     body: JSON.stringify({
       app_id: appId,
-      include_external_user_ids: [userId],
-      channel_for_external_user_ids: "push",
+      include_aliases: { external_id: [userId] },
+      target_channel: "push",
       headings: { en: title, es: title },
       contents: { en: body, es: body },
       url: "https://os.cmrs.mx/scheduled",
@@ -32,6 +32,7 @@ async function sendPush(userId: string, title: string, body: string) {
   });
   const json = await res.json().catch(() => null);
   if (!res.ok || json?.errors) throw new Error(`OneSignal ${res.status}: ${JSON.stringify(json)}`);
+  if (json?.recipients === 0) throw new Error(`OneSignal: 0 recipientes (external_id ${userId} sin suscripción push)`);
 }
 
 async function sendEmail(to: string, title: string, body: string) {
