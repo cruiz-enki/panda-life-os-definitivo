@@ -36,6 +36,7 @@ const productividadItems: NavItem[] = [
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
+  { to: "/locations", label: "Ubicaciones", icon: MapPin },
   { to: "/notes", label: "Notas", icon: NotebookPen },
   { to: "/projects", label: "Proyectos", icon: FolderKanban },
 ];
