@@ -117,7 +117,6 @@ const healthSubItems = [
   { to: "/health", hash: "insights", label: "Insights", icon: Activity },
   { to: "/exercise", hash: "", label: "Ejercicio", icon: Dumbbell },
   { to: "/energy", hash: "", label: "Energía", icon: Battery },
-  { to: "/energy", hash: "", label: "Energía", icon: Battery },
   { to: "/sleep", hash: "", label: "Sueño", icon: Moon },
   { to: "/mood", hash: "", label: "Mood", icon: Smile },
   { to: "/labs", hash: "", label: "Laboratorios", icon: Beaker },
