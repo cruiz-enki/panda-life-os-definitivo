@@ -1,0 +1,3 @@
+ALTER TABLE public.telegram_config
+ADD COLUMN IF NOT EXISTS notify_habits BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN IF NOT EXISTS notify_identity BOOLEAN NOT NULL DEFAULT true;

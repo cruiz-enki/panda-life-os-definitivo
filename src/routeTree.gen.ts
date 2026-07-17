@@ -9,38 +9,1145 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as VisionBoardRouteImport } from './routes/vision-board'
+import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as SkillTreeRouteImport } from './routes/skill-tree'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as PsychologyRouteImport } from './routes/psychology'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PomodoroRouteImport } from './routes/pomodoro'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as NotesRouteImport } from './routes/notes'
+import { Route as MealsRouteImport } from './routes/meals'
+import { Route as MaintenanceRouteImport } from './routes/maintenance'
+import { Route as LifeTrajectoryRouteImport } from './routes/life-trajectory'
+import { Route as LearningsHistoryRouteImport } from './routes/learnings-history'
+import { Route as LabsRouteImport } from './routes/labs'
+import { Route as InventoryRouteImport } from './routes/inventory'
+import { Route as IntrospectionRouteImport } from './routes/introspection'
+import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as ImportRouteImport } from './routes/import'
+import { Route as IdentityRouteImport } from './routes/identity'
+import { Route as HorizonsRouteImport } from './routes/horizons'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as HealthRouteImport } from './routes/health'
+import { Route as HabitsRouteImport } from './routes/habits'
+import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as FutureSimulationRouteImport } from './routes/future-simulation'
+import { Route as FutureLettersRouteImport } from './routes/future-letters'
+import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as FamilyRouteImport } from './routes/family'
+import { Route as ExerciseRouteImport } from './routes/exercise'
+import { Route as EnergyRouteImport } from './routes/energy'
+import { Route as DreamsRouteImport } from './routes/dreams'
+import { Route as DecisionsRouteImport } from './routes/decisions'
+import { Route as ContentRouteImport } from './routes/content'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as BattlePassRouteImport } from './routes/battle-pass'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
+import { Route as IntrospectionIndexRouteImport } from './routes/introspection.index'
+import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as ApiTestPushRouteImport } from './routes/api.test-push'
+import { Route as AdminResetRouteImport } from './routes/admin.reset'
+import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
+import { Route as IntrospectionResultSessionIdRouteImport } from './routes/introspection.result.$sessionId'
+import { Route as IntrospectionExerciseExerciseIdRouteImport } from './routes/introspection.exercise.$exerciseId'
+import { Route as IntrospectionCategoryCategoryKeyRouteImport } from './routes/introspection.category.$categoryKey'
+import { Route as FinanceCardsCardIdRouteImport } from './routes/finance_.cards.$cardId'
+import { Route as ApiPublicVapidKeyRouteImport } from './routes/api.public.vapid-key'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as ApiPublicHooksTelegramWebhookRouteImport } from './routes/api.public.hooks.telegram-webhook'
+import { Route as ApiPublicHooksTelegramSendRouteImport } from './routes/api.public.hooks.telegram-send'
+import { Route as ApiPublicHooksTelegramRemindersRouteImport } from './routes/api.public.hooks.telegram-reminders'
+import { Route as ApiPublicHooksTelegramPollRouteImport } from './routes/api.public.hooks.telegram-poll'
+import { Route as ApiPublicHooksSyncCronSecretRouteImport } from './routes/api.public.hooks.sync-cron-secret'
+import { Route as ApiPublicHooksStreakRiskSweepRouteImport } from './routes/api.public.hooks.streak-risk-sweep'
+import { Route as ApiPublicHooksSendPushRouteImport } from './routes/api.public.hooks.send-push'
+import { Route as ApiPublicHooksProcessQuestNotificationsRouteImport } from './routes/api.public.hooks.process-quest-notifications'
+import { Route as ApiPublicHooksProcessNotificationsRouteImport } from './routes/api.public.hooks.process-notifications'
+import { Route as ApiPublicHooksProcessIdentityNotificationsRouteImport } from './routes/api.public.hooks.process-identity-notifications'
+import { Route as ApiPublicHooksIdentityRemindersRouteImport } from './routes/api.public.hooks.identity-reminders'
 
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionBoardRoute = VisionBoardRouteImport.update({
+  id: '/vision-board',
+  path: '/vision-board',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillTreeRoute = SkillTreeRouteImport.update({
+  id: '/skill-tree',
+  path: '/skill-tree',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PsychologyRoute = PsychologyRouteImport.update({
+  id: '/psychology',
+  path: '/psychology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PomodoroRoute = PomodoroRouteImport.update({
+  id: '/pomodoro',
+  path: '/pomodoro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealsRoute = MealsRouteImport.update({
+  id: '/meals',
+  path: '/meals',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/meals.lazy').then((d) => d.Route))
+const MaintenanceRoute = MaintenanceRouteImport.update({
+  id: '/maintenance',
+  path: '/maintenance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LifeTrajectoryRoute = LifeTrajectoryRouteImport.update({
+  id: '/life-trajectory',
+  path: '/life-trajectory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningsHistoryRoute = LearningsHistoryRouteImport.update({
+  id: '/learnings-history',
+  path: '/learnings-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LabsRoute = LabsRouteImport.update({
+  id: '/labs',
+  path: '/labs',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/labs.lazy').then((d) => d.Route))
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntrospectionRoute = IntrospectionRouteImport.update({
+  id: '/introspection',
+  path: '/introspection',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportRoute = ImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdentityRoute = IdentityRouteImport.update({
+  id: '/identity',
+  path: '/identity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HorizonsRoute = HorizonsRouteImport.update({
+  id: '/horizons',
+  path: '/horizons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HabitsRoute = HabitsRouteImport.update({
+  id: '/habits',
+  path: '/habits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GoalsRoute = GoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FutureSimulationRoute = FutureSimulationRouteImport.update({
+  id: '/future-simulation',
+  path: '/future-simulation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FutureLettersRoute = FutureLettersRouteImport.update({
+  id: '/future-letters',
+  path: '/future-letters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceRoute = FinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyRoute = FamilyRouteImport.update({
+  id: '/family',
+  path: '/family',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExerciseRoute = ExerciseRouteImport.update({
+  id: '/exercise',
+  path: '/exercise',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/exercise.lazy').then((d) => d.Route))
+const EnergyRoute = EnergyRouteImport.update({
+  id: '/energy',
+  path: '/energy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DreamsRoute = DreamsRouteImport.update({
+  id: '/dreams',
+  path: '/dreams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecisionsRoute = DecisionsRouteImport.update({
+  id: '/decisions',
+  path: '/decisions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContentRoute = ContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BattlePassRoute = BattlePassRouteImport.update({
+  id: '/battle-pass',
+  path: '/battle-pass',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectsRoute,
+} as any)
+const IntrospectionIndexRoute = IntrospectionIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => IntrospectionRoute,
+} as any)
+const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
+  id: '/$projectId',
+  path: '/$projectId',
+  getParentRoute: () => ProjectsRoute,
+} as any)
+const ApiTestPushRoute = ApiTestPushRouteImport.update({
+  id: '/api/test-push',
+  path: '/api/test-push',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminResetRoute = AdminResetRouteImport.update({
+  id: '/admin/reset',
+  path: '/admin/reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminInvitesRoute = AdminInvitesRouteImport.update({
+  id: '/admin/invites',
+  path: '/admin/invites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntrospectionResultSessionIdRoute =
+  IntrospectionResultSessionIdRouteImport.update({
+    id: '/result/$sessionId',
+    path: '/result/$sessionId',
+    getParentRoute: () => IntrospectionRoute,
+  } as any)
+const IntrospectionExerciseExerciseIdRoute =
+  IntrospectionExerciseExerciseIdRouteImport.update({
+    id: '/exercise/$exerciseId',
+    path: '/exercise/$exerciseId',
+    getParentRoute: () => IntrospectionRoute,
+  } as any)
+const IntrospectionCategoryCategoryKeyRoute =
+  IntrospectionCategoryCategoryKeyRouteImport.update({
+    id: '/category/$categoryKey',
+    path: '/category/$categoryKey',
+    getParentRoute: () => IntrospectionRoute,
+  } as any)
+const FinanceCardsCardIdRoute = FinanceCardsCardIdRouteImport.update({
+  id: '/finance_/cards/$cardId',
+  path: '/finance/cards/$cardId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicVapidKeyRoute = ApiPublicVapidKeyRouteImport.update({
+  id: '/api/public/vapid-key',
+  path: '/api/public/vapid-key',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksTelegramWebhookRoute =
+  ApiPublicHooksTelegramWebhookRouteImport.update({
+    id: '/api/public/hooks/telegram-webhook',
+    path: '/api/public/hooks/telegram-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksTelegramSendRoute =
+  ApiPublicHooksTelegramSendRouteImport.update({
+    id: '/api/public/hooks/telegram-send',
+    path: '/api/public/hooks/telegram-send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksTelegramRemindersRoute =
+  ApiPublicHooksTelegramRemindersRouteImport.update({
+    id: '/api/public/hooks/telegram-reminders',
+    path: '/api/public/hooks/telegram-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksTelegramPollRoute =
+  ApiPublicHooksTelegramPollRouteImport.update({
+    id: '/api/public/hooks/telegram-poll',
+    path: '/api/public/hooks/telegram-poll',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksSyncCronSecretRoute =
+  ApiPublicHooksSyncCronSecretRouteImport.update({
+    id: '/api/public/hooks/sync-cron-secret',
+    path: '/api/public/hooks/sync-cron-secret',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksStreakRiskSweepRoute =
+  ApiPublicHooksStreakRiskSweepRouteImport.update({
+    id: '/api/public/hooks/streak-risk-sweep',
+    path: '/api/public/hooks/streak-risk-sweep',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksSendPushRoute = ApiPublicHooksSendPushRouteImport.update({
+  id: '/api/public/hooks/send-push',
+  path: '/api/public/hooks/send-push',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksProcessQuestNotificationsRoute =
+  ApiPublicHooksProcessQuestNotificationsRouteImport.update({
+    id: '/api/public/hooks/process-quest-notifications',
+    path: '/api/public/hooks/process-quest-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksProcessNotificationsRoute =
+  ApiPublicHooksProcessNotificationsRouteImport.update({
+    id: '/api/public/hooks/process-notifications',
+    path: '/api/public/hooks/process-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksProcessIdentityNotificationsRoute =
+  ApiPublicHooksProcessIdentityNotificationsRouteImport.update({
+    id: '/api/public/hooks/process-identity-notifications',
+    path: '/api/public/hooks/process-identity-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksIdentityRemindersRoute =
+  ApiPublicHooksIdentityRemindersRouteImport.update({
+    id: '/api/public/hooks/identity-reminders',
+    path: '/api/public/hooks/identity-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/battle-pass': typeof BattlePassRoute
+  '/calendar': typeof CalendarRoute
+  '/chat': typeof ChatRoute
+  '/content': typeof ContentRoute
+  '/decisions': typeof DecisionsRoute
+  '/dreams': typeof DreamsRoute
+  '/energy': typeof EnergyRoute
+  '/exercise': typeof ExerciseRoute
+  '/family': typeof FamilyRoute
+  '/finance': typeof FinanceRoute
+  '/future-letters': typeof FutureLettersRoute
+  '/future-simulation': typeof FutureSimulationRoute
+  '/goals': typeof GoalsRoute
+  '/habits': typeof HabitsRoute
+  '/health': typeof HealthRoute
+  '/home': typeof HomeRoute
+  '/horizons': typeof HorizonsRoute
+  '/identity': typeof IdentityRoute
+  '/import': typeof ImportRoute
+  '/insights': typeof InsightsRoute
+  '/introspection': typeof IntrospectionRouteWithChildren
+  '/inventory': typeof InventoryRoute
+  '/labs': typeof LabsRoute
+  '/learnings-history': typeof LearningsHistoryRoute
+  '/life-trajectory': typeof LifeTrajectoryRoute
+  '/maintenance': typeof MaintenanceRoute
+  '/meals': typeof MealsRoute
+  '/notes': typeof NotesRoute
+  '/notifications': typeof NotificationsRoute
+  '/pomodoro': typeof PomodoroRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/psychology': typeof PsychologyRoute
+  '/rewards': typeof RewardsRoute
+  '/services': typeof ServicesRoute
+  '/settings': typeof SettingsRoute
+  '/skill-tree': typeof SkillTreeRoute
+  '/tasks': typeof TasksRoute
+  '/vision-board': typeof VisionBoardRoute
+  '/wishlist': typeof WishlistRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/reset': typeof AdminResetRoute
+  '/api/test-push': typeof ApiTestPushRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/introspection/': typeof IntrospectionIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
+  '/finance/cards/$cardId': typeof FinanceCardsCardIdRoute
+  '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
+  '/introspection/exercise/$exerciseId': typeof IntrospectionExerciseExerciseIdRoute
+  '/introspection/result/$sessionId': typeof IntrospectionResultSessionIdRoute
+  '/api/public/hooks/identity-reminders': typeof ApiPublicHooksIdentityRemindersRoute
+  '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
+  '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
+  '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
+  '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
+  '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
+  '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
+  '/api/public/hooks/telegram-poll': typeof ApiPublicHooksTelegramPollRoute
+  '/api/public/hooks/telegram-reminders': typeof ApiPublicHooksTelegramRemindersRoute
+  '/api/public/hooks/telegram-send': typeof ApiPublicHooksTelegramSendRoute
+  '/api/public/hooks/telegram-webhook': typeof ApiPublicHooksTelegramWebhookRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/battle-pass': typeof BattlePassRoute
+  '/calendar': typeof CalendarRoute
+  '/chat': typeof ChatRoute
+  '/content': typeof ContentRoute
+  '/decisions': typeof DecisionsRoute
+  '/dreams': typeof DreamsRoute
+  '/energy': typeof EnergyRoute
+  '/exercise': typeof ExerciseRoute
+  '/family': typeof FamilyRoute
+  '/finance': typeof FinanceRoute
+  '/future-letters': typeof FutureLettersRoute
+  '/future-simulation': typeof FutureSimulationRoute
+  '/goals': typeof GoalsRoute
+  '/habits': typeof HabitsRoute
+  '/health': typeof HealthRoute
+  '/home': typeof HomeRoute
+  '/horizons': typeof HorizonsRoute
+  '/identity': typeof IdentityRoute
+  '/import': typeof ImportRoute
+  '/insights': typeof InsightsRoute
+  '/inventory': typeof InventoryRoute
+  '/labs': typeof LabsRoute
+  '/learnings-history': typeof LearningsHistoryRoute
+  '/life-trajectory': typeof LifeTrajectoryRoute
+  '/maintenance': typeof MaintenanceRoute
+  '/meals': typeof MealsRoute
+  '/notes': typeof NotesRoute
+  '/notifications': typeof NotificationsRoute
+  '/pomodoro': typeof PomodoroRoute
+  '/psychology': typeof PsychologyRoute
+  '/rewards': typeof RewardsRoute
+  '/services': typeof ServicesRoute
+  '/settings': typeof SettingsRoute
+  '/skill-tree': typeof SkillTreeRoute
+  '/tasks': typeof TasksRoute
+  '/vision-board': typeof VisionBoardRoute
+  '/wishlist': typeof WishlistRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/reset': typeof AdminResetRoute
+  '/api/test-push': typeof ApiTestPushRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/introspection': typeof IntrospectionIndexRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
+  '/finance/cards/$cardId': typeof FinanceCardsCardIdRoute
+  '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
+  '/introspection/exercise/$exerciseId': typeof IntrospectionExerciseExerciseIdRoute
+  '/introspection/result/$sessionId': typeof IntrospectionResultSessionIdRoute
+  '/api/public/hooks/identity-reminders': typeof ApiPublicHooksIdentityRemindersRoute
+  '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
+  '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
+  '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
+  '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
+  '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
+  '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
+  '/api/public/hooks/telegram-poll': typeof ApiPublicHooksTelegramPollRoute
+  '/api/public/hooks/telegram-reminders': typeof ApiPublicHooksTelegramRemindersRoute
+  '/api/public/hooks/telegram-send': typeof ApiPublicHooksTelegramSendRoute
+  '/api/public/hooks/telegram-webhook': typeof ApiPublicHooksTelegramWebhookRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/battle-pass': typeof BattlePassRoute
+  '/calendar': typeof CalendarRoute
+  '/chat': typeof ChatRoute
+  '/content': typeof ContentRoute
+  '/decisions': typeof DecisionsRoute
+  '/dreams': typeof DreamsRoute
+  '/energy': typeof EnergyRoute
+  '/exercise': typeof ExerciseRoute
+  '/family': typeof FamilyRoute
+  '/finance': typeof FinanceRoute
+  '/future-letters': typeof FutureLettersRoute
+  '/future-simulation': typeof FutureSimulationRoute
+  '/goals': typeof GoalsRoute
+  '/habits': typeof HabitsRoute
+  '/health': typeof HealthRoute
+  '/home': typeof HomeRoute
+  '/horizons': typeof HorizonsRoute
+  '/identity': typeof IdentityRoute
+  '/import': typeof ImportRoute
+  '/insights': typeof InsightsRoute
+  '/introspection': typeof IntrospectionRouteWithChildren
+  '/inventory': typeof InventoryRoute
+  '/labs': typeof LabsRoute
+  '/learnings-history': typeof LearningsHistoryRoute
+  '/life-trajectory': typeof LifeTrajectoryRoute
+  '/maintenance': typeof MaintenanceRoute
+  '/meals': typeof MealsRoute
+  '/notes': typeof NotesRoute
+  '/notifications': typeof NotificationsRoute
+  '/pomodoro': typeof PomodoroRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/psychology': typeof PsychologyRoute
+  '/rewards': typeof RewardsRoute
+  '/services': typeof ServicesRoute
+  '/settings': typeof SettingsRoute
+  '/skill-tree': typeof SkillTreeRoute
+  '/tasks': typeof TasksRoute
+  '/vision-board': typeof VisionBoardRoute
+  '/wishlist': typeof WishlistRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/reset': typeof AdminResetRoute
+  '/api/test-push': typeof ApiTestPushRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/introspection/': typeof IntrospectionIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
+  '/finance_/cards/$cardId': typeof FinanceCardsCardIdRoute
+  '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
+  '/introspection/exercise/$exerciseId': typeof IntrospectionExerciseExerciseIdRoute
+  '/introspection/result/$sessionId': typeof IntrospectionResultSessionIdRoute
+  '/api/public/hooks/identity-reminders': typeof ApiPublicHooksIdentityRemindersRoute
+  '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
+  '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
+  '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
+  '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
+  '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
+  '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
+  '/api/public/hooks/telegram-poll': typeof ApiPublicHooksTelegramPollRoute
+  '/api/public/hooks/telegram-reminders': typeof ApiPublicHooksTelegramRemindersRoute
+  '/api/public/hooks/telegram-send': typeof ApiPublicHooksTelegramSendRoute
+  '/api/public/hooks/telegram-webhook': typeof ApiPublicHooksTelegramWebhookRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/battle-pass'
+    | '/calendar'
+    | '/chat'
+    | '/content'
+    | '/decisions'
+    | '/dreams'
+    | '/energy'
+    | '/exercise'
+    | '/family'
+    | '/finance'
+    | '/future-letters'
+    | '/future-simulation'
+    | '/goals'
+    | '/habits'
+    | '/health'
+    | '/home'
+    | '/horizons'
+    | '/identity'
+    | '/import'
+    | '/insights'
+    | '/introspection'
+    | '/inventory'
+    | '/labs'
+    | '/learnings-history'
+    | '/life-trajectory'
+    | '/maintenance'
+    | '/meals'
+    | '/notes'
+    | '/notifications'
+    | '/pomodoro'
+    | '/projects'
+    | '/psychology'
+    | '/rewards'
+    | '/services'
+    | '/settings'
+    | '/skill-tree'
+    | '/tasks'
+    | '/vision-board'
+    | '/wishlist'
+    | '/admin/invites'
+    | '/admin/reset'
+    | '/api/test-push'
+    | '/projects/$projectId'
+    | '/introspection/'
+    | '/projects/'
+    | '/api/public/vapid-key'
+    | '/finance/cards/$cardId'
+    | '/introspection/category/$categoryKey'
+    | '/introspection/exercise/$exerciseId'
+    | '/introspection/result/$sessionId'
+    | '/api/public/hooks/identity-reminders'
+    | '/api/public/hooks/process-identity-notifications'
+    | '/api/public/hooks/process-notifications'
+    | '/api/public/hooks/process-quest-notifications'
+    | '/api/public/hooks/send-push'
+    | '/api/public/hooks/streak-risk-sweep'
+    | '/api/public/hooks/sync-cron-secret'
+    | '/api/public/hooks/telegram-poll'
+    | '/api/public/hooks/telegram-reminders'
+    | '/api/public/hooks/telegram-send'
+    | '/api/public/hooks/telegram-webhook'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/battle-pass'
+    | '/calendar'
+    | '/chat'
+    | '/content'
+    | '/decisions'
+    | '/dreams'
+    | '/energy'
+    | '/exercise'
+    | '/family'
+    | '/finance'
+    | '/future-letters'
+    | '/future-simulation'
+    | '/goals'
+    | '/habits'
+    | '/health'
+    | '/home'
+    | '/horizons'
+    | '/identity'
+    | '/import'
+    | '/insights'
+    | '/inventory'
+    | '/labs'
+    | '/learnings-history'
+    | '/life-trajectory'
+    | '/maintenance'
+    | '/meals'
+    | '/notes'
+    | '/notifications'
+    | '/pomodoro'
+    | '/psychology'
+    | '/rewards'
+    | '/services'
+    | '/settings'
+    | '/skill-tree'
+    | '/tasks'
+    | '/vision-board'
+    | '/wishlist'
+    | '/admin/invites'
+    | '/admin/reset'
+    | '/api/test-push'
+    | '/projects/$projectId'
+    | '/introspection'
+    | '/projects'
+    | '/api/public/vapid-key'
+    | '/finance/cards/$cardId'
+    | '/introspection/category/$categoryKey'
+    | '/introspection/exercise/$exerciseId'
+    | '/introspection/result/$sessionId'
+    | '/api/public/hooks/identity-reminders'
+    | '/api/public/hooks/process-identity-notifications'
+    | '/api/public/hooks/process-notifications'
+    | '/api/public/hooks/process-quest-notifications'
+    | '/api/public/hooks/send-push'
+    | '/api/public/hooks/streak-risk-sweep'
+    | '/api/public/hooks/sync-cron-secret'
+    | '/api/public/hooks/telegram-poll'
+    | '/api/public/hooks/telegram-reminders'
+    | '/api/public/hooks/telegram-send'
+    | '/api/public/hooks/telegram-webhook'
+    | '/lovable/email/queue/process'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/battle-pass'
+    | '/calendar'
+    | '/chat'
+    | '/content'
+    | '/decisions'
+    | '/dreams'
+    | '/energy'
+    | '/exercise'
+    | '/family'
+    | '/finance'
+    | '/future-letters'
+    | '/future-simulation'
+    | '/goals'
+    | '/habits'
+    | '/health'
+    | '/home'
+    | '/horizons'
+    | '/identity'
+    | '/import'
+    | '/insights'
+    | '/introspection'
+    | '/inventory'
+    | '/labs'
+    | '/learnings-history'
+    | '/life-trajectory'
+    | '/maintenance'
+    | '/meals'
+    | '/notes'
+    | '/notifications'
+    | '/pomodoro'
+    | '/projects'
+    | '/psychology'
+    | '/rewards'
+    | '/services'
+    | '/settings'
+    | '/skill-tree'
+    | '/tasks'
+    | '/vision-board'
+    | '/wishlist'
+    | '/admin/invites'
+    | '/admin/reset'
+    | '/api/test-push'
+    | '/projects/$projectId'
+    | '/introspection/'
+    | '/projects/'
+    | '/api/public/vapid-key'
+    | '/finance_/cards/$cardId'
+    | '/introspection/category/$categoryKey'
+    | '/introspection/exercise/$exerciseId'
+    | '/introspection/result/$sessionId'
+    | '/api/public/hooks/identity-reminders'
+    | '/api/public/hooks/process-identity-notifications'
+    | '/api/public/hooks/process-notifications'
+    | '/api/public/hooks/process-quest-notifications'
+    | '/api/public/hooks/send-push'
+    | '/api/public/hooks/streak-risk-sweep'
+    | '/api/public/hooks/sync-cron-secret'
+    | '/api/public/hooks/telegram-poll'
+    | '/api/public/hooks/telegram-reminders'
+    | '/api/public/hooks/telegram-send'
+    | '/api/public/hooks/telegram-webhook'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  BattlePassRoute: typeof BattlePassRoute
+  CalendarRoute: typeof CalendarRoute
+  ChatRoute: typeof ChatRoute
+  ContentRoute: typeof ContentRoute
+  DecisionsRoute: typeof DecisionsRoute
+  DreamsRoute: typeof DreamsRoute
+  EnergyRoute: typeof EnergyRoute
+  ExerciseRoute: typeof ExerciseRoute
+  FamilyRoute: typeof FamilyRoute
+  FinanceRoute: typeof FinanceRoute
+  FutureLettersRoute: typeof FutureLettersRoute
+  FutureSimulationRoute: typeof FutureSimulationRoute
+  GoalsRoute: typeof GoalsRoute
+  HabitsRoute: typeof HabitsRoute
+  HealthRoute: typeof HealthRoute
+  HomeRoute: typeof HomeRoute
+  HorizonsRoute: typeof HorizonsRoute
+  IdentityRoute: typeof IdentityRoute
+  ImportRoute: typeof ImportRoute
+  InsightsRoute: typeof InsightsRoute
+  IntrospectionRoute: typeof IntrospectionRouteWithChildren
+  InventoryRoute: typeof InventoryRoute
+  LabsRoute: typeof LabsRoute
+  LearningsHistoryRoute: typeof LearningsHistoryRoute
+  LifeTrajectoryRoute: typeof LifeTrajectoryRoute
+  MaintenanceRoute: typeof MaintenanceRoute
+  MealsRoute: typeof MealsRoute
+  NotesRoute: typeof NotesRoute
+  NotificationsRoute: typeof NotificationsRoute
+  PomodoroRoute: typeof PomodoroRoute
+  ProjectsRoute: typeof ProjectsRouteWithChildren
+  PsychologyRoute: typeof PsychologyRoute
+  RewardsRoute: typeof RewardsRoute
+  ServicesRoute: typeof ServicesRoute
+  SettingsRoute: typeof SettingsRoute
+  SkillTreeRoute: typeof SkillTreeRoute
+  TasksRoute: typeof TasksRoute
+  VisionBoardRoute: typeof VisionBoardRoute
+  WishlistRoute: typeof WishlistRoute
+  AdminInvitesRoute: typeof AdminInvitesRoute
+  AdminResetRoute: typeof AdminResetRoute
+  ApiTestPushRoute: typeof ApiTestPushRoute
+  ApiPublicVapidKeyRoute: typeof ApiPublicVapidKeyRoute
+  FinanceCardsCardIdRoute: typeof FinanceCardsCardIdRoute
+  ApiPublicHooksIdentityRemindersRoute: typeof ApiPublicHooksIdentityRemindersRoute
+  ApiPublicHooksProcessIdentityNotificationsRoute: typeof ApiPublicHooksProcessIdentityNotificationsRoute
+  ApiPublicHooksProcessNotificationsRoute: typeof ApiPublicHooksProcessNotificationsRoute
+  ApiPublicHooksProcessQuestNotificationsRoute: typeof ApiPublicHooksProcessQuestNotificationsRoute
+  ApiPublicHooksSendPushRoute: typeof ApiPublicHooksSendPushRoute
+  ApiPublicHooksStreakRiskSweepRoute: typeof ApiPublicHooksStreakRiskSweepRoute
+  ApiPublicHooksSyncCronSecretRoute: typeof ApiPublicHooksSyncCronSecretRoute
+  ApiPublicHooksTelegramPollRoute: typeof ApiPublicHooksTelegramPollRoute
+  ApiPublicHooksTelegramRemindersRoute: typeof ApiPublicHooksTelegramRemindersRoute
+  ApiPublicHooksTelegramSendRoute: typeof ApiPublicHooksTelegramSendRoute
+  ApiPublicHooksTelegramWebhookRoute: typeof ApiPublicHooksTelegramWebhookRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision-board': {
+      id: '/vision-board'
+      path: '/vision-board'
+      fullPath: '/vision-board'
+      preLoaderRoute: typeof VisionBoardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/skill-tree': {
+      id: '/skill-tree'
+      path: '/skill-tree'
+      fullPath: '/skill-tree'
+      preLoaderRoute: typeof SkillTreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/psychology': {
+      id: '/psychology'
+      path: '/psychology'
+      fullPath: '/psychology'
+      preLoaderRoute: typeof PsychologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pomodoro': {
+      id: '/pomodoro'
+      path: '/pomodoro'
+      fullPath: '/pomodoro'
+      preLoaderRoute: typeof PomodoroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meals': {
+      id: '/meals'
+      path: '/meals'
+      fullPath: '/meals'
+      preLoaderRoute: typeof MealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/maintenance': {
+      id: '/maintenance'
+      path: '/maintenance'
+      fullPath: '/maintenance'
+      preLoaderRoute: typeof MaintenanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/life-trajectory': {
+      id: '/life-trajectory'
+      path: '/life-trajectory'
+      fullPath: '/life-trajectory'
+      preLoaderRoute: typeof LifeTrajectoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learnings-history': {
+      id: '/learnings-history'
+      path: '/learnings-history'
+      fullPath: '/learnings-history'
+      preLoaderRoute: typeof LearningsHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/labs': {
+      id: '/labs'
+      path: '/labs'
+      fullPath: '/labs'
+      preLoaderRoute: typeof LabsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/introspection': {
+      id: '/introspection'
+      path: '/introspection'
+      fullPath: '/introspection'
+      preLoaderRoute: typeof IntrospectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/import': {
+      id: '/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof ImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/identity': {
+      id: '/identity'
+      path: '/identity'
+      fullPath: '/identity'
+      preLoaderRoute: typeof IdentityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/horizons': {
+      id: '/horizons'
+      path: '/horizons'
+      fullPath: '/horizons'
+      preLoaderRoute: typeof HorizonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/habits': {
+      id: '/habits'
+      path: '/habits'
+      fullPath: '/habits'
+      preLoaderRoute: typeof HabitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/goals': {
+      id: '/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/future-simulation': {
+      id: '/future-simulation'
+      path: '/future-simulation'
+      fullPath: '/future-simulation'
+      preLoaderRoute: typeof FutureSimulationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/future-letters': {
+      id: '/future-letters'
+      path: '/future-letters'
+      fullPath: '/future-letters'
+      preLoaderRoute: typeof FutureLettersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance': {
+      id: '/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/family': {
+      id: '/family'
+      path: '/family'
+      fullPath: '/family'
+      preLoaderRoute: typeof FamilyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exercise': {
+      id: '/exercise'
+      path: '/exercise'
+      fullPath: '/exercise'
+      preLoaderRoute: typeof ExerciseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/energy': {
+      id: '/energy'
+      path: '/energy'
+      fullPath: '/energy'
+      preLoaderRoute: typeof EnergyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dreams': {
+      id: '/dreams'
+      path: '/dreams'
+      fullPath: '/dreams'
+      preLoaderRoute: typeof DreamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decisions': {
+      id: '/decisions'
+      path: '/decisions'
+      fullPath: '/decisions'
+      preLoaderRoute: typeof DecisionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/content': {
+      id: '/content'
+      path: '/content'
+      fullPath: '/content'
+      preLoaderRoute: typeof ContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/battle-pass': {
+      id: '/battle-pass'
+      path: '/battle-pass'
+      fullPath: '/battle-pass'
+      preLoaderRoute: typeof BattlePassRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +1155,265 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/': {
+      id: '/projects/'
+      path: '/'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof ProjectsRoute
+    }
+    '/introspection/': {
+      id: '/introspection/'
+      path: '/'
+      fullPath: '/introspection/'
+      preLoaderRoute: typeof IntrospectionIndexRouteImport
+      parentRoute: typeof IntrospectionRoute
+    }
+    '/projects/$projectId': {
+      id: '/projects/$projectId'
+      path: '/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdRouteImport
+      parentRoute: typeof ProjectsRoute
+    }
+    '/api/test-push': {
+      id: '/api/test-push'
+      path: '/api/test-push'
+      fullPath: '/api/test-push'
+      preLoaderRoute: typeof ApiTestPushRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reset': {
+      id: '/admin/reset'
+      path: '/admin/reset'
+      fullPath: '/admin/reset'
+      preLoaderRoute: typeof AdminResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/invites': {
+      id: '/admin/invites'
+      path: '/admin/invites'
+      fullPath: '/admin/invites'
+      preLoaderRoute: typeof AdminInvitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/introspection/result/$sessionId': {
+      id: '/introspection/result/$sessionId'
+      path: '/result/$sessionId'
+      fullPath: '/introspection/result/$sessionId'
+      preLoaderRoute: typeof IntrospectionResultSessionIdRouteImport
+      parentRoute: typeof IntrospectionRoute
+    }
+    '/introspection/exercise/$exerciseId': {
+      id: '/introspection/exercise/$exerciseId'
+      path: '/exercise/$exerciseId'
+      fullPath: '/introspection/exercise/$exerciseId'
+      preLoaderRoute: typeof IntrospectionExerciseExerciseIdRouteImport
+      parentRoute: typeof IntrospectionRoute
+    }
+    '/introspection/category/$categoryKey': {
+      id: '/introspection/category/$categoryKey'
+      path: '/category/$categoryKey'
+      fullPath: '/introspection/category/$categoryKey'
+      preLoaderRoute: typeof IntrospectionCategoryCategoryKeyRouteImport
+      parentRoute: typeof IntrospectionRoute
+    }
+    '/finance_/cards/$cardId': {
+      id: '/finance_/cards/$cardId'
+      path: '/finance/cards/$cardId'
+      fullPath: '/finance/cards/$cardId'
+      preLoaderRoute: typeof FinanceCardsCardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/vapid-key': {
+      id: '/api/public/vapid-key'
+      path: '/api/public/vapid-key'
+      fullPath: '/api/public/vapid-key'
+      preLoaderRoute: typeof ApiPublicVapidKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/telegram-webhook': {
+      id: '/api/public/hooks/telegram-webhook'
+      path: '/api/public/hooks/telegram-webhook'
+      fullPath: '/api/public/hooks/telegram-webhook'
+      preLoaderRoute: typeof ApiPublicHooksTelegramWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/telegram-send': {
+      id: '/api/public/hooks/telegram-send'
+      path: '/api/public/hooks/telegram-send'
+      fullPath: '/api/public/hooks/telegram-send'
+      preLoaderRoute: typeof ApiPublicHooksTelegramSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/telegram-reminders': {
+      id: '/api/public/hooks/telegram-reminders'
+      path: '/api/public/hooks/telegram-reminders'
+      fullPath: '/api/public/hooks/telegram-reminders'
+      preLoaderRoute: typeof ApiPublicHooksTelegramRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/telegram-poll': {
+      id: '/api/public/hooks/telegram-poll'
+      path: '/api/public/hooks/telegram-poll'
+      fullPath: '/api/public/hooks/telegram-poll'
+      preLoaderRoute: typeof ApiPublicHooksTelegramPollRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/sync-cron-secret': {
+      id: '/api/public/hooks/sync-cron-secret'
+      path: '/api/public/hooks/sync-cron-secret'
+      fullPath: '/api/public/hooks/sync-cron-secret'
+      preLoaderRoute: typeof ApiPublicHooksSyncCronSecretRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/streak-risk-sweep': {
+      id: '/api/public/hooks/streak-risk-sweep'
+      path: '/api/public/hooks/streak-risk-sweep'
+      fullPath: '/api/public/hooks/streak-risk-sweep'
+      preLoaderRoute: typeof ApiPublicHooksStreakRiskSweepRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/send-push': {
+      id: '/api/public/hooks/send-push'
+      path: '/api/public/hooks/send-push'
+      fullPath: '/api/public/hooks/send-push'
+      preLoaderRoute: typeof ApiPublicHooksSendPushRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/process-quest-notifications': {
+      id: '/api/public/hooks/process-quest-notifications'
+      path: '/api/public/hooks/process-quest-notifications'
+      fullPath: '/api/public/hooks/process-quest-notifications'
+      preLoaderRoute: typeof ApiPublicHooksProcessQuestNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/process-notifications': {
+      id: '/api/public/hooks/process-notifications'
+      path: '/api/public/hooks/process-notifications'
+      fullPath: '/api/public/hooks/process-notifications'
+      preLoaderRoute: typeof ApiPublicHooksProcessNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/process-identity-notifications': {
+      id: '/api/public/hooks/process-identity-notifications'
+      path: '/api/public/hooks/process-identity-notifications'
+      fullPath: '/api/public/hooks/process-identity-notifications'
+      preLoaderRoute: typeof ApiPublicHooksProcessIdentityNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/identity-reminders': {
+      id: '/api/public/hooks/identity-reminders'
+      path: '/api/public/hooks/identity-reminders'
+      fullPath: '/api/public/hooks/identity-reminders'
+      preLoaderRoute: typeof ApiPublicHooksIdentityRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface IntrospectionRouteChildren {
+  IntrospectionIndexRoute: typeof IntrospectionIndexRoute
+  IntrospectionCategoryCategoryKeyRoute: typeof IntrospectionCategoryCategoryKeyRoute
+  IntrospectionExerciseExerciseIdRoute: typeof IntrospectionExerciseExerciseIdRoute
+  IntrospectionResultSessionIdRoute: typeof IntrospectionResultSessionIdRoute
+}
+
+const IntrospectionRouteChildren: IntrospectionRouteChildren = {
+  IntrospectionIndexRoute: IntrospectionIndexRoute,
+  IntrospectionCategoryCategoryKeyRoute: IntrospectionCategoryCategoryKeyRoute,
+  IntrospectionExerciseExerciseIdRoute: IntrospectionExerciseExerciseIdRoute,
+  IntrospectionResultSessionIdRoute: IntrospectionResultSessionIdRoute,
+}
+
+const IntrospectionRouteWithChildren = IntrospectionRoute._addFileChildren(
+  IntrospectionRouteChildren,
+)
+
+interface ProjectsRouteChildren {
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+}
+
+const ProjectsRouteChildren: ProjectsRouteChildren = {
+  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
+}
+
+const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
+  ProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  BattlePassRoute: BattlePassRoute,
+  CalendarRoute: CalendarRoute,
+  ChatRoute: ChatRoute,
+  ContentRoute: ContentRoute,
+  DecisionsRoute: DecisionsRoute,
+  DreamsRoute: DreamsRoute,
+  EnergyRoute: EnergyRoute,
+  ExerciseRoute: ExerciseRoute,
+  FamilyRoute: FamilyRoute,
+  FinanceRoute: FinanceRoute,
+  FutureLettersRoute: FutureLettersRoute,
+  FutureSimulationRoute: FutureSimulationRoute,
+  GoalsRoute: GoalsRoute,
+  HabitsRoute: HabitsRoute,
+  HealthRoute: HealthRoute,
+  HomeRoute: HomeRoute,
+  HorizonsRoute: HorizonsRoute,
+  IdentityRoute: IdentityRoute,
+  ImportRoute: ImportRoute,
+  InsightsRoute: InsightsRoute,
+  IntrospectionRoute: IntrospectionRouteWithChildren,
+  InventoryRoute: InventoryRoute,
+  LabsRoute: LabsRoute,
+  LearningsHistoryRoute: LearningsHistoryRoute,
+  LifeTrajectoryRoute: LifeTrajectoryRoute,
+  MaintenanceRoute: MaintenanceRoute,
+  MealsRoute: MealsRoute,
+  NotesRoute: NotesRoute,
+  NotificationsRoute: NotificationsRoute,
+  PomodoroRoute: PomodoroRoute,
+  ProjectsRoute: ProjectsRouteWithChildren,
+  PsychologyRoute: PsychologyRoute,
+  RewardsRoute: RewardsRoute,
+  ServicesRoute: ServicesRoute,
+  SettingsRoute: SettingsRoute,
+  SkillTreeRoute: SkillTreeRoute,
+  TasksRoute: TasksRoute,
+  VisionBoardRoute: VisionBoardRoute,
+  WishlistRoute: WishlistRoute,
+  AdminInvitesRoute: AdminInvitesRoute,
+  AdminResetRoute: AdminResetRoute,
+  ApiTestPushRoute: ApiTestPushRoute,
+  ApiPublicVapidKeyRoute: ApiPublicVapidKeyRoute,
+  FinanceCardsCardIdRoute: FinanceCardsCardIdRoute,
+  ApiPublicHooksIdentityRemindersRoute: ApiPublicHooksIdentityRemindersRoute,
+  ApiPublicHooksProcessIdentityNotificationsRoute:
+    ApiPublicHooksProcessIdentityNotificationsRoute,
+  ApiPublicHooksProcessNotificationsRoute:
+    ApiPublicHooksProcessNotificationsRoute,
+  ApiPublicHooksProcessQuestNotificationsRoute:
+    ApiPublicHooksProcessQuestNotificationsRoute,
+  ApiPublicHooksSendPushRoute: ApiPublicHooksSendPushRoute,
+  ApiPublicHooksStreakRiskSweepRoute: ApiPublicHooksStreakRiskSweepRoute,
+  ApiPublicHooksSyncCronSecretRoute: ApiPublicHooksSyncCronSecretRoute,
+  ApiPublicHooksTelegramPollRoute: ApiPublicHooksTelegramPollRoute,
+  ApiPublicHooksTelegramRemindersRoute: ApiPublicHooksTelegramRemindersRoute,
+  ApiPublicHooksTelegramSendRoute: ApiPublicHooksTelegramSendRoute,
+  ApiPublicHooksTelegramWebhookRoute: ApiPublicHooksTelegramWebhookRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

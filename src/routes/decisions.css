@@ -1,0 +1,21 @@
+.roulette-wheel {
+  transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+}
+
+.roulette-slice {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+}
+
+.roulette-text {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translateX(-50%);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
