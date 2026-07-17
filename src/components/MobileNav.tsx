@@ -93,7 +93,6 @@ const crecimiento: MoreItem[] = [
 
 const logros: MoreItem[] = [
   { to: "/rewards", label: "Recompensas", icon: Trophy },
-  { to: "/battle-pass", label: "Battle Pass", icon: Sparkles },
   { to: "/insights", label: "Insights", icon: BarChart3 },
 ];
 
