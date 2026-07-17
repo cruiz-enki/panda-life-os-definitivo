@@ -42,7 +42,6 @@ import { Route as DecisionsRouteImport } from './routes/decisions'
 import { Route as ContentRouteImport } from './routes/content'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CalendarRouteImport } from './routes/calendar'
-import { Route as BattlePassRouteImport } from './routes/battle-pass'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
@@ -234,11 +233,6 @@ const CalendarRoute = CalendarRouteImport.update({
   path: '/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BattlePassRoute = BattlePassRouteImport.update({
-  id: '/battle-pass',
-  path: '/battle-pass',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -382,7 +376,6 @@ const ApiPublicHooksIdentityRemindersRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/battle-pass': typeof BattlePassRoute
   '/calendar': typeof CalendarRoute
   '/chat': typeof ChatRoute
   '/content': typeof ContentRoute
@@ -443,7 +436,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/battle-pass': typeof BattlePassRoute
   '/calendar': typeof CalendarRoute
   '/chat': typeof ChatRoute
   '/content': typeof ContentRoute
@@ -503,7 +495,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/battle-pass': typeof BattlePassRoute
   '/calendar': typeof CalendarRoute
   '/chat': typeof ChatRoute
   '/content': typeof ContentRoute
@@ -566,7 +557,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/battle-pass'
     | '/calendar'
     | '/chat'
     | '/content'
@@ -627,7 +617,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/battle-pass'
     | '/calendar'
     | '/chat'
     | '/content'
@@ -686,7 +675,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/auth'
-    | '/battle-pass'
     | '/calendar'
     | '/chat'
     | '/content'
@@ -748,7 +736,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
-  BattlePassRoute: typeof BattlePassRoute
   CalendarRoute: typeof CalendarRoute
   ChatRoute: typeof ChatRoute
   ContentRoute: typeof ContentRoute
@@ -1034,13 +1021,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/battle-pass': {
-      id: '/battle-pass'
-      path: '/battle-pass'
-      fullPath: '/battle-pass'
-      preLoaderRoute: typeof BattlePassRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -1254,7 +1234,6 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
-  BattlePassRoute: BattlePassRoute,
   CalendarRoute: CalendarRoute,
   ChatRoute: ChatRoute,
   ContentRoute: ContentRoute,

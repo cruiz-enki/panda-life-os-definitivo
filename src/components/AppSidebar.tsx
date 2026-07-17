@@ -60,7 +60,6 @@ const crecimientoItems: NavItem[] = [
 
 const misionesItems: NavItem[] = [
   { to: "/rewards", label: "Misiones", icon: Trophy },
-  { to: "/battle-pass", label: "Battle Pass", icon: Sparkles },
   { to: "/insights", label: "Insights", icon: BarChart3 },
 ];
 
