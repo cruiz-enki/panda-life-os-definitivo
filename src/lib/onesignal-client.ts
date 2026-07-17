@@ -73,11 +73,14 @@ export async function isOneSignalConfigured(): Promise<boolean> {
   }
 }
 
-const ALLOWED_HOSTS = ["os.cmrs.mx"];
+const ALLOWED_HOSTS = ["os.cmrs.mx", "localhost", "127.0.0.1"];
+const ALLOWED_HOST_SUFFIXES = [".lovable.app", ".lovableproject.com"];
 
 export function isOneSignalAllowedHost(): boolean {
   if (typeof window === "undefined") return false;
-  return ALLOWED_HOSTS.includes(window.location.hostname);
+  const host = window.location.hostname;
+  if (ALLOWED_HOSTS.includes(host)) return true;
+  return ALLOWED_HOST_SUFFIXES.some((suffix) => host.endsWith(suffix));
 }
 
 export async function initOneSignal(): Promise<void> {
