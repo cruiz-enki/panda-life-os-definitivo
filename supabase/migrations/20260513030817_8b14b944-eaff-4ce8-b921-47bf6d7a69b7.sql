@@ -1,0 +1,1 @@
+UPDATE public.profiles SET xp = GREATEST(0, COALESCE(xp,0) - 2000) WHERE user_id = '926c5838-3e30-46ba-a669-6549cd69b428';

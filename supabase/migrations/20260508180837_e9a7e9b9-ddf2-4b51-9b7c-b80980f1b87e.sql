@@ -1,0 +1,1 @@
+SELECT net.worker_restart();

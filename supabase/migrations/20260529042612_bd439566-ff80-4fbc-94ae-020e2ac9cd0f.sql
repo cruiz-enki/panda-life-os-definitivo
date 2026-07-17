@@ -1,0 +1,65 @@
+
+ALTER TABLE public.health_body_entries
+  -- Datos generales
+  ADD COLUMN IF NOT EXISTS measured_at TIME,
+  ADD COLUMN IF NOT EXISTS device_source TEXT,
+  ADD COLUMN IF NOT EXISTS measurement_id TEXT,
+  ADD COLUMN IF NOT EXISTS age INTEGER,
+  ADD COLUMN IF NOT EXISTS sex TEXT,
+  ADD COLUMN IF NOT EXISTS height NUMERIC,
+  -- Composición corporal
+  ADD COLUMN IF NOT EXISTS total_body_water NUMERIC,
+  ADD COLUMN IF NOT EXISTS protein_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS mineral_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS bone_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS fat_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS fat_free_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS total_muscle_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS skeletal_muscle_mass NUMERIC,
+  ADD COLUMN IF NOT EXISTS lean_body_weight NUMERIC,
+  -- Indicadores de obesidad
+  ADD COLUMN IF NOT EXISTS obesity_degree NUMERIC,
+  ADD COLUMN IF NOT EXISTS body_type TEXT,
+  ADD COLUMN IF NOT EXISTS inbody_score NUMERIC,
+  -- Grasa visceral y distribución
+  ADD COLUMN IF NOT EXISTS visceral_fat_level NUMERIC,
+  ADD COLUMN IF NOT EXISTS subcutaneous_fat NUMERIC,
+  ADD COLUMN IF NOT EXISTS whr NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_fat_arm_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_fat_arm_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_fat_trunk NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_fat_leg_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_fat_leg_right NUMERIC,
+  -- Músculo segmental
+  ADD COLUMN IF NOT EXISTS seg_muscle_arm_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_arm_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_trunk NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_leg_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_leg_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_pct_arm_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_pct_arm_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_pct_trunk NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_pct_leg_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS seg_muscle_pct_leg_right NUMERIC,
+  -- Metabolismo
+  ADD COLUMN IF NOT EXISTS bmr NUMERIC,
+  ADD COLUMN IF NOT EXISTS smi NUMERIC,
+  -- Objetivos / control
+  ADD COLUMN IF NOT EXISTS target_weight NUMERIC,
+  ADD COLUMN IF NOT EXISTS weight_control NUMERIC,
+  ADD COLUMN IF NOT EXISTS fat_control NUMERIC,
+  ADD COLUMN IF NOT EXISTS muscle_control NUMERIC,
+  ADD COLUMN IF NOT EXISTS optimal_fat_target NUMERIC,
+  ADD COLUMN IF NOT EXISTS optimal_muscle_target NUMERIC,
+  -- Impedancia bioeléctrica 20 kHz
+  ADD COLUMN IF NOT EXISTS imp_20khz_arm_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_20khz_arm_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_20khz_trunk NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_20khz_leg_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_20khz_leg_left NUMERIC,
+  -- Impedancia bioeléctrica 100 kHz
+  ADD COLUMN IF NOT EXISTS imp_100khz_arm_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_100khz_arm_left NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_100khz_trunk NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_100khz_leg_right NUMERIC,
+  ADD COLUMN IF NOT EXISTS imp_100khz_leg_left NUMERIC;

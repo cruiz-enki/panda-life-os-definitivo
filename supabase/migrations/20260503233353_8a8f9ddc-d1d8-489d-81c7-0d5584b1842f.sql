@@ -1,0 +1,2 @@
+ALTER TABLE public.meal_prep_batches ADD COLUMN IF NOT EXISTS ingredient_id UUID REFERENCES public.meal_ingredients(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_meal_prep_batches_ingredient ON public.meal_prep_batches(ingredient_id);

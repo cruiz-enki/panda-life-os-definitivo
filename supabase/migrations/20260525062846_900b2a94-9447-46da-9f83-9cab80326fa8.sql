@@ -1,0 +1,1 @@
+ALTER TABLE public.learnings ADD COLUMN IF NOT EXISTS skill_id TEXT;

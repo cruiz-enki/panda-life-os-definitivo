@@ -1,0 +1,192 @@
+/**
+ * **Tipos compartidos del estado de la app**: hábitos, tareas, notas,
+ * aprendizajes, energía, recurrencias, etiquetas, etc.
+ */
+export type HabitFrequency = "daily" | "weekly" | "monthly";
+
+export type Habit = {
+  id: string;
+  name: string;
+  emoji: string;
+  points: number;
+  streak: number;
+  lastCompleted: string | null;
+  history: string[];
+  frequency: HabitFrequency;
+  targetCount: number;
+  category?: string;
+};
+
+export type LearningCategory = "tech" | "mindset" | "health" | "creative" | "business" | "other";
+
+export type Learning = {
+  id: string;
+  title: string;
+  notes: string;
+  ai_summary?: string;
+  category: LearningCategory;
+  skillId?: string; // Relación con el Skill Tree
+  date: string;
+};
+
+export type EnergyEntry = {
+  date: string;
+  physical: number;
+  mental: number;
+  emotional: number;
+  sleep?: number;
+  pain?: number;
+  notes?: string;
+};
+
+export type Priority = "high" | "medium" | "low";
+export type TaskStatus = "pending" | "in_progress" | "completed";
+export type ReminderOffset = 10 | 60 | 1440;
+
+export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly";
+export type Recurrence = { frequency: RecurrenceFrequency; interval: number };
+
+export type Subtask = { id: string; title: string; done: boolean };
+
+export type TaskList = { id: string; name: string; emoji: string; color: string };
+export type Tag = { id: string; name: string; color: string };
+
+export type Task = {
+  id: string;
+  title: string;
+  description?: string;
+  due?: string;
+  priority: Priority;
+  tags: string[];
+  listId: string;
+  status: TaskStatus;
+  subtasks: Subtask[];
+  reminder?: ReminderOffset;
+  recurrence?: Recurrence;
+  xpReward?: number;
+  createdAt: string;
+  completedAt?: string;
+};
+
+export type ProductivityStats = { streak: number; lastCompletedDate: string | null };
+
+export type NoteType = "idea" | "learning" | "note" | "project";
+export type NoteCategory = "negocio" | "marketing" | "personal" | "clientes" | "contenido" | "otro";
+export type NoteImportance = "normal" | "important" | "high" | "money";
+export type NoteChecklistItem = { id: string; text: string; done: boolean };
+
+export type Note = {
+  id: string;
+  title: string;
+  content: string;
+  type: NoteType;
+  category: NoteCategory;
+  tags: string[];
+  importance: NoteImportance;
+  checklist: NoteChecklistItem[];
+  linkedNoteIds: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Snapshot ligero de finanzas para alimentar gamificación (no se persiste en localStorage de AppState)
+export type FinanceSnapshot = {
+  cardsCount: number;
+  totalCreditLimit: number;
+  totalBalance: number;
+  expensesCount: number;
+  budgetsCount: number;
+  // gastos de la semana actual (lunes-domingo)
+  expensesThisWeekCount: number;
+  paymentsThisWeekCount: number;
+  paymentsThisWeekAmount: number;
+  // mes actual
+  monthIncome: number;
+  monthExpenses: number;
+  // utilización máxima de crédito (0..1) entre tarjetas activas
+  maxUtilization: number;
+  // # de presupuestos del mes que están dentro del límite (no excedidos)
+  budgetsOnTrack: number;
+  budgetsTotal: number;
+  // MSI activos
+  activeMsiCount: number;
+};
+
+// Snapshot ligero de salud para gamificación
+export type HealthSnapshot = {
+  bodyEntriesCount: number;
+  mealsCount: number;
+  healthyMealsThisWeek: number;
+  junkMealsThisWeek: number;
+  activeMedsCount: number;
+  medAdherenceWeekPct: number;
+  medsTakenThisWeekCount: number;
+  weightLatest: number | null;
+  weightDelta30d: number | null;
+  bodyFatLatest: number | null;
+  muscleMassLatest: number | null;
+};
+
+// Snapshot ligero del módulo Hogar (no se persiste en localStorage)
+export type HomeSnapshotForState = {
+  totalTasks: number;
+  activeTasks: number;
+  totalCompletions: number;
+  todayTotal: number;
+  todayDone: number;
+  dayComplete: boolean;
+  mvdMet: boolean;
+  weekCompletionsCount: number;
+  weeklyTasksTotal: number;
+  weeklyTasksDone: number;
+  weekComplete: boolean;
+};
+
+export type AppState = {
+  xp: number;
+  pandaCoins: number;
+  habits: Habit[];
+  learnings: Learning[];
+  energy: EnergyEntry[];
+  tasks: Task[];
+  taskLists: TaskList[];
+  tags: Tag[];
+  productivity: ProductivityStats;
+  notes: Note[];
+  finance?: FinanceSnapshot;
+  health?: HealthSnapshot;
+  home?: HomeSnapshotForState;
+  importedTemplateIds?: string[];
+  dailyWins?: DailyWin[];
+  unlockedSkills?: string[];
+  customSkillCategories?: Category[];
+  enkiModeEnabled?: boolean;
+};
+
+export type Skill = {
+  id: string;
+  name: string;
+};
+
+export type SubCategory = {
+  name: string;
+  skills: Skill[];
+};
+
+export type Category = {
+  id: string;
+  name: string;
+  icon: string; // Nombre del icono de lucide o emoji
+  description: string;
+  color: string;
+  multiplier?: boolean;
+  subCategories: SubCategory[];
+};
+
+export type DailyWin = {
+  id: string;
+  date: string;
+  content: string;
+  feeling?: string;
+  xpRewarded: boolean;
+};

@@ -1,0 +1,1 @@
+UPDATE public.home_tasks SET frequency = 'flexible';

@@ -1,0 +1,4 @@
+ALTER TABLE public.dreams 
+ADD COLUMN motivation TEXT,
+ADD COLUMN image_url TEXT,
+ADD COLUMN deadline TIMESTAMP WITH TIME ZONE;
