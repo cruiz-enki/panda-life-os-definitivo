@@ -48,6 +48,7 @@ import {
   Clock,
   MapPin,
   Users,
+  Car,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -85,7 +86,9 @@ const productividad: MoreItem[] = [
 const hogar: MoreItem[] = [
   { to: "/home", label: "Limpieza", icon: HomeIcon },
   { to: "/services", label: "Servicios", icon: LayoutGrid },
+  { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
   { to: "/maintenance", label: "Mantenimiento", icon: Workflow },
+  { to: "/vehicles", label: "Vehículos", icon: Car },
   { to: "/inventory", label: "Inventario", icon: Library },
   { to: "/family", label: "Hocicos", icon: Heart },
   { to: "/contacts", label: "Contactos", icon: Users },

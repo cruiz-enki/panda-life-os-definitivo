@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as VehiclesRouteImport } from './routes/vehicles'
 import { Route as TimeRouteImport } from './routes/time'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
 import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SkillTreeRouteImport } from './routes/skill-tree'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -78,6 +80,11 @@ const WishlistRoute = WishlistRouteImport.update({
   path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VehiclesRoute = VehiclesRouteImport.update({
+  id: '/vehicles',
+  path: '/vehicles',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TimeRoute = TimeRouteImport.update({
   id: '/time',
   path: '/time',
@@ -86,6 +93,11 @@ const TimeRoute = TimeRouteImport.update({
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionsRoute = SubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SleepRoute = SleepRouteImport.update({
@@ -441,8 +453,10 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/sleep': typeof SleepRoute
+  '/subscriptions': typeof SubscriptionsRoute
   '/tasks': typeof TasksRoute
   '/time': typeof TimeRoute
+  '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -504,8 +518,10 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/sleep': typeof SleepRoute
+  '/subscriptions': typeof SubscriptionsRoute
   '/tasks': typeof TasksRoute
   '/time': typeof TimeRoute
+  '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -570,8 +586,10 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/sleep': typeof SleepRoute
+  '/subscriptions': typeof SubscriptionsRoute
   '/tasks': typeof TasksRoute
   '/time': typeof TimeRoute
+  '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -637,8 +655,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/skill-tree'
     | '/sleep'
+    | '/subscriptions'
     | '/tasks'
     | '/time'
+    | '/vehicles'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -700,8 +720,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/skill-tree'
     | '/sleep'
+    | '/subscriptions'
     | '/tasks'
     | '/time'
+    | '/vehicles'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -765,8 +787,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/skill-tree'
     | '/sleep'
+    | '/subscriptions'
     | '/tasks'
     | '/time'
+    | '/vehicles'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -831,8 +855,10 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SkillTreeRoute: typeof SkillTreeRoute
   SleepRoute: typeof SleepRoute
+  SubscriptionsRoute: typeof SubscriptionsRoute
   TasksRoute: typeof TasksRoute
   TimeRoute: typeof TimeRoute
+  VehiclesRoute: typeof VehiclesRoute
   WishlistRoute: typeof WishlistRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminResetRoute: typeof AdminResetRoute
@@ -862,6 +888,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vehicles': {
+      id: '/vehicles'
+      path: '/vehicles'
+      fullPath: '/vehicles'
+      preLoaderRoute: typeof VehiclesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/time': {
       id: '/time'
       path: '/time'
@@ -874,6 +907,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriptions': {
+      id: '/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/subscriptions'
+      preLoaderRoute: typeof SubscriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sleep': {
@@ -1369,8 +1409,10 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SkillTreeRoute: SkillTreeRoute,
   SleepRoute: SleepRoute,
+  SubscriptionsRoute: SubscriptionsRoute,
   TasksRoute: TasksRoute,
   TimeRoute: TimeRoute,
+  VehiclesRoute: VehiclesRoute,
   WishlistRoute: WishlistRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminResetRoute: AdminResetRoute,

@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin } from "lucide-react";
+import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin, Car } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
@@ -48,7 +48,9 @@ const mantenimientoItem: NavItem = { to: "/maintenance", label: "Mantenimiento",
 const hogarGroupItems: NavItem[] = [
   hogarLimpiezaItem,
   serviciosItem,
+  { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
   mantenimientoItem,
+  { to: "/vehicles", label: "Vehículos", icon: Car },
   { to: "/inventory", label: "Inventario", icon: Library },
   { to: "/family", label: "Hocicos", icon: Heart },
   { to: "/contacts", label: "Contactos", icon: Users },
