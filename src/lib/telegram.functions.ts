@@ -24,6 +24,6 @@ export const sendTelegramTest = createServerFn({ method: "POST" })
 export const syncTelegramNow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
-    const result = await pollTelegramUpdates("https://app.cmrs.mx", 12_000);
+    const result = await pollTelegramUpdates("https://os.cmrs.mx", 12_000);
     return { ok: true, ...result };
   });

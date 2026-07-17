@@ -308,7 +308,7 @@ async function sendOneSignal(opts: {
   url: string;
   notificationId: string;
 }): Promise<{ id?: string; recipients?: number; errors?: unknown }> {
-  const base = process.env.PUBLIC_APP_URL || "https://app.cmrs.mx";
+  const base = process.env.PUBLIC_APP_URL || "https://os.cmrs.mx";
   const fullUrl = opts.url.startsWith("http") ? opts.url : `${base}${opts.url}`;
   const res = await fetch("https://onesignal.com/api/v1/notifications", {
     method: "POST",

@@ -403,7 +403,7 @@ async function sendOneSignal(opts: {
 
 function absoluteUrl(path: string): string {
   if (path.startsWith("http")) return path;
-  const base = process.env.PUBLIC_APP_URL || "https://app.cmrs.mx";
+  const base = process.env.PUBLIC_APP_URL || "https://os.cmrs.mx";
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }
 

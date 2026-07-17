@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // CORS allowlist — solo orígenes propios pueden leer respuestas con datos personales.
 const ALLOWED_ORIGINS = [
-  "https://app.cmrs.mx",
+  "https://os.cmrs.mx",
   "https://os.cmrs.mx",
   "https://panda-life-os.lovable.app",
 ];
@@ -10,10 +10,10 @@ const ALLOWED_ORIGIN_PATTERNS = [/^https:\/\/[a-z0-9-]+\.lovable\.app$/i, /^http
 
 function resolveOrigin(req: Request | undefined): string {
   const origin = req?.headers.get("origin") ?? "";
-  if (!origin) return "https://app.cmrs.mx";
+  if (!origin) return "https://os.cmrs.mx";
   if (ALLOWED_ORIGINS.includes(origin)) return origin;
   if (ALLOWED_ORIGIN_PATTERNS.some((re) => re.test(origin))) return origin;
-  return "https://app.cmrs.mx";
+  return "https://os.cmrs.mx";
 }
 
 export function getCorsHeaders(req?: Request): Record<string, string> {
@@ -25,7 +25,7 @@ export function getCorsHeaders(req?: Request): Record<string, string> {
 }
 
 export const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://app.cmrs.mx",
+  "Access-Control-Allow-Origin": "https://os.cmrs.mx",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Vary": "Origin",
 };

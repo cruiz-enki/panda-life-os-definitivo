@@ -111,7 +111,7 @@ export const sendIdentityTestNotification = createServerFn({ method: "POST" })
         include_subscription_ids: [playerId],
         headings: { en: def.title, es: def.title },
         contents: { en: def.body, es: def.body },
-        web_url: `https://app.cmrs.mx${def.link}`,
+        web_url: `https://os.cmrs.mx${def.link}`,
         data: { kind: "identity", identity_key: def.key, deep_link: def.link, test: true },
       }),
     });

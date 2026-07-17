@@ -118,7 +118,7 @@ export function NotificationsCard() {
         setPushActive(true);
         toast.success("Push Android activadas con OneSignal");
       } else {
-        toast.error("No se pudo activar push. Abre app.cmrs.mx en Chrome Android e inténtalo de nuevo.");
+        toast.error("No se pudo activar push. Abre os.cmrs.mx en Chrome Android e inténtalo de nuevo.");
       }
     } finally {
       setBusy(false);

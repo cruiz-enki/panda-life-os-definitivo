@@ -78,7 +78,7 @@ export const Route = createFileRoute("/api/public/hooks/identity-reminders")({
 
           if (tgCfg && tgCfg.enabled && tgCfg.chat_id && tgCfg.notify_identity) {
             try {
-              await sendTelegramMessage(Number(tgCfg.chat_id), `*${title}*\n${body}\n\nhttps://app.cmrs.mx${url}`);
+              await sendTelegramMessage(Number(tgCfg.chat_id), `*${title}*\n${body}\n\nhttps://os.cmrs.mx${url}`);
             } catch (e) {
               console.error("Telegram send failed in identity-reminders", e);
             }
