@@ -30,7 +30,7 @@ export const repairOneSignalSavedSubscription = createServerFn({ method: "POST" 
 
     const res = await fetch(`https://onesignal.com/api/v1/players/${data.subscriptionId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Basic ${restKey}` },
+      headers: { "Content-Type": "application/json", Authorization: `Key ${restKey}` },
       body: JSON.stringify({ app_id: appId, identifier: data.token, notification_types: 1 }),
     });
     const json = await safeOneSignalJson(res);

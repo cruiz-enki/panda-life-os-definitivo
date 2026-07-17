@@ -383,7 +383,7 @@ async function sendOneSignal(opts: {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Basic ${opts.restKey}`,
+      Authorization: `Key ${opts.restKey}`,
     },
     body: JSON.stringify({
       app_id: opts.appId,
