@@ -48,6 +48,7 @@ import {
   Clock,
   MapPin,
   Users,
+  Car,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
