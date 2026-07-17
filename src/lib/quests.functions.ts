@@ -31,7 +31,7 @@ export const sendQuestTestNotification = createServerFn({ method: "POST" })
     if (!appId || !restKey) return { ok: false, reason: "OneSignal no configurado." };
 
     const copy = MODULE_COPY.learning;
-    const res = await fetch("https://onesignal.com/api/v1/notifications", {
+    const res = await fetch("https://api.onesignal.com/notifications", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Key ${restKey}` },
       body: JSON.stringify({
