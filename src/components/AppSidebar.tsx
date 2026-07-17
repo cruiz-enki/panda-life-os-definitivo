@@ -51,6 +51,7 @@ const hogarGroupItems: NavItem[] = [
   mantenimientoItem,
   { to: "/inventory", label: "Inventario", icon: Library },
   { to: "/family", label: "Hocicos", icon: Heart },
+  { to: "/contacts", label: "Contactos", icon: Users },
 ];
 
 const crecimientoItems: NavItem[] = [

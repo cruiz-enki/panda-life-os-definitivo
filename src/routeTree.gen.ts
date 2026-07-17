@@ -44,6 +44,7 @@ import { Route as ExerciseRouteImport } from './routes/exercise'
 import { Route as EnergyRouteImport } from './routes/energy'
 import { Route as DecisionsRouteImport } from './routes/decisions'
 import { Route as ContentRouteImport } from './routes/content'
+import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -247,6 +248,11 @@ const ContentRoute = ContentRouteImport.update({
   path: '/content',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactsRoute = ContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -402,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/calendar': typeof CalendarRoute
   '/chat': typeof ChatRoute
+  '/contacts': typeof ContactsRoute
   '/content': typeof ContentRoute
   '/decisions': typeof DecisionsRoute
   '/energy': typeof EnergyRoute
@@ -466,6 +473,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/calendar': typeof CalendarRoute
   '/chat': typeof ChatRoute
+  '/contacts': typeof ContactsRoute
   '/content': typeof ContentRoute
   '/decisions': typeof DecisionsRoute
   '/energy': typeof EnergyRoute
@@ -529,6 +537,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/calendar': typeof CalendarRoute
   '/chat': typeof ChatRoute
+  '/contacts': typeof ContactsRoute
   '/content': typeof ContentRoute
   '/decisions': typeof DecisionsRoute
   '/energy': typeof EnergyRoute
@@ -595,6 +604,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calendar'
     | '/chat'
+    | '/contacts'
     | '/content'
     | '/decisions'
     | '/energy'
@@ -659,6 +669,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calendar'
     | '/chat'
+    | '/contacts'
     | '/content'
     | '/decisions'
     | '/energy'
@@ -721,6 +732,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calendar'
     | '/chat'
+    | '/contacts'
     | '/content'
     | '/decisions'
     | '/energy'
@@ -786,6 +798,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CalendarRoute: typeof CalendarRoute
   ChatRoute: typeof ChatRoute
+  ContactsRoute: typeof ContactsRoute
   ContentRoute: typeof ContentRoute
   DecisionsRoute: typeof DecisionsRoute
   EnergyRoute: typeof EnergyRoute
@@ -1087,6 +1100,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contacts': {
+      id: '/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof ContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat': {
       id: '/chat'
       path: '/chat'
@@ -1316,6 +1336,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CalendarRoute: CalendarRoute,
   ChatRoute: ChatRoute,
+  ContactsRoute: ContactsRoute,
   ContentRoute: ContentRoute,
   DecisionsRoute: DecisionsRoute,
   EnergyRoute: EnergyRoute,
