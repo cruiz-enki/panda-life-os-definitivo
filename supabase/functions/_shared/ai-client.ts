@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 // CORS allowlist — solo orígenes propios pueden leer respuestas con datos personales.
 const ALLOWED_ORIGINS = [
   "https://app.cmrs.mx",
+  "https://os.cmrs.mx",
   "https://panda-life-os.lovable.app",
 ];
 const ALLOWED_ORIGIN_PATTERNS = [/^https:\/\/[a-z0-9-]+\.lovable\.app$/i, /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/i];
