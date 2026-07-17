@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
-import { Route as VisionBoardRouteImport } from './routes/vision-board'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as SkillTreeRouteImport } from './routes/skill-tree'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -23,7 +22,6 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
-import { Route as LifeTrajectoryRouteImport } from './routes/life-trajectory'
 import { Route as LearningsHistoryRouteImport } from './routes/learnings-history'
 import { Route as LabsRouteImport } from './routes/labs'
 import { Route as InventoryRouteImport } from './routes/inventory'
@@ -31,18 +29,15 @@ import { Route as IntrospectionRouteImport } from './routes/introspection'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as IdentityRouteImport } from './routes/identity'
-import { Route as HorizonsRouteImport } from './routes/horizons'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as HabitsRouteImport } from './routes/habits'
 import { Route as GoalsRouteImport } from './routes/goals'
-import { Route as FutureSimulationRouteImport } from './routes/future-simulation'
-import { Route as FutureLettersRouteImport } from './routes/future-letters'
+import { Route as FutureRouteImport } from './routes/future'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as ExerciseRouteImport } from './routes/exercise'
 import { Route as EnergyRouteImport } from './routes/energy'
-import { Route as DreamsRouteImport } from './routes/dreams'
 import { Route as DecisionsRouteImport } from './routes/decisions'
 import { Route as ContentRouteImport } from './routes/content'
 import { Route as ChatRouteImport } from './routes/chat'
@@ -77,11 +72,6 @@ import { Route as ApiPublicHooksIdentityRemindersRouteImport } from './routes/ap
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VisionBoardRoute = VisionBoardRouteImport.update({
-  id: '/vision-board',
-  path: '/vision-board',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TasksRoute = TasksRouteImport.update({
@@ -144,11 +134,6 @@ const MaintenanceRoute = MaintenanceRouteImport.update({
   path: '/maintenance',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LifeTrajectoryRoute = LifeTrajectoryRouteImport.update({
-  id: '/life-trajectory',
-  path: '/life-trajectory',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LearningsHistoryRoute = LearningsHistoryRouteImport.update({
   id: '/learnings-history',
   path: '/learnings-history',
@@ -184,11 +169,6 @@ const IdentityRoute = IdentityRouteImport.update({
   path: '/identity',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HorizonsRoute = HorizonsRouteImport.update({
-  id: '/horizons',
-  path: '/horizons',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -209,14 +189,9 @@ const GoalsRoute = GoalsRouteImport.update({
   path: '/goals',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FutureSimulationRoute = FutureSimulationRouteImport.update({
-  id: '/future-simulation',
-  path: '/future-simulation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FutureLettersRoute = FutureLettersRouteImport.update({
-  id: '/future-letters',
-  path: '/future-letters',
+const FutureRoute = FutureRouteImport.update({
+  id: '/future',
+  path: '/future',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FinanceRoute = FinanceRouteImport.update({
@@ -237,11 +212,6 @@ const ExerciseRoute = ExerciseRouteImport.update({
 const EnergyRoute = EnergyRouteImport.update({
   id: '/energy',
   path: '/energy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DreamsRoute = DreamsRouteImport.update({
-  id: '/dreams',
-  path: '/dreams',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DecisionsRoute = DecisionsRouteImport.update({
@@ -417,18 +387,15 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/content': typeof ContentRoute
   '/decisions': typeof DecisionsRoute
-  '/dreams': typeof DreamsRoute
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
   '/finance': typeof FinanceRoute
-  '/future-letters': typeof FutureLettersRoute
-  '/future-simulation': typeof FutureSimulationRoute
+  '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
   '/habits': typeof HabitsRoute
   '/health': typeof HealthRoute
   '/home': typeof HomeRoute
-  '/horizons': typeof HorizonsRoute
   '/identity': typeof IdentityRoute
   '/import': typeof ImportRoute
   '/insights': typeof InsightsRoute
@@ -436,7 +403,6 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof InventoryRoute
   '/labs': typeof LabsRoute
   '/learnings-history': typeof LearningsHistoryRoute
-  '/life-trajectory': typeof LifeTrajectoryRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/notes': typeof NotesRoute
@@ -449,7 +415,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/tasks': typeof TasksRoute
-  '/vision-board': typeof VisionBoardRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -483,25 +448,21 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/content': typeof ContentRoute
   '/decisions': typeof DecisionsRoute
-  '/dreams': typeof DreamsRoute
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
   '/finance': typeof FinanceRoute
-  '/future-letters': typeof FutureLettersRoute
-  '/future-simulation': typeof FutureSimulationRoute
+  '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
   '/habits': typeof HabitsRoute
   '/health': typeof HealthRoute
   '/home': typeof HomeRoute
-  '/horizons': typeof HorizonsRoute
   '/identity': typeof IdentityRoute
   '/import': typeof ImportRoute
   '/insights': typeof InsightsRoute
   '/inventory': typeof InventoryRoute
   '/labs': typeof LabsRoute
   '/learnings-history': typeof LearningsHistoryRoute
-  '/life-trajectory': typeof LifeTrajectoryRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/notes': typeof NotesRoute
@@ -513,7 +474,6 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/tasks': typeof TasksRoute
-  '/vision-board': typeof VisionBoardRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -548,18 +508,15 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/content': typeof ContentRoute
   '/decisions': typeof DecisionsRoute
-  '/dreams': typeof DreamsRoute
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
   '/finance': typeof FinanceRoute
-  '/future-letters': typeof FutureLettersRoute
-  '/future-simulation': typeof FutureSimulationRoute
+  '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
   '/habits': typeof HabitsRoute
   '/health': typeof HealthRoute
   '/home': typeof HomeRoute
-  '/horizons': typeof HorizonsRoute
   '/identity': typeof IdentityRoute
   '/import': typeof ImportRoute
   '/insights': typeof InsightsRoute
@@ -567,7 +524,6 @@ export interface FileRoutesById {
   '/inventory': typeof InventoryRoute
   '/labs': typeof LabsRoute
   '/learnings-history': typeof LearningsHistoryRoute
-  '/life-trajectory': typeof LifeTrajectoryRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/notes': typeof NotesRoute
@@ -580,7 +536,6 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/tasks': typeof TasksRoute
-  '/vision-board': typeof VisionBoardRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
@@ -616,18 +571,15 @@ export interface FileRouteTypes {
     | '/chat'
     | '/content'
     | '/decisions'
-    | '/dreams'
     | '/energy'
     | '/exercise'
     | '/family'
     | '/finance'
-    | '/future-letters'
-    | '/future-simulation'
+    | '/future'
     | '/goals'
     | '/habits'
     | '/health'
     | '/home'
-    | '/horizons'
     | '/identity'
     | '/import'
     | '/insights'
@@ -635,7 +587,6 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/labs'
     | '/learnings-history'
-    | '/life-trajectory'
     | '/maintenance'
     | '/meals'
     | '/notes'
@@ -648,7 +599,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/skill-tree'
     | '/tasks'
-    | '/vision-board'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -682,25 +632,21 @@ export interface FileRouteTypes {
     | '/chat'
     | '/content'
     | '/decisions'
-    | '/dreams'
     | '/energy'
     | '/exercise'
     | '/family'
     | '/finance'
-    | '/future-letters'
-    | '/future-simulation'
+    | '/future'
     | '/goals'
     | '/habits'
     | '/health'
     | '/home'
-    | '/horizons'
     | '/identity'
     | '/import'
     | '/insights'
     | '/inventory'
     | '/labs'
     | '/learnings-history'
-    | '/life-trajectory'
     | '/maintenance'
     | '/meals'
     | '/notes'
@@ -712,7 +658,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/skill-tree'
     | '/tasks'
-    | '/vision-board'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -746,18 +691,15 @@ export interface FileRouteTypes {
     | '/chat'
     | '/content'
     | '/decisions'
-    | '/dreams'
     | '/energy'
     | '/exercise'
     | '/family'
     | '/finance'
-    | '/future-letters'
-    | '/future-simulation'
+    | '/future'
     | '/goals'
     | '/habits'
     | '/health'
     | '/home'
-    | '/horizons'
     | '/identity'
     | '/import'
     | '/insights'
@@ -765,7 +707,6 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/labs'
     | '/learnings-history'
-    | '/life-trajectory'
     | '/maintenance'
     | '/meals'
     | '/notes'
@@ -778,7 +719,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/skill-tree'
     | '/tasks'
-    | '/vision-board'
     | '/wishlist'
     | '/admin/invites'
     | '/admin/reset'
@@ -813,18 +753,15 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   ContentRoute: typeof ContentRoute
   DecisionsRoute: typeof DecisionsRoute
-  DreamsRoute: typeof DreamsRoute
   EnergyRoute: typeof EnergyRoute
   ExerciseRoute: typeof ExerciseRoute
   FamilyRoute: typeof FamilyRoute
   FinanceRoute: typeof FinanceRoute
-  FutureLettersRoute: typeof FutureLettersRoute
-  FutureSimulationRoute: typeof FutureSimulationRoute
+  FutureRoute: typeof FutureRoute
   GoalsRoute: typeof GoalsRoute
   HabitsRoute: typeof HabitsRoute
   HealthRoute: typeof HealthRoute
   HomeRoute: typeof HomeRoute
-  HorizonsRoute: typeof HorizonsRoute
   IdentityRoute: typeof IdentityRoute
   ImportRoute: typeof ImportRoute
   InsightsRoute: typeof InsightsRoute
@@ -832,7 +769,6 @@ export interface RootRouteChildren {
   InventoryRoute: typeof InventoryRoute
   LabsRoute: typeof LabsRoute
   LearningsHistoryRoute: typeof LearningsHistoryRoute
-  LifeTrajectoryRoute: typeof LifeTrajectoryRoute
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
   NotesRoute: typeof NotesRoute
@@ -845,7 +781,6 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SkillTreeRoute: typeof SkillTreeRoute
   TasksRoute: typeof TasksRoute
-  VisionBoardRoute: typeof VisionBoardRoute
   WishlistRoute: typeof WishlistRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminResetRoute: typeof AdminResetRoute
@@ -873,13 +808,6 @@ declare module '@tanstack/react-router' {
       path: '/wishlist'
       fullPath: '/wishlist'
       preLoaderRoute: typeof WishlistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/vision-board': {
-      id: '/vision-board'
-      path: '/vision-board'
-      fullPath: '/vision-board'
-      preLoaderRoute: typeof VisionBoardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tasks': {
@@ -966,13 +894,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MaintenanceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/life-trajectory': {
-      id: '/life-trajectory'
-      path: '/life-trajectory'
-      fullPath: '/life-trajectory'
-      preLoaderRoute: typeof LifeTrajectoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/learnings-history': {
       id: '/learnings-history'
       path: '/learnings-history'
@@ -1022,13 +943,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IdentityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/horizons': {
-      id: '/horizons'
-      path: '/horizons'
-      fullPath: '/horizons'
-      preLoaderRoute: typeof HorizonsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/home': {
       id: '/home'
       path: '/home'
@@ -1057,18 +971,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoalsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/future-simulation': {
-      id: '/future-simulation'
-      path: '/future-simulation'
-      fullPath: '/future-simulation'
-      preLoaderRoute: typeof FutureSimulationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/future-letters': {
-      id: '/future-letters'
-      path: '/future-letters'
-      fullPath: '/future-letters'
-      preLoaderRoute: typeof FutureLettersRouteImport
+    '/future': {
+      id: '/future'
+      path: '/future'
+      fullPath: '/future'
+      preLoaderRoute: typeof FutureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/finance': {
@@ -1097,13 +1004,6 @@ declare module '@tanstack/react-router' {
       path: '/energy'
       fullPath: '/energy'
       preLoaderRoute: typeof EnergyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dreams': {
-      id: '/dreams'
-      path: '/dreams'
-      fullPath: '/dreams'
-      preLoaderRoute: typeof DreamsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/decisions': {
@@ -1359,18 +1259,15 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   ContentRoute: ContentRoute,
   DecisionsRoute: DecisionsRoute,
-  DreamsRoute: DreamsRoute,
   EnergyRoute: EnergyRoute,
   ExerciseRoute: ExerciseRoute,
   FamilyRoute: FamilyRoute,
   FinanceRoute: FinanceRoute,
-  FutureLettersRoute: FutureLettersRoute,
-  FutureSimulationRoute: FutureSimulationRoute,
+  FutureRoute: FutureRoute,
   GoalsRoute: GoalsRoute,
   HabitsRoute: HabitsRoute,
   HealthRoute: HealthRoute,
   HomeRoute: HomeRoute,
-  HorizonsRoute: HorizonsRoute,
   IdentityRoute: IdentityRoute,
   ImportRoute: ImportRoute,
   InsightsRoute: InsightsRoute,
@@ -1378,7 +1275,6 @@ const rootRouteChildren: RootRouteChildren = {
   InventoryRoute: InventoryRoute,
   LabsRoute: LabsRoute,
   LearningsHistoryRoute: LearningsHistoryRoute,
-  LifeTrajectoryRoute: LifeTrajectoryRoute,
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
   NotesRoute: NotesRoute,
@@ -1391,7 +1287,6 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SkillTreeRoute: SkillTreeRoute,
   TasksRoute: TasksRoute,
-  VisionBoardRoute: VisionBoardRoute,
   WishlistRoute: WishlistRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminResetRoute: AdminResetRoute,
