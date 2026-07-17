@@ -47,6 +47,7 @@ import {
   Smile,
   Clock,
   MapPin,
+  Users,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -87,6 +88,7 @@ const hogar: MoreItem[] = [
   { to: "/maintenance", label: "Mantenimiento", icon: Workflow },
   { to: "/inventory", label: "Inventario", icon: Library },
   { to: "/family", label: "Hocicos", icon: Heart },
+  { to: "/contacts", label: "Contactos", icon: Users },
 ];
 
 const crecimiento: MoreItem[] = [
