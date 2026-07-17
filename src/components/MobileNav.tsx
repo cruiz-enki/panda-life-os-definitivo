@@ -88,6 +88,7 @@ const hogar: MoreItem[] = [
   { to: "/maintenance", label: "Mantenimiento", icon: Workflow },
   { to: "/inventory", label: "Inventario", icon: Library },
   { to: "/family", label: "Hocicos", icon: Heart },
+  { to: "/contacts", label: "Contactos", icon: Users },
 ];
 
 const crecimiento: MoreItem[] = [
