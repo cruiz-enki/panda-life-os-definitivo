@@ -37,7 +37,7 @@ async function sendPush(userId: string, title: string, body: string) {
 
 async function sendEmail(to: string, title: string, body: string) {
   const lovableKey = process.env.LOVABLE_API_KEY;
-  const resendKey = process.env.RESEND_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY_1 || process.env.RESEND_API_KEY;
   if (!lovableKey || !resendKey) throw new Error("Email no configurado (falta Resend)");
   const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
     method: "POST",
