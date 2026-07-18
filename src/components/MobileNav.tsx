@@ -60,7 +60,7 @@ import { QuickActionsFab } from "@/components/QuickActionsFab";
 // Items principales en la barra inferior (4 + FAB centrado + Más)
 const primary = [
   { to: "/", label: "Hoy", icon: LayoutDashboard },
-  { to: "/calendar", label: "Plan", icon: CalendarIcon },
+  { to: "/log", label: "Registrar", icon: ClipboardList },
   // <FAB centrado va aquí>
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/chat", label: "Chat", icon: MessageCircle },
