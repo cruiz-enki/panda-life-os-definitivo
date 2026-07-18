@@ -130,7 +130,7 @@ const sections: { title: string; icon: any; items: Item[] }[] = [
 ];
 
 export function FocusModeCard() {
-  const { hidden, toggle, showAll, count } = useFocusMode();
+  const { hidden, toggle, showAll, count, enabled, setEnabled } = useFocusMode();
   const [open, setOpen] = useState<Record<string, boolean>>({});
 
   return (
@@ -140,21 +140,27 @@ export function FocusModeCard() {
           <EyeOff className="size-5 text-primary" />
           <h3 className="font-display text-lg font-semibold">Modo Focus</h3>
         </div>
-        {count > 0 && (
-          <button
-            onClick={showAll}
-            className="text-xs px-3 py-1.5 rounded-lg bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Mostrar todo
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-medium ${enabled ? "text-primary" : "text-muted-foreground"}`}>
+            {enabled ? "Enfoque" : "Normal"}
+          </span>
+          <Switch checked={enabled} onCheckedChange={setEnabled} aria-label="Activar Modo Focus" />
+        </div>
       </div>
       <p className="text-sm text-muted-foreground">
-        Oculta los módulos que no uses. Se esconderán del menú lateral y del menú móvil.
-        {count > 0 && (
+        Cuando el modo Focus está activo, se ocultan los módulos que marques abajo. Apágalo para volver a ver todo.
+        {enabled && count > 0 && (
           <span className="ml-1 text-foreground font-medium">{count} ocultos.</span>
         )}
       </p>
+      {count > 0 && (
+        <button
+          onClick={showAll}
+          className="text-xs px-3 py-1.5 rounded-lg bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Restablecer selección
+        </button>
+      )}
 
       <div className="space-y-2">
         {sections.map((section) => {
