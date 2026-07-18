@@ -59,6 +59,7 @@ const moneyItems: NavItem[] = [
   { to: "/cashflow", label: "Cashflow", icon: Repeat },
   { to: "/debts", label: "Deudas", icon: Scale },
   { to: "/savings", label: "Ahorro", icon: Target },
+  { to: "/money-tools", label: "Money Tools", icon: Sparkles },
   { to: "/finance", label: "Finanzas", icon: Wallet },
   { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
 ];
