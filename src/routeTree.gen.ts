@@ -28,6 +28,7 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as NetWorthRouteImport } from './routes/net-worth'
 import { Route as MoodRouteImport } from './routes/mood'
+import { Route as MonthCloseRouteImport } from './routes/month-close'
 import { Route as MoneyToolsRouteImport } from './routes/money-tools'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
@@ -45,6 +46,7 @@ import { Route as HealthRouteImport } from './routes/health'
 import { Route as HabitsRouteImport } from './routes/habits'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FutureRouteImport } from './routes/future'
+import { Route as FinanceInsightsRouteImport } from './routes/finance-insights'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as ExerciseRouteImport } from './routes/exercise'
@@ -58,6 +60,7 @@ import { Route as CashflowRouteImport } from './routes/cashflow'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BankImportRouteImport } from './routes/bank-import'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AffordRouteImport } from './routes/afford'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as IntrospectionIndexRouteImport } from './routes/introspection.index'
@@ -179,6 +182,11 @@ const MoodRoute = MoodRouteImport.update({
   path: '/mood',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MonthCloseRoute = MonthCloseRouteImport.update({
+  id: '/month-close',
+  path: '/month-close',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MoneyToolsRoute = MoneyToolsRouteImport.update({
   id: '/money-tools',
   path: '/money-tools',
@@ -264,6 +272,11 @@ const FutureRoute = FutureRouteImport.update({
   path: '/future',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FinanceInsightsRoute = FinanceInsightsRouteImport.update({
+  id: '/finance-insights',
+  path: '/finance-insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
@@ -327,6 +340,11 @@ const BankImportRoute = BankImportRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AffordRoute = AffordRouteImport.update({
+  id: '/afford',
+  path: '/afford',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -472,6 +490,7 @@ const ApiPublicHooksIdentityRemindersRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/afford': typeof AffordRoute
   '/auth': typeof AuthRoute
   '/bank-import': typeof BankImportRoute
   '/calendar': typeof CalendarRoute
@@ -485,6 +504,7 @@ export interface FileRoutesByFullPath {
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
   '/finance': typeof FinanceRoute
+  '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
   '/habits': typeof HabitsRoute
@@ -502,6 +522,7 @@ export interface FileRoutesByFullPath {
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/money-tools': typeof MoneyToolsRoute
+  '/month-close': typeof MonthCloseRoute
   '/mood': typeof MoodRoute
   '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
@@ -548,6 +569,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/afford': typeof AffordRoute
   '/auth': typeof AuthRoute
   '/bank-import': typeof BankImportRoute
   '/calendar': typeof CalendarRoute
@@ -561,6 +583,7 @@ export interface FileRoutesByTo {
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
   '/finance': typeof FinanceRoute
+  '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
   '/habits': typeof HabitsRoute
@@ -577,6 +600,7 @@ export interface FileRoutesByTo {
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/money-tools': typeof MoneyToolsRoute
+  '/month-close': typeof MonthCloseRoute
   '/mood': typeof MoodRoute
   '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
@@ -623,6 +647,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/afford': typeof AffordRoute
   '/auth': typeof AuthRoute
   '/bank-import': typeof BankImportRoute
   '/calendar': typeof CalendarRoute
@@ -636,6 +661,7 @@ export interface FileRoutesById {
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
   '/finance': typeof FinanceRoute
+  '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
   '/habits': typeof HabitsRoute
@@ -653,6 +679,7 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/money-tools': typeof MoneyToolsRoute
+  '/month-close': typeof MonthCloseRoute
   '/mood': typeof MoodRoute
   '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
@@ -701,6 +728,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/afford'
     | '/auth'
     | '/bank-import'
     | '/calendar'
@@ -714,6 +742,7 @@ export interface FileRouteTypes {
     | '/exercise'
     | '/family'
     | '/finance'
+    | '/finance-insights'
     | '/future'
     | '/goals'
     | '/habits'
@@ -731,6 +760,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/meals'
     | '/money-tools'
+    | '/month-close'
     | '/mood'
     | '/net-worth'
     | '/notes'
@@ -777,6 +807,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/afford'
     | '/auth'
     | '/bank-import'
     | '/calendar'
@@ -790,6 +821,7 @@ export interface FileRouteTypes {
     | '/exercise'
     | '/family'
     | '/finance'
+    | '/finance-insights'
     | '/future'
     | '/goals'
     | '/habits'
@@ -806,6 +838,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/meals'
     | '/money-tools'
+    | '/month-close'
     | '/mood'
     | '/net-worth'
     | '/notes'
@@ -851,6 +884,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/afford'
     | '/auth'
     | '/bank-import'
     | '/calendar'
@@ -864,6 +898,7 @@ export interface FileRouteTypes {
     | '/exercise'
     | '/family'
     | '/finance'
+    | '/finance-insights'
     | '/future'
     | '/goals'
     | '/habits'
@@ -881,6 +916,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/meals'
     | '/money-tools'
+    | '/month-close'
     | '/mood'
     | '/net-worth'
     | '/notes'
@@ -928,6 +964,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AffordRoute: typeof AffordRoute
   AuthRoute: typeof AuthRoute
   BankImportRoute: typeof BankImportRoute
   CalendarRoute: typeof CalendarRoute
@@ -941,6 +978,7 @@ export interface RootRouteChildren {
   ExerciseRoute: typeof ExerciseRoute
   FamilyRoute: typeof FamilyRoute
   FinanceRoute: typeof FinanceRoute
+  FinanceInsightsRoute: typeof FinanceInsightsRoute
   FutureRoute: typeof FutureRoute
   GoalsRoute: typeof GoalsRoute
   HabitsRoute: typeof HabitsRoute
@@ -958,6 +996,7 @@ export interface RootRouteChildren {
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
   MoneyToolsRoute: typeof MoneyToolsRoute
+  MonthCloseRoute: typeof MonthCloseRoute
   MoodRoute: typeof MoodRoute
   NetWorthRoute: typeof NetWorthRoute
   NotesRoute: typeof NotesRoute
@@ -1132,6 +1171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoodRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/month-close': {
+      id: '/month-close'
+      path: '/month-close'
+      fullPath: '/month-close'
+      preLoaderRoute: typeof MonthCloseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/money-tools': {
       id: '/money-tools'
       path: '/money-tools'
@@ -1251,6 +1297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FutureRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/finance-insights': {
+      id: '/finance-insights'
+      path: '/finance-insights'
+      fullPath: '/finance-insights'
+      preLoaderRoute: typeof FinanceInsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/finance': {
       id: '/finance'
       path: '/finance'
@@ -1340,6 +1393,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/afford': {
+      id: '/afford'
+      path: '/afford'
+      fullPath: '/afford'
+      preLoaderRoute: typeof AffordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -1554,6 +1614,7 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AffordRoute: AffordRoute,
   AuthRoute: AuthRoute,
   BankImportRoute: BankImportRoute,
   CalendarRoute: CalendarRoute,
@@ -1567,6 +1628,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExerciseRoute: ExerciseRoute,
   FamilyRoute: FamilyRoute,
   FinanceRoute: FinanceRoute,
+  FinanceInsightsRoute: FinanceInsightsRoute,
   FutureRoute: FutureRoute,
   GoalsRoute: GoalsRoute,
   HabitsRoute: HabitsRoute,
@@ -1584,6 +1646,7 @@ const rootRouteChildren: RootRouteChildren = {
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
   MoneyToolsRoute: MoneyToolsRoute,
+  MonthCloseRoute: MonthCloseRoute,
   MoodRoute: MoodRoute,
   NetWorthRoute: NetWorthRoute,
   NotesRoute: NotesRoute,
