@@ -471,9 +471,6 @@ function MealsQuick() {
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Lazy require para no romper si el hook cambia de shape
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { useMeals } = require("@/hooks/use-meals") as typeof import("@/hooks/use-meals");
   const meals = useMeals();
 
   const submit = async () => {
