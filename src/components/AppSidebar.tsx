@@ -55,6 +55,7 @@ const homeItems: NavItem[] = [
 ];
 
 const moneyItems: NavItem[] = [
+  { to: "/net-worth", label: "Patrimonio", icon: BarChart3 },
   { to: "/finance", label: "Finanzas", icon: Wallet },
   { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
 ];
