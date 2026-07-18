@@ -11,11 +11,13 @@ import {
   NotebookPen,
   Repeat,
   MessageCircle,
+  ClipboardList,
 } from "lucide-react";
 
 type Variant = "mobile" | "desktop";
 
 const shortcuts = [
+  { to: "/log", label: "Registrar", icon: ClipboardList },
   { to: "/calendar", label: "Calendario", icon: CalendarIcon },
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/notes", label: "Notas", icon: NotebookPen },
