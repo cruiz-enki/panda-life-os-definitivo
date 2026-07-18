@@ -47,6 +47,8 @@ function SettingsPage() {
         </p>
       </Card>
 
+      <FocusModeCard />
+
       <NotificationsCard />
 
       <TelegramCard />
