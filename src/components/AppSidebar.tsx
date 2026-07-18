@@ -156,6 +156,8 @@ function CategoryGroup({
     }
   };
 
+  if (visibleItems.length === 0) return null;
+
   return (
     <div>
       <button
@@ -174,7 +176,7 @@ function CategoryGroup({
       </button>
       {open && (
         <div className="mt-1 ml-3 pl-3 border-l border-sidebar-border space-y-0.5">
-          {items.map((item) => {
+          {visibleItems.map((item) => {
             const active =
               location.pathname === item.to &&
               (item.hash === undefined ? currentHash === "" : currentHash === item.hash);
