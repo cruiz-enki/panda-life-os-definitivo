@@ -99,6 +99,7 @@ const homeItems: MoreItem[] = [
 const moneyItems: MoreItem[] = [
   { to: "/net-worth", label: "Patrimonio", icon: BarChart3 },
   { to: "/cashflow", label: "Cashflow", icon: Repeat },
+  { to: "/debts", label: "Deudas", icon: Scale },
   { to: "/finance", label: "Finanzas", icon: Wallet },
   { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
 ];
