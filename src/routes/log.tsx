@@ -13,6 +13,7 @@ import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
 import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
 import { useSleep } from "@/hooks/use-sleep";
+import { useMeals } from "@/hooks/use-meals";
 import type { Priority } from "@/lib/storage-types";
 
 export const Route = createFileRoute("/log")({
@@ -470,9 +471,6 @@ function MealsQuick() {
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Lazy require para no romper si el hook cambia de shape
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { useMeals } = require("@/hooks/use-meals") as typeof import("@/hooks/use-meals");
   const meals = useMeals();
 
   const submit = async () => {
