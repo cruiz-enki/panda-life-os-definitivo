@@ -1,26 +1,37 @@
 /**
- * **Ruta** — Página principal / dashboard inicial de la app.
+ * **Ruta** — Dashboard "Hoy" simplificado, estilo iOS.
+ * Foco: saludo, acción rápida (Registrar), pendientes reales, nivel/misión compactos.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { useAppState, levelFromXp, todayRecommendation, avgEnergy, smartTaskRecommendation, isOverdue, isDueToday } from "@/lib/storage";
-import { useGamification, nextAchievement } from "@/hooks/use-gamification";
+import { useGamification } from "@/hooks/use-gamification";
 import { useRewardsCustom } from "@/hooks/use-rewards-custom";
 import { PandaAvatar } from "@/components/PandaAvatar";
-import { StatCard } from "@/components/StatCard";
 import { DailySummaryCard } from "@/components/DailySummaryCard";
-import { Sparkles, Flame, Battery, BookOpen, ArrowRight, Check, CheckSquare, Calendar as CalendarIcon, Trophy, Target, Gift, Plus, Star, Smile, Heart } from "lucide-react";
-import { LifeRandomizer } from "@/components/LifeRandomizer";
-import { ActiveQuestsWidget } from "@/components/ActiveQuestsWidget";
-import { IdentityFocusWidget } from "@/components/IdentityFocusWidget";
+import {
+  Sparkles,
+  Flame,
+  Check,
+  CheckSquare,
+  Calendar as CalendarIcon,
+  Target,
+  Gift,
+  Plus,
+  Star,
+  ChevronRight,
+  ChevronDown,
+  PenLine,
+  Battery,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard · Panda's LIFE OS" },
-      { name: "description", content: "Tu panel diario: nivel, energía, hábitos y la recomendación inteligente del día." },
+      { title: "Hoy · Panda's LIFE OS" },
+      { name: "description", content: "Tu día en una vista: qué registrar, qué falta y cómo vas." },
     ],
   }),
   component: Dashboard,
@@ -30,19 +41,17 @@ function Dashboard() {
   const { state, today, toggleHabit, toggleTaskComplete, addDailyWin } = useAppState();
   const [winContent, setWinContent] = useState("");
   const [showWinInput, setShowWinInput] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const [prefs, setPrefs] = useState<any>(null);
   const todayWins = useMemo(() => (state.dailyWins || []).filter(w => w.date === today), [state.dailyWins, today]);
 
-
   useEffect(() => {
-    const fetchPrefs = async () => {
+    (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) return;
       const { data } = await supabase.from("notification_preferences").select("*").eq("user_id", session.user.id).maybeSingle();
       if (data) setPrefs(data);
-    };
-    fetchPrefs();
-
+    })();
   }, []);
 
   const handleAddWin = () => {
@@ -52,12 +61,11 @@ function Dashboard() {
     setShowWinInput(false);
     toast.success("¡Victoria registrada! +50 XP");
   };
+
   const { level, progress, currentLevelXp, nextLevelXp } = levelFromXp(state.xp);
   const gam = useGamification();
   const custom = useRewardsCustom();
-  const upcoming = nextAchievement(gam.unlocked, gam.achievements);
-  
-  // Misión activa: Priorizar misiones personalizadas programadas para hoy, luego las activas normales
+
   const todayMissions = custom.customQuests.filter(q => q.active && q.due_date && q.due_date.split('T')[0] === today);
   const matchedCustom = todayMissions.find(q => {
     const progress = q.tracking === "manual" ? (custom.questProgress[q.id]?.progress ?? 0) : custom.computeCustomQuestProgress(q);
@@ -82,346 +90,284 @@ function Dashboard() {
 
   const todayEnergy = state.energy.find((e) => e.date === today);
   const energyAvg = avgEnergy(todayEnergy);
-  const completedToday = state.habits.filter((h) => h.lastCompleted === today).length;
-  
+  const completedHabits = state.habits.filter((h) => h.lastCompleted === today).length;
+  const totalHabits = state.habits.length;
+
   const rec = todayRecommendation(state, today);
-  const { tasks: smartTasks, alert: tasksAlert } = smartTaskRecommendation(state.tasks, today);
-  const pendingToday = state.tasks.filter((t) => t.status !== "completed" && (isDueToday(t, today) || isOverdue(t))).length;
+  const { tasks: smartTasks } = smartTaskRecommendation(state.tasks, today);
+  const pendingTasks = state.tasks
+    .filter((t) => t.status !== "completed" && (isDueToday(t, today) || isOverdue(t)))
+    .sort((a, b) => (isOverdue(a) ? -1 : 1) - (isOverdue(b) ? -1 : 1));
+  const pendingHabits = state.habits.filter((h) => h.lastCompleted !== today);
+
   const [dateLabel, setDateLabel] = useState("");
+  const [greeting, setGreeting] = useState("Hola");
   useEffect(() => {
-    setDateLabel(new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
+    const now = new Date();
+    setDateLabel(now.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
+    const h = now.getHours();
+    setGreeting(h < 6 ? "Buenas noches" : h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches");
   }, []);
 
+  const questPct = activeQuest ? Math.min(100, (activeQuest.progress / activeQuest.quest.target) * 100) : 0;
+
   return (
-    <div className="px-6 md:px-10 py-8 max-w-6xl mx-auto">
-      <header className="mb-8">
-        <p className="text-sm text-muted-foreground min-h-5">
-          {dateLabel}
-        </p>
-        <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mt-1">
-          Hola, panda <span className="inline-block animate-pulse">🐼</span>
+    <div className="px-4 md:px-8 py-6 max-w-3xl mx-auto pb-24">
+      {/* Header minimal */}
+      <header className="mb-5">
+        <p className="text-xs uppercase tracking-wider text-muted-foreground">{dateLabel}</p>
+        <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight mt-1">
+          {greeting}, panda 🐼
         </h1>
       </header>
 
-      {/* Dashboard Top Banner (Custom Mission/Level) */}
-      <section className="mb-8 overflow-hidden rounded-3xl md:rounded-[40px] border border-border bg-card shadow-lg p-5 sm:p-6 md:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr_auto] gap-6 md:gap-8 lg:gap-10 items-center">
-          {/* Avatar and Level Circle */}
-          <Link to="/rewards" className="relative group mx-auto md:mx-0">
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-[6px] border-[#e8f5f1] flex items-center justify-center bg-[#00c68a] shadow-inner">
-               <div className="absolute inset-0 bg-gradient-to-tr from-[#00c68a] to-[#50e3c2] opacity-80" />
-               <PandaAvatar xp={state.xp} size="xl" />
+      {/* CTA principal: Registrar */}
+      <Link
+        to="/log"
+        className="group relative overflow-hidden flex items-center justify-between gap-3 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-5 py-4 mb-5 shadow-glow active:scale-[0.99] transition-transform"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+            <PenLine className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="font-display font-bold text-base leading-tight">Registrar mi día</div>
+            <div className="text-xs opacity-90">Mood · Sueño · Hábitos · Comidas</div>
+          </div>
+        </div>
+        <ChevronRight className="w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
+      </Link>
+
+      {/* Nivel + Misión activa: fila compacta */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+        <Link to="/rewards" className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 hover:border-primary/40 transition-colors">
+          <div className="relative shrink-0">
+            <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-tr from-[#00c68a] to-[#50e3c2] flex items-center justify-center">
+              <PandaAvatar xp={state.xp} size="sm" />
             </div>
-            <div className="absolute bottom-2 right-2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border-2 border-[#e8f5f1] shadow-md flex items-center justify-center text-sm font-bold text-[#00c68a]">
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border-2 border-card text-[10px] font-bold text-[#00c68a] flex items-center justify-center shadow">
               {level}
             </div>
-          </Link>
-
-          {/* Level Progress */}
-          <div className="flex flex-col justify-center min-w-0 text-center md:text-left">
-            <div className="flex flex-wrap items-baseline justify-center md:justify-between gap-x-3 gap-y-1 mb-2">
-              <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">Nivel {level}</h2>
-              <span className="font-display text-2xl sm:text-3xl font-bold text-[#00c68a]">{state.xp} XP</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline justify-between gap-2 mb-1">
+              <span className="text-sm font-semibold">Nivel {level}</span>
+              <span className="text-xs text-muted-foreground">{state.xp} XP</span>
             </div>
-            <div className="text-sm text-muted-foreground mb-4">
-              {state.xp - currentLevelXp} / {nextLevelXp - currentLevelXp} XP al nivel {level + 1}
+            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+              <div className="h-full bg-[#00c68a] transition-all" style={{ width: `${Math.max(4, progress * 100)}%` }} />
             </div>
-            <div className="relative h-3 md:h-4 rounded-full bg-[#f0f2f5] overflow-hidden mb-4 md:mb-6">
-              <div 
-                className="absolute inset-y-0 left-0 bg-[#00c68a] transition-all duration-700 rounded-full" 
-                style={{ width: `${Math.max(4, progress * 100)}%` }} 
-              />
-            </div>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500 shrink-0" />
-                <span className="text-muted-foreground font-medium">
-                  {gam.totalUnlocked}/{gam.totalAchievements} misiones fijas
-                </span>
-              </div>
-              {upcoming && (
-                <div className="flex items-center gap-2 text-muted-foreground min-w-0">
-                  <span className="hidden md:inline">·</span>
-                  <span>Siguiente:</span>
-                  <span className="text-foreground font-semibold truncate">{upcoming.emoji} {upcoming.name}</span>
-                </div>
-              )}
+            <div className="text-[11px] text-muted-foreground mt-1">
+              {nextLevelXp - state.xp} XP al nivel {level + 1}
             </div>
           </div>
+        </Link>
 
-          {/* Active Mission Card */}
-          {activeQuest && (
-            <div className="bg-[#f7fdfb] border border-[#e1f5ef] rounded-3xl md:rounded-[32px] p-5 md:p-6 w-full lg:min-w-[320px] lg:max-w-[360px] md:col-span-2 lg:col-span-1 relative">
-
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-[#00c68a] flex items-center justify-center">
-                  <Target className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-sm font-bold text-[#00c68a] uppercase tracking-wider">Misión activa</span>
-              </div>
-              
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-5 h-5 rounded-full bg-[#00c68a] shadow-[0_0_8px_rgba(0,198,138,0.5)] animate-pulse" />
-                <h3 className="font-display font-bold text-xl">{activeQuest.quest.title}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground mb-6 line-clamp-2">
-                {activeQuest.quest.description}
-              </p>
-
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex-1 h-2 rounded-full bg-[#e8f5f1] overflow-hidden">
-                  <div 
-                    className="h-full bg-[#00c68a]" 
-                    style={{ width: `${Math.min(100, (activeQuest.progress / activeQuest.quest.target) * 100)}%` }} 
-                  />
-                </div>
-                <span className="text-sm font-bold">{Math.min(activeQuest.progress, activeQuest.quest.target)}/{activeQuest.quest.target}</span>
-              </div>
-
-              {!activeQuest.completed ? (
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if ((activeQuest.quest as any).isCustom) {
-                      custom.incrementQuestProgress(activeQuest.quest.id, activeQuest.quest.target, activeQuest.quest.xp, 1);
-                    } else {
-                      gam.incrementQuestProgress(activeQuest.quest.id, activeQuest.quest.target, activeQuest.quest.xp, 1);
-                    }
-                  }}
-                  className="w-full py-3 rounded-2xl bg-[#e8f5f1] hover:bg-[#d5ece4] text-[#00c68a] text-sm font-bold uppercase tracking-wider transition-colors shadow-sm"
-                >
-                  +1 Progreso
-                </button>
-              ) : !activeQuest.claimed && (
-                <Link 
-                  to="/rewards"
-                  className="w-full py-3 flex items-center justify-center gap-2 rounded-2xl bg-[#00c68a] text-white text-sm font-bold uppercase tracking-wider transition-all shadow-glow animate-bounce"
-                >
-                  <Gift className="w-4 h-4" /> ¡Reclamar!
-                </Link>
-              )}
+        {activeQuest && (
+          <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-3.5 h-3.5 text-primary" />
+              <span className="text-[11px] font-bold text-primary uppercase tracking-wider">Misión activa</span>
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* Hero recommendation */}
-      <section className="relative overflow-hidden rounded-3xl border border-border bg-card p-7 mb-8 shadow-card">
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-gradient-primary opacity-20 blur-3xl" />
-        <div className="relative flex flex-col md:flex-row md:items-center gap-6 justify-between">
-          <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary mb-3">
-              <Sparkles className="w-3.5 h-3.5" /> Recomendación de hoy
+            <div className="font-semibold text-sm truncate mb-2">{activeQuest.quest.emoji} {activeQuest.quest.title}</div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="h-full bg-primary" style={{ width: `${questPct}%` }} />
+              </div>
+              <span className="text-[11px] font-bold tabular-nums">{Math.min(activeQuest.progress, activeQuest.quest.target)}/{activeQuest.quest.target}</span>
             </div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight">{rec.title}</h2>
-            <p className="mt-2 text-muted-foreground">{rec.reason}</p>
-          </div>
-          <Link
-            to="/habits"
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow hover:scale-105 transition-transform whitespace-nowrap"
-          >
-            {rec.action} <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
-
-      {/* AI Daily summary */}
-      {(!prefs || (prefs.global_notifications_enabled && prefs.daily_summary_enabled)) && (
-        <DailySummaryCard state={state} today={today} />
-      )}
-
-
-      {/* Stats grid */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard
-          label="Nivel"
-          value={level}
-          hint={`${state.xp - currentLevelXp} / ${nextLevelXp - currentLevelXp} XP`}
-          icon={<Sparkles className="w-4 h-4" />}
-          accent="xp"
-        />
-        <StatCard
-          label="Racha Global"
-          value={prefs?.task_streak || state.productivity.streak || 0}
-          hint="días activos"
-          icon={<Flame className="w-4 h-4" />}
-          accent="xp"
-        />
-        <StatCard
-          label="Tareas hoy"
-          value={pendingToday}
-          hint="por hacer / vencidas"
-          icon={<CheckSquare className="w-4 h-4" />}
-          accent="primary"
-        />
-        <StatCard
-          label="Hábitos hoy"
-          value={`${completedToday}/${state.habits.length}`}
-          hint="completados"
-          icon={<Check className="w-4 h-4" />}
-          accent="primary"
-        />
-      </section>
-
-      {/* Active quests widget */}
-      <section className="mb-8 grid gap-4 md:grid-cols-2">
-        <ActiveQuestsWidget />
-        <IdentityFocusWidget />
-      </section>
-
-      
-
-      <section className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-6 mb-8 shadow-glow overflow-hidden relative">
-        <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-          <Trophy className="w-24 h-24 text-primary rotate-12" />
-        </div>
-        
-        <div className="relative flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <Star className="w-4 h-4 text-primary" />
-            </div>
-            <h2 className="font-display text-xl font-bold">Bitácora de Victorias</h2>
-          </div>
-          <button 
-            onClick={() => setShowWinInput(!showWinInput)}
-            className="p-2 rounded-full bg-primary text-primary-foreground hover:scale-110 transition-transform shadow-lg"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-
-        {showWinInput && (
-          <div className="relative mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="flex gap-2 mb-2">
-               <input
-                type="text"
-                value={winContent}
-                onChange={(e) => setWinContent(e.target.value)}
-                placeholder="¿Qué lograste hoy?"
-                className="flex-1 bg-background border border-primary/30 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 ring-primary/20"
-                onKeyDown={(e) => e.key === 'Enter' && handleAddWin()}
-                autoFocus
-              />
-              <button 
-                onClick={handleAddWin} 
-                className="bg-primary text-primary-foreground px-5 rounded-2xl font-bold flex items-center justify-center"
-                title="Guardar victoria"
+            {!activeQuest.completed ? (
+              <button
+                onClick={() => {
+                  if ((activeQuest.quest as any).isCustom) {
+                    custom.incrementQuestProgress(activeQuest.quest.id, activeQuest.quest.target, activeQuest.quest.xp, 1);
+                  } else {
+                    gam.incrementQuestProgress(activeQuest.quest.id, activeQuest.quest.target, activeQuest.quest.xp, 1);
+                  }
+                }}
+                className="w-full py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider transition-colors"
               >
-                <Check className="w-5 h-5" />
+                +1 Progreso
               </button>
-            </div>
-            <div className="flex justify-end">
-              <button onClick={() => setShowWinInput(false)} className="text-xs text-muted-foreground px-3 py-1">Cancelar</button>
-            </div>
+            ) : !activeQuest.claimed ? (
+              <Link to="/rewards" className="w-full py-1.5 flex items-center justify-center gap-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold uppercase animate-pulse">
+                <Gift className="w-3 h-3" /> Reclamar
+              </Link>
+            ) : (
+              <div className="text-[11px] text-muted-foreground text-center py-1">Completada ✓</div>
+            )}
           </div>
         )}
-
-        <div className="relative flex flex-wrap gap-2">
-          {todayWins.length === 0 ? (
-            <p className="text-sm text-muted-foreground italic py-2">No has registrado victorias hoy. ¡Cualquier paso cuenta!</p>
-          ) : (
-            todayWins.map(win => (
-              <div key={win.id} className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm px-3 py-2 rounded-full border border-primary/20 animate-in zoom-in-95 duration-300">
-                <Sparkles className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
-                <span className="text-xs font-semibold whitespace-nowrap">{win.content}</span>
-              </div>
-            ))
-          )}
-        </div>
       </section>
 
-      {/* Smart tasks */}
-      {smartTasks.length > 0 && (
-        <section className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card p-6 mb-8 shadow-card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <CheckSquare className="w-4 h-4 text-primary" />
-              <h3 className="font-display text-lg font-semibold">Tareas recomendadas</h3>
-            </div>
-            <Link to="/tasks" className="text-xs text-primary hover:underline">Ver todas →</Link>
+      {/* Recomendación de hoy — compacta */}
+      <Link
+        to="/habits"
+        className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 mb-5 hover:border-primary/40 transition-colors"
+      >
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <Sparkles className="w-4 h-4 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-primary mb-0.5">Recomendación</div>
+          <div className="font-semibold text-sm truncate">{rec.title}</div>
+          <div className="text-xs text-muted-foreground truncate">{rec.reason}</div>
+        </div>
+        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+      </Link>
+
+      {/* Pendientes hoy: tareas + hábitos consolidados */}
+      <section className="rounded-2xl border border-border bg-card p-4 mb-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-base font-bold">Pendientes hoy</h2>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><CheckSquare className="w-3 h-3" />{pendingTasks.length}</span>
+            <span className="flex items-center gap-1"><Check className="w-3 h-3" />{completedHabits}/{totalHabits}</span>
+            {energyAvg !== null && <span className="flex items-center gap-1"><Battery className="w-3 h-3" />{energyAvg.toFixed(1)}</span>}
           </div>
-          <p className={`text-xs mb-3 ${tasksAlert.tone === "danger" ? "text-destructive" : tasksAlert.tone === "warning" ? "text-[var(--energy)]" : "text-muted-foreground"}`}>
-            {tasksAlert.message}
-          </p>
-          <ul className="space-y-2">
-            {smartTasks.slice(0, 3).map((t) => {
+        </div>
+
+        {pendingTasks.length === 0 && pendingHabits.length === 0 ? (
+          <div className="text-center py-6">
+            <div className="text-3xl mb-1">🎉</div>
+            <p className="text-sm text-muted-foreground">Todo listo por hoy</p>
+          </div>
+        ) : (
+          <ul className="space-y-1.5">
+            {pendingTasks.slice(0, 3).map((t) => {
               const list = state.taskLists.find((l) => l.id === t.listId);
               const overdue = isOverdue(t);
               return (
-                <li key={t.id}>
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
-                    <button
-                      onClick={() => toggleTaskComplete(t.id)}
-                      className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center ${
-                        t.priority === "high" ? "border-destructive hover:bg-destructive/10" : "border-border hover:border-primary"
-                      }`}
-                    >
-                      <Check className="w-3 h-3 opacity-0 hover:opacity-50" />
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm truncate">{t.title}</div>
-                      <div className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
-                        {list && <span>{list.emoji} {list.name}</span>}
-                        {t.due && dateLabel && (
-                          <span className={`flex items-center gap-1 ${overdue ? "text-destructive" : ""}`}>
-                            <CalendarIcon className="w-3 h-3" />
-                            {new Date(t.due).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
-                          </span>
-                        )}
-                      </div>
+                <li key={t.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
+                  <button
+                    onClick={() => toggleTaskComplete(t.id)}
+                    className={`w-5 h-5 shrink-0 rounded-md border-2 flex items-center justify-center ${
+                      t.priority === "high" ? "border-destructive" : "border-muted-foreground/40 hover:border-primary"
+                    }`}
+                    aria-label="Completar tarea"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">{t.title}</div>
+                    <div className="text-[11px] text-muted-foreground flex items-center gap-2">
+                      {list && <span className="truncate">{list.emoji} {list.name}</span>}
+                      {t.due && (
+                        <span className={`flex items-center gap-0.5 ${overdue ? "text-destructive" : ""}`}>
+                          <CalendarIcon className="w-2.5 h-2.5" />
+                          {new Date(t.due).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </li>
               );
             })}
-          </ul>
-        </section>
-      )}
-
-      {/* Old Gamification widget removed and moved to top */}
-
-      {/* Habits list - taking full width since learnings is removed */}
-      <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-display text-lg font-semibold">Hábitos del día</h3>
-          <Link to="/habits" className="text-xs text-primary hover:underline">Ver todos →</Link>
-        </div>
-        <ul className="grid sm:grid-cols-2 gap-2">
-          {state.habits.slice(0, 6).map((h) => {
-            const done = h.lastCompleted === today;
-            return (
+            {pendingHabits.slice(0, Math.max(0, 5 - Math.min(pendingTasks.length, 3))).map((h) => (
               <li key={h.id}>
                 <button
                   onClick={() => toggleHabit(h.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
-                    done
-                      ? "bg-primary/10 border-primary/40"
-                      : "bg-secondary/30 border-border hover:border-primary/40"
-                  }`}
+                  className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/50 transition-colors text-left"
                 >
-                  <span className="text-2xl">{h.emoji}</span>
+                  <div className="w-5 h-5 shrink-0 rounded-md border-2 border-muted-foreground/40 hover:border-primary" />
+                  <span className="text-lg leading-none">{h.emoji}</span>
                   <div className="flex-1 min-w-0">
-                    <div className={`font-medium ${done ? "line-through text-muted-foreground" : ""}`}>{h.name}</div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-3">
-                      <span className="flex items-center gap-1"><Flame className="w-3 h-3" />{h.streak}d</span>
+                    <div className="text-sm font-medium truncate">{h.name}</div>
+                    <div className="text-[11px] text-muted-foreground flex items-center gap-2">
+                      <span className="flex items-center gap-0.5"><Flame className="w-2.5 h-2.5" />{h.streak}d</span>
                       <span>+{h.points} XP</span>
                     </div>
                   </div>
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
-                    done ? "bg-primary text-primary-foreground" : "border border-border"
-                  }`}>
-                    {done && <Check className="w-4 h-4" />}
-                  </div>
                 </button>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ul>
+        )}
+
+        {(pendingTasks.length + pendingHabits.length) > 5 && (
+          <div className="flex gap-2 mt-3">
+            <Link to="/tasks" className="flex-1 text-center text-xs font-medium text-primary hover:underline py-1.5">Ver tareas →</Link>
+            <Link to="/habits" className="flex-1 text-center text-xs font-medium text-primary hover:underline py-1.5">Ver hábitos →</Link>
+          </div>
+        )}
       </section>
 
-      <LifeRandomizer />
+      {/* Victorias del día — colapsable */}
+      <section className="rounded-2xl border border-border bg-card p-4 mb-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-yellow-500" />
+            <h2 className="font-display text-sm font-bold">Victorias de hoy</h2>
+            {todayWins.length > 0 && (
+              <span className="text-[11px] font-bold text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 rounded-full px-2 py-0.5">
+                {todayWins.length}
+              </span>
+            )}
+          </div>
+          <button
+            onClick={() => setShowWinInput(!showWinInput)}
+            className="p-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+            aria-label="Añadir victoria"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
+        {showWinInput && (
+          <div className="flex gap-2 mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+            <input
+              type="text"
+              value={winContent}
+              onChange={(e) => setWinContent(e.target.value)}
+              placeholder="¿Qué lograste?"
+              className="flex-1 bg-background border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 ring-primary/20"
+              onKeyDown={(e) => e.key === "Enter" && handleAddWin()}
+              autoFocus
+            />
+            <button onClick={handleAddWin} className="bg-primary text-primary-foreground px-4 rounded-xl font-bold">
+              <Check className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {todayWins.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {todayWins.map(win => (
+              <div key={win.id} className="inline-flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/20 px-2.5 py-1 rounded-full border border-yellow-200 dark:border-yellow-800">
+                <span className="text-xs font-medium">✨ {win.content}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Ver más — resumen IA y otros */}
+      <button
+        onClick={() => setShowMore(!showMore)}
+        className="w-full flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground py-3 mb-2"
+      >
+        <ChevronDown className={`w-4 h-4 transition-transform ${showMore ? "rotate-180" : ""}`} />
+        {showMore ? "Ocultar" : "Ver más"}
+      </button>
+
+      {showMore && (
+        <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+          {(!prefs || (prefs.global_notifications_enabled && prefs.daily_summary_enabled)) && (
+            <DailySummaryCard state={state} today={today} />
+          )}
+          {smartTasks.length > 3 && (
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-display text-sm font-bold">Más tareas sugeridas</h3>
+                <Link to="/tasks" className="text-xs text-primary hover:underline">Ver todas →</Link>
+              </div>
+              <ul className="space-y-1">
+                {smartTasks.slice(3, 6).map(t => (
+                  <li key={t.id} className="text-sm text-muted-foreground truncate">• {t.title}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
