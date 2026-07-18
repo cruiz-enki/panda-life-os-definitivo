@@ -105,12 +105,39 @@ function SubscriptionsPage() {
       </header>
 
       {/* Métricas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
         <Card className="p-4"><div className="text-xs text-muted-foreground">Activas</div><div className="text-2xl font-semibold">{subs.length}</div></Card>
-        <Card className="p-4"><div className="text-xs text-muted-foreground">Al mes</div><div className="text-2xl font-semibold">{formatMXN(monthlyTotal)}</div></Card>
+        <Card className="p-4"><div className="text-xs text-muted-foreground">Sangrado / mes</div><div className="text-2xl font-semibold">{formatMXN(monthlyTotal)}</div></Card>
         <Card className="p-4"><div className="text-xs text-muted-foreground">Al año</div><div className="text-2xl font-semibold">{formatMXN(yearlyTotal)}</div></Card>
         <Card className="p-4"><div className="text-xs text-muted-foreground">Se cobran en 7d</div><div className="text-2xl font-semibold">{upcoming7.length}</div></Card>
       </div>
+
+      <div className="text-xs text-muted-foreground mb-6 flex items-center gap-2">
+        <Repeat className="w-3 h-3" /> Estas suscripciones ya se descuentan automáticamente en{" "}
+        <Link to="/cashflow" className="underline">Cashflow</Link>.
+      </div>
+
+      {/* Desglose por categoría */}
+      {subs.length > 0 && (
+        <Card className="p-4 mb-6">
+          <div className="text-xs text-muted-foreground mb-2">Por categoría</div>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(
+              subs.reduce<Record<string, number>>((acc, s) => {
+                const key = s.category || "Sin categoría";
+                acc[key] = (acc[key] ?? 0) + Number(s.monthly_cost || 0);
+                return acc;
+              }, {}),
+            )
+              .sort((a, b) => b[1] - a[1])
+              .map(([cat, amt]) => (
+                <Badge key={cat} variant="secondary" className="text-xs">
+                  {cat}: {formatMXN(amt)}
+                </Badge>
+              ))}
+          </div>
+        </Card>
+      )}
 
       {upcoming7.length > 0 && (
         <Card className="p-5 mb-6 border-amber-500/30 bg-amber-500/5">
