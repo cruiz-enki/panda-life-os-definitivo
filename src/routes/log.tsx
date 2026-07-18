@@ -13,6 +13,7 @@ import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
 import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
 import { useSleep } from "@/hooks/use-sleep";
+import { useMeals } from "@/hooks/use-meals";
 import type { Priority } from "@/lib/storage-types";
 
 export const Route = createFileRoute("/log")({
