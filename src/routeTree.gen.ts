@@ -28,6 +28,7 @@ import { Route as NotesRouteImport } from './routes/notes'
 import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
+import { Route as LogRouteImport } from './routes/log'
 import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as LearningsHistoryRouteImport } from './routes/learnings-history'
 import { Route as LabsRouteImport } from './routes/labs'
@@ -170,6 +171,11 @@ const MealsRoute = MealsRouteImport.update({
 const MaintenanceRoute = MaintenanceRouteImport.update({
   id: '/maintenance',
   path: '/maintenance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogRoute = LogRouteImport.update({
+  id: '/log',
+  path: '/log',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LocationsRoute = LocationsRouteImport.update({
@@ -453,6 +459,7 @@ export interface FileRoutesByFullPath {
   '/labs': typeof LabsRoute
   '/learnings-history': typeof LearningsHistoryRoute
   '/locations': typeof LocationsRoute
+  '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/mood': typeof MoodRoute
@@ -521,6 +528,7 @@ export interface FileRoutesByTo {
   '/labs': typeof LabsRoute
   '/learnings-history': typeof LearningsHistoryRoute
   '/locations': typeof LocationsRoute
+  '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/mood': typeof MoodRoute
@@ -590,6 +598,7 @@ export interface FileRoutesById {
   '/labs': typeof LabsRoute
   '/learnings-history': typeof LearningsHistoryRoute
   '/locations': typeof LocationsRoute
+  '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/mood': typeof MoodRoute
@@ -661,6 +670,7 @@ export interface FileRouteTypes {
     | '/labs'
     | '/learnings-history'
     | '/locations'
+    | '/log'
     | '/maintenance'
     | '/meals'
     | '/mood'
@@ -729,6 +739,7 @@ export interface FileRouteTypes {
     | '/labs'
     | '/learnings-history'
     | '/locations'
+    | '/log'
     | '/maintenance'
     | '/meals'
     | '/mood'
@@ -797,6 +808,7 @@ export interface FileRouteTypes {
     | '/labs'
     | '/learnings-history'
     | '/locations'
+    | '/log'
     | '/maintenance'
     | '/meals'
     | '/mood'
@@ -867,6 +879,7 @@ export interface RootRouteChildren {
   LabsRoute: typeof LabsRoute
   LearningsHistoryRoute: typeof LearningsHistoryRoute
   LocationsRoute: typeof LocationsRoute
+  LogRoute: typeof LogRoute
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
   MoodRoute: typeof MoodRoute
@@ -1039,6 +1052,13 @@ declare module '@tanstack/react-router' {
       path: '/maintenance'
       fullPath: '/maintenance'
       preLoaderRoute: typeof MaintenanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/log': {
+      id: '/log'
+      path: '/log'
+      fullPath: '/log'
+      preLoaderRoute: typeof LogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/locations': {
@@ -1437,6 +1457,7 @@ const rootRouteChildren: RootRouteChildren = {
   LabsRoute: LabsRoute,
   LearningsHistoryRoute: LearningsHistoryRoute,
   LocationsRoute: LocationsRoute,
+  LogRoute: LogRoute,
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
   MoodRoute: MoodRoute,
