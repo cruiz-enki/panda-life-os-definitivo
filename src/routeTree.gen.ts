@@ -25,6 +25,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PomodoroRouteImport } from './routes/pomodoro'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as NetWorthRouteImport } from './routes/net-worth'
 import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
@@ -156,6 +157,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const NotesRoute = NotesRouteImport.update({
   id: '/notes',
   path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NetWorthRoute = NetWorthRouteImport.update({
+  id: '/net-worth',
+  path: '/net-worth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoodRoute = MoodRouteImport.update({
@@ -463,6 +469,7 @@ export interface FileRoutesByFullPath {
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/mood': typeof MoodRoute
+  '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
   '/notifications': typeof NotificationsRoute
   '/pomodoro': typeof PomodoroRoute
@@ -532,6 +539,7 @@ export interface FileRoutesByTo {
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/mood': typeof MoodRoute
+  '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
   '/notifications': typeof NotificationsRoute
   '/pomodoro': typeof PomodoroRoute
@@ -602,6 +610,7 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
   '/mood': typeof MoodRoute
+  '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
   '/notifications': typeof NotificationsRoute
   '/pomodoro': typeof PomodoroRoute
@@ -674,6 +683,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/meals'
     | '/mood'
+    | '/net-worth'
     | '/notes'
     | '/notifications'
     | '/pomodoro'
@@ -743,6 +753,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/meals'
     | '/mood'
+    | '/net-worth'
     | '/notes'
     | '/notifications'
     | '/pomodoro'
@@ -812,6 +823,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/meals'
     | '/mood'
+    | '/net-worth'
     | '/notes'
     | '/notifications'
     | '/pomodoro'
@@ -883,6 +895,7 @@ export interface RootRouteChildren {
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
   MoodRoute: typeof MoodRoute
+  NetWorthRoute: typeof NetWorthRoute
   NotesRoute: typeof NotesRoute
   NotificationsRoute: typeof NotificationsRoute
   PomodoroRoute: typeof PomodoroRoute
@@ -1031,6 +1044,13 @@ declare module '@tanstack/react-router' {
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/net-worth': {
+      id: '/net-worth'
+      path: '/net-worth'
+      fullPath: '/net-worth'
+      preLoaderRoute: typeof NetWorthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mood': {
@@ -1461,6 +1481,7 @@ const rootRouteChildren: RootRouteChildren = {
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
   MoodRoute: MoodRoute,
+  NetWorthRoute: NetWorthRoute,
   NotesRoute: NotesRoute,
   NotificationsRoute: NotificationsRoute,
   PomodoroRoute: PomodoroRoute,
