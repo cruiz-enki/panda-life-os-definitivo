@@ -49,6 +49,7 @@ import {
   FolderKanban,
   Send,
   BookOpen,
+  ClipboardList,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -59,7 +60,7 @@ import { QuickActionsFab } from "@/components/QuickActionsFab";
 // Items principales en la barra inferior (4 + FAB centrado + Más)
 const primary = [
   { to: "/", label: "Hoy", icon: LayoutDashboard },
-  { to: "/calendar", label: "Plan", icon: CalendarIcon },
+  { to: "/log", label: "Registrar", icon: ClipboardList },
   // <FAB centrado va aquí>
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/chat", label: "Chat", icon: MessageCircle },
@@ -109,6 +110,7 @@ const insightsItems: MoreItem[] = [
 ];
 
 const mindItems: MoreItem[] = [
+  { to: "/calendar", label: "Calendario", icon: CalendarIcon },
   { to: "/identity", label: "Identidad", icon: Target },
   { to: "/future", label: "Futuro", icon: Sparkles },
   { to: "/goals", label: "Metas", icon: Workflow },
