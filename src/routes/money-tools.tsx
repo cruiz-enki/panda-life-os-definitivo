@@ -33,34 +33,32 @@ const CATS = DEFAULT_CATEGORIES.filter((c) => c.kind === "expense");
 
 function MoneyToolsPage() {
   return (
-    <AppShell title="Money Tools">
-      <div className="px-4 py-4 space-y-4 max-w-4xl mx-auto pb-24">
-        <header>
-          <h1 className="text-2xl font-display font-bold">Money Tools</h1>
-          <p className="text-sm text-muted-foreground">
-            Automatiza tu registro: recurrentes, sobres y reglas.
-          </p>
-        </header>
+    <div className="px-4 py-4 space-y-4 max-w-4xl mx-auto pb-24">
+      <header>
+        <h1 className="text-2xl font-display font-bold">Money Tools</h1>
+        <p className="text-sm text-muted-foreground">
+          Automatiza tu registro: recurrentes, sobres y reglas.
+        </p>
+      </header>
 
-        <Tabs defaultValue="recurring">
-          <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="recurring">Recurrentes</TabsTrigger>
-            <TabsTrigger value="envelopes">Sobres</TabsTrigger>
-            <TabsTrigger value="rules">Reglas</TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="recurring">
+        <TabsList className="grid grid-cols-3 w-full">
+          <TabsTrigger value="recurring">Recurrentes</TabsTrigger>
+          <TabsTrigger value="envelopes">Sobres</TabsTrigger>
+          <TabsTrigger value="rules">Reglas</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="recurring" className="mt-4">
-            <RecurringTab />
-          </TabsContent>
-          <TabsContent value="envelopes" className="mt-4">
-            <EnvelopesTab />
-          </TabsContent>
-          <TabsContent value="rules" className="mt-4">
-            <RulesTab />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </AppShell>
+        <TabsContent value="recurring" className="mt-4">
+          <RecurringTab />
+        </TabsContent>
+        <TabsContent value="envelopes" className="mt-4">
+          <EnvelopesTab />
+        </TabsContent>
+        <TabsContent value="rules" className="mt-4">
+          <RulesTab />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
 
