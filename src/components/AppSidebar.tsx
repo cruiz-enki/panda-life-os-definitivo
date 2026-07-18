@@ -127,8 +127,10 @@ function CategoryGroup({
   defaultOpen?: boolean;
 }) {
   const location = useLocation();
+  const { filterItems } = useFocusMode();
+  const visibleItems = filterItems(items);
   const currentHash = location.hash.replace(/^#/, "");
-  const inGroup = items.some(
+  const inGroup = visibleItems.some(
     (i) =>
       i.to === location.pathname &&
       (i.hash === undefined ? currentHash === "" : currentHash === i.hash),
