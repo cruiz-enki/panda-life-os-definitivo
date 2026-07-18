@@ -1,12 +1,12 @@
 /**
  * **Componente** — Barra de navegación inferior para móvil.
+ * Agrupado estilo iOS en 6 categorías: HEALTH, HOME, MONEY, INSIGHTS, MIND, SETUP.
  */
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Repeat,
-  BookOpen,
   Battery,
   Sparkles,
   CheckSquare,
@@ -35,13 +35,8 @@ import {
   Activity,
   Dumbbell,
   Home as HomeIcon,
-  Newspaper,
-  GraduationCap,
-  Mountain,
-  Compass,
   Workflow,
   LayoutGrid,
-  Mail,
   Beaker,
   Moon,
   Smile,
@@ -49,6 +44,11 @@ import {
   MapPin,
   Users,
   Car,
+  Bell,
+  Eye,
+  FolderKanban,
+  Send,
+  BookOpen,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -65,28 +65,28 @@ const primary = [
   { to: "/chat", label: "Chat", icon: MessageCircle },
 ] as const;
 
-type MoreItem = { to: string; label: string; icon: typeof LayoutDashboard };
+type MoreItem = { to: string; label: string; icon: typeof LayoutDashboard; hash?: string };
 
-const conocimiento: MoreItem[] = [
-  
-  { to: "/skill-tree", label: "Skill Tree", icon: Trophy },
-  
-  { to: "/content", label: "Bitácora de Productividad", icon: Library },
-  { to: "/wishlist", label: "Wishlist", icon: Star },
+// ===== 6 categorías estilo iOS =====
+
+const healthItems: MoreItem[] = [
+  { to: "/health", label: "Resumen", icon: Heart },
+  { to: "/health", hash: "body", label: "Cuerpo", icon: Scale },
+  { to: "/meals", label: "Comida", icon: Utensils },
+  { to: "/exercise", label: "Ejercicio", icon: Dumbbell },
+  { to: "/energy", label: "Energía", icon: Battery },
+  { to: "/sleep", label: "Sueño", icon: Moon },
+  { to: "/mood", label: "Mood", icon: Smile },
+  { to: "/health", hash: "meds", label: "Medicación", icon: Pill },
+  { to: "/health", hash: "symptoms", label: "Malestares", icon: AlertCircle },
+  { to: "/health", hash: "medical", label: "Médica", icon: Stethoscope },
+  { to: "/labs", label: "Laboratorios", icon: Beaker },
+  { to: "/psychology", label: "Psicología", icon: Brain },
 ];
 
-const productividad: MoreItem[] = [
-  { to: "/pomodoro", label: "Pomodoro", icon: Brain },
-  { to: "/habits", label: "Hábitos", icon: Repeat },
-  { to: "/time", label: "Tiempo", icon: Clock },
-  { to: "/locations", label: "Ubicaciones", icon: MapPin },
-  { to: "/notes", label: "Notas", icon: NotebookPen },
-];
-
-const hogar: MoreItem[] = [
+const homeItems: MoreItem[] = [
   { to: "/home", label: "Limpieza", icon: HomeIcon },
   { to: "/services", label: "Servicios", icon: LayoutGrid },
-  { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
   { to: "/maintenance", label: "Mantenimiento", icon: Workflow },
   { to: "/vehicles", label: "Vehículos", icon: Car },
   { to: "/inventory", label: "Inventario", icon: Library },
@@ -94,54 +94,52 @@ const hogar: MoreItem[] = [
   { to: "/contacts", label: "Contactos", icon: Users },
 ];
 
-const crecimiento: MoreItem[] = [
-  { to: "/decisions", label: "Decisiones", icon: Scale },
+const moneyItems: MoreItem[] = [
+  { to: "/finance", label: "Finanzas", icon: Wallet },
+  { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
+];
+
+const insightsItems: MoreItem[] = [
+  { to: "/insights", label: "Insights", icon: BarChart3 },
+  { to: "/rewards", label: "Misiones", icon: Trophy },
+  { to: "/skill-tree", label: "Skill Tree", icon: Sparkles },
+  { to: "/content", label: "Bitácora", icon: Library },
+  { to: "/learnings-history", label: "Aprendizajes", icon: BookOpen },
+  { to: "/wishlist", label: "Wishlist", icon: Star },
+];
+
+const mindItems: MoreItem[] = [
   { to: "/identity", label: "Identidad", icon: Target },
   { to: "/future", label: "Futuro", icon: Sparkles },
-  { to: "/goals", label: "Goal Breakdown", icon: Workflow },
+  { to: "/goals", label: "Metas", icon: Workflow },
+  { to: "/decisions", label: "Decisiones", icon: Scale },
+  { to: "/introspection", label: "Introspección", icon: Eye },
+  { to: "/notes", label: "Notas", icon: NotebookPen },
+  { to: "/pomodoro", label: "Pomodoro", icon: Brain },
+  { to: "/habits", label: "Hábitos", icon: Repeat },
+  { to: "/time", label: "Tiempo", icon: Clock },
+  { to: "/locations", label: "Ubicaciones", icon: MapPin },
+  { to: "/projects", label: "Proyectos", icon: FolderKanban },
+  { to: "/scheduled", label: "Al futuro", icon: Send },
 ];
 
-
-const logros: MoreItem[] = [
-  { to: "/rewards", label: "Recompensas", icon: Trophy },
-  { to: "/insights", label: "Insights", icon: BarChart3 },
-];
-
-const otros: MoreItem[] = [
-  { to: "/finance", label: "Finanzas", icon: Wallet },
+const setupItems: MoreItem[] = [
+  { to: "/notifications", label: "Notificaciones", icon: Bell },
   { to: "/settings", label: "Ajustes", icon: Settings },
   { to: "/import", label: "Importar", icon: Download },
 ];
 
-
-const healthSubItems = [
-  { to: "/health", hash: "", label: "Resumen", icon: Heart },
-  { to: "/health", hash: "body", label: "Cuerpo", icon: Scale },
-  { to: "/meals", hash: "", label: "Comida", icon: Utensils },
-  { to: "/health", hash: "meds", label: "Medicación", icon: Pill },
-  { to: "/health", hash: "symptoms", label: "Malestares", icon: AlertCircle },
-  { to: "/health", hash: "medical", label: "Bitácora médica", icon: Stethoscope },
-  { to: "/health", hash: "insights", label: "Insights", icon: Activity },
-  { to: "/exercise", hash: "", label: "Ejercicio", icon: Dumbbell },
-  { to: "/energy", hash: "", label: "Energía", icon: Battery },
-  { to: "/sleep", hash: "", label: "Sueño", icon: Moon },
-  { to: "/mood", hash: "", label: "Mood", icon: Smile },
-  { to: "/labs", hash: "", label: "Laboratorios", icon: Beaker },
-  { to: "/psychology", hash: "", label: "Psicología", icon: Brain },
-] as const;
-
 export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   const location = useLocation();
   const [openMore, setOpenMore] = useState(false);
-  
+
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    Productividad: true,
-    Crecimiento: true,
-    Conocimiento: true,
-    Misiones: true,
-    Otros: true,
-    Salud: true,
-    Hogar: true,
+    HEALTH: true,
+    HOME: false,
+    MONEY: false,
+    INSIGHTS: false,
+    MIND: false,
+    SETUP: false,
   });
   const navigate = useNavigate();
   const { state } = useAppState();
@@ -174,19 +172,24 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
     </Link>
   );
 
+  const sections = [
+    { title: "HEALTH", items: healthItems, icon: Heart },
+    { title: "HOME", items: homeItems, icon: HomeIcon },
+    { title: "MONEY", items: moneyItems, icon: Wallet },
+    { title: "INSIGHTS", items: insightsItems, icon: BarChart3 },
+    { title: "MIND", items: mindItems, icon: Brain },
+    { title: "SETUP", items: setupItems, icon: Settings },
+  ] as const;
+
   return (
     <>
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 pointer-events-none">
         <div className="relative pointer-events-auto">
-          {/* Bottom bar with notch for FAB */}
           <div className="bg-sidebar/95 backdrop-blur-xl border-t border-sidebar-border pb-safe shadow-[0_-8px_24px_-12px_rgba(0,0,0,0.5)]">
             <div className="flex items-end justify-between px-2 pt-2 pb-1.5 gap-1">
               <NavBtn to={primary[0].to} label={primary[0].label} icon={primary[0].icon} active={location.pathname === primary[0].to} />
               <NavBtn to={primary[1].to} label={primary[1].label} icon={primary[1].icon} active={location.pathname === primary[1].to} />
-
-              {/* Spacer for FAB */}
               <div className="w-16 shrink-0" aria-hidden />
-
               <NavBtn to={primary[2].to} label={primary[2].label} icon={primary[2].icon} active={location.pathname === primary[2].to} />
               <NavBtn to={primary[3].to} label={primary[3].label} icon={primary[3].icon} active={location.pathname === primary[3].to} />
               <button
@@ -203,7 +206,6 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
             </div>
           </div>
 
-          {/* Centered FAB — Speed dial con accesos rápidos */}
           <QuickActionsFab
             variant="mobile"
             onCapture={() => {
@@ -212,11 +214,9 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
               else navigate({ to: "/" });
             }}
           />
-
         </div>
       </nav>
 
-      {/* "Más" sheet */}
       {openMore && (
         <div
           className="md:hidden fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex items-end"
@@ -230,7 +230,6 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
               <div className="w-10 h-1 rounded-full bg-muted" />
             </div>
 
-            {/* User strip */}
             <div className="px-5 pt-4 pb-2 flex items-center gap-3">
               <PandaAvatar xp={state.xp} size="sm" />
               <div className="min-w-0 flex-1">
@@ -252,68 +251,11 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
               </button>
             </div>
 
-            {/* Búsqueda global */}
             <div className="px-4 pt-2" onClick={() => setOpenMore(false)}>
               <GlobalSearchTrigger />
             </div>
 
-            {/* Grupo Salud (acordeón) */}
-            <div className="px-4 pt-2">
-              <button
-                type="button"
-                onClick={() => setOpenSections((s) => ({ ...s, Salud: !s.Salud }))}
-                aria-expanded={openSections.Salud}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all ${
-                  location.pathname === "/health" || location.pathname === "/psychology" || location.pathname === "/exercise" || location.pathname === "/meals" || location.pathname === "/energy"
-                    ? "bg-primary/10 border-primary/40 text-primary"
-                    : "bg-secondary/30 border-border text-foreground"
-                }`}
-              >
-                <Heart className="w-5 h-5" />
-                <span className="text-sm font-semibold flex-1 text-left">Salud</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${openSections.Salud ? "rotate-0" : "-rotate-90"}`}
-                />
-              </button>
-
-              {openSections.Salud && (
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {healthSubItems.map((sub) => {
-                    const Icon = sub.icon;
-                    const currentHash = location.hash.replace(/^#/, "");
-                    const active =
-                      location.pathname === sub.to && currentHash === sub.hash;
-                    return (
-                      <Link
-                        key={`${sub.to}#${sub.hash}`}
-                        to={sub.to}
-                        hash={sub.hash || undefined}
-                        onClick={() => setOpenMore(false)}
-                        className={`no-tap-highlight flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
-                          active
-                            ? "bg-primary/10 border-primary/40 text-primary"
-                            : "bg-secondary/20 border-border/60 text-foreground/80 active:bg-secondary"
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span className="text-xs font-medium truncate">
-                          {sub.label}
-                        </span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {([
-              { title: "Conocimiento", items: conocimiento, icon: GraduationCap },
-              { title: "Productividad", items: productividad, icon: NotebookPen },
-              { title: "Hogar", items: hogar, icon: HomeIcon },
-              { title: "Crecimiento", items: crecimiento, icon: Repeat },
-              { title: "Misiones", items: logros, icon: Trophy },
-              { title: "Otros", items: otros, icon: Settings },
-            ] as const).map((section) => {
+            {sections.map((section) => {
               const open = openSections[section.title];
               const sectionActive = section.items.some((i) => i.to === location.pathname);
               const SectionIcon = section.icon;
@@ -332,7 +274,7 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
                     }`}
                   >
                     <SectionIcon className="w-5 h-5" />
-                    <span className="text-sm font-semibold flex-1 text-left">{section.title}</span>
+                    <span className="text-xs font-bold flex-1 text-left tracking-[0.15em]">{section.title}</span>
                     <ChevronDown
                       className={`w-4 h-4 transition-transform ${open ? "rotate-0" : "-rotate-90"}`}
                     />
@@ -341,12 +283,16 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
                   {open && (
                     <div className="grid grid-cols-2 gap-2 mt-2">
                       {section.items.map((m) => {
-                        const active = location.pathname === m.to;
+                        const currentHash = location.hash.replace(/^#/, "");
+                        const active =
+                          location.pathname === m.to &&
+                          (m.hash === undefined ? currentHash === "" : currentHash === m.hash);
                         const Icon = m.icon;
                         return (
                           <Link
-                            key={m.to}
+                            key={`${m.to}#${m.hash ?? ""}-${m.label}`}
                             to={m.to}
+                            hash={m.hash || undefined}
                             onClick={() => setOpenMore(false)}
                             className={`no-tap-highlight flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
                               active

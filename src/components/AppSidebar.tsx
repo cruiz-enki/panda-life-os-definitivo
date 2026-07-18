@@ -1,9 +1,16 @@
 /**
- * **Componente** — Barra lateral principal de navegación con todas las secciones de la app.
+ * **Componente** — Barra lateral principal agrupada estilo iOS en 6 categorías:
+ * HEALTH, HOME, MONEY, INSIGHTS, MIND, SETUP.
  */
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen, Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart, Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Home as HomeIcon, Rocket, FolderKanban, Dumbbell, Download, Newspaper, GraduationCap, Mountain, Compass, Workflow, LayoutGrid, Mail, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin, Car } from "lucide-react";
+import {
+  LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen,
+  Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart,
+  Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill,
+  AlertCircle, Stethoscope, Home as HomeIcon, FolderKanban, Dumbbell, Download,
+  Workflow, LayoutGrid, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin, Car, Send,
+} from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
@@ -11,97 +18,87 @@ import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; hash?: string };
 
-// Items sueltos arriba
+// Items sueltos arriba — accesos rápidos siempre visibles
 const topItems: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/introspection", label: "Introspección", icon: Eye },
-  { to: "/pomodoro", label: "Pomodoro", icon: Brain },
-  { to: "/decisions", label: "Decisiones", icon: Scale },
+  { to: "/", label: "Hoy", icon: LayoutDashboard },
+  { to: "/calendar", label: "Plan", icon: CalendarIcon },
+  { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/chat", label: "Chat IA", icon: MessageCircle },
 ];
 
-const conocimientoItems: NavItem[] = [
-  
-  
-  { to: "/learnings-history", label: "Mis Aprendizajes", icon: BookOpen },
-  { to: "/skill-tree", label: "Skill Tree", icon: Trophy },
-  
-  { to: "/content", label: "Bitácora", icon: Library },
-  { to: "/wishlist", label: "Wishlist", icon: Star },
+// ===== 6 categorías estilo iOS =====
+
+const healthItems: NavItem[] = [
+  { to: "/health", label: "Resumen", icon: Heart },
+  { to: "/health", hash: "body", label: "Cuerpo", icon: Scale },
+  { to: "/meals", label: "Comida", icon: Utensils },
+  { to: "/exercise", label: "Ejercicio", icon: Dumbbell },
+  { to: "/energy", label: "Energía", icon: Battery },
+  { to: "/sleep", label: "Sueño", icon: Moon },
+  { to: "/mood", label: "Mood", icon: Smile },
+  { to: "/health", hash: "meds", label: "Medicación", icon: Pill },
+  { to: "/health", hash: "symptoms", label: "Malestares", icon: AlertCircle },
+  { to: "/health", hash: "medical", label: "Médica", icon: Stethoscope },
+  { to: "/labs", label: "Laboratorios", icon: Beaker },
+  { to: "/psychology", label: "Psicología", icon: Brain },
 ];
 
-
-const productividadItems: NavItem[] = [
-  { to: "/calendar", label: "Calendario", icon: CalendarIcon },
-  { to: "/tasks", label: "Tareas", icon: CheckSquare },
-  { to: "/habits", label: "Hábitos", icon: Repeat },
-  { to: "/time", label: "Tiempo", icon: Clock },
-  { to: "/locations", label: "Ubicaciones", icon: MapPin },
-  { to: "/notes", label: "Notas", icon: NotebookPen },
-  { to: "/projects", label: "Proyectos", icon: FolderKanban },
-];
-
-const hogarLimpiezaItem: NavItem = { to: "/home", label: "Limpieza", icon: HomeIcon };
-const serviciosItem: NavItem = { to: "/services", label: "Servicios", icon: LayoutGrid };
-const mantenimientoItem: NavItem = { to: "/maintenance", label: "Mantenimiento", icon: Workflow };
-
-const hogarGroupItems: NavItem[] = [
-  hogarLimpiezaItem,
-  serviciosItem,
-  { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
-  mantenimientoItem,
+const homeItems: NavItem[] = [
+  { to: "/home", label: "Limpieza", icon: HomeIcon },
+  { to: "/services", label: "Servicios", icon: LayoutGrid },
+  { to: "/maintenance", label: "Mantenimiento", icon: Workflow },
   { to: "/vehicles", label: "Vehículos", icon: Car },
   { to: "/inventory", label: "Inventario", icon: Library },
   { to: "/family", label: "Hocicos", icon: Heart },
   { to: "/contacts", label: "Contactos", icon: Users },
 ];
 
-const crecimientoItems: NavItem[] = [
+const moneyItems: NavItem[] = [
+  { to: "/finance", label: "Finanzas", icon: Wallet },
+  { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
+];
+
+const insightsItems: NavItem[] = [
+  { to: "/insights", label: "Insights", icon: BarChart3 },
+  { to: "/rewards", label: "Misiones", icon: Trophy },
+  { to: "/skill-tree", label: "Skill Tree", icon: Sparkles },
+  { to: "/content", label: "Bitácora", icon: Library },
+  { to: "/learnings-history", label: "Aprendizajes", icon: BookOpen },
+  { to: "/wishlist", label: "Wishlist", icon: Star },
+];
+
+const mindItems: NavItem[] = [
   { to: "/identity", label: "Identidad", icon: Target },
   { to: "/future", label: "Futuro", icon: Sparkles },
-  { to: "/goals", label: "Goal Breakdown", icon: Workflow },
+  { to: "/goals", label: "Metas", icon: Workflow },
+  { to: "/decisions", label: "Decisiones", icon: Scale },
+  { to: "/introspection", label: "Introspección", icon: Eye },
+  { to: "/notes", label: "Notas", icon: NotebookPen },
+  { to: "/pomodoro", label: "Pomodoro", icon: Brain },
+  { to: "/habits", label: "Hábitos", icon: Repeat },
+  { to: "/time", label: "Tiempo", icon: Clock },
+  { to: "/locations", label: "Ubicaciones", icon: MapPin },
+  { to: "/projects", label: "Proyectos", icon: FolderKanban },
+  { to: "/scheduled", label: "Al futuro", icon: Send },
 ];
 
-
-const misionesItems: NavItem[] = [
-  { to: "/rewards", label: "Misiones", icon: Trophy },
-  { to: "/insights", label: "Insights", icon: BarChart3 },
-];
-
-// Items sueltos abajo
-const bottomItems: NavItem[] = [
-  { to: "/finance", label: "Finanzas", icon: Wallet },
-  { to: "/scheduled", label: "Mensajes al futuro", icon: Clock },
+const setupItems: NavItem[] = [
   { to: "/notifications", label: "Notificaciones", icon: Bell },
   { to: "/settings", label: "Ajustes", icon: Settings },
   { to: "/import", label: "Importar", icon: Download },
 ];
 
-const healthSubItems = [
-  { to: "/health", hash: "", label: "Resumen", icon: Heart },
-  { to: "/health", hash: "body", label: "Cuerpo", icon: Scale },
-  { to: "/meals", hash: "", label: "Comida", icon: Utensils },
-  { to: "/health", hash: "meds", label: "Medicación", icon: Pill },
-  { to: "/health", hash: "symptoms", label: "Malestares", icon: AlertCircle },
-  { to: "/health", hash: "medical", label: "Bitácora médica", icon: Stethoscope },
-  { to: "/health", hash: "insights", label: "Insights", icon: Activity },
-  { to: "/exercise", hash: "", label: "Ejercicio", icon: Dumbbell },
-  { to: "/energy", hash: "", label: "Energía", icon: Battery },
-  { to: "/sleep", hash: "", label: "Sueño", icon: Moon },
-  { to: "/mood", hash: "", label: "Mood", icon: Smile },
-  { to: "/labs", hash: "", label: "Laboratorios", icon: Beaker },
-  { to: "/psychology", hash: "", label: "Psicología", icon: Brain },
-] as const;
-
 function NavLink({ item }: { item: NavItem }) {
   const location = useLocation();
-  const active = location.pathname === item.to;
+  const currentHash = location.hash.replace(/^#/, "");
+  const active =
+    location.pathname === item.to &&
+    (item.hash === undefined ? currentHash === "" : currentHash === item.hash);
   const Icon = item.icon;
   return (
     <Link
       to={item.to}
       hash={item.hash}
-
       className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
         active
           ? "bg-sidebar-accent text-primary shadow-card"
@@ -115,26 +112,33 @@ function NavLink({ item }: { item: NavItem }) {
   );
 }
 
-function CollapsibleGroup({
+function CategoryGroup({
   storageKey,
   label,
   icon: Icon,
   items,
+  defaultOpen = false,
 }: {
   storageKey: string;
   label: string;
   icon: typeof LayoutDashboard;
   items: NavItem[];
+  defaultOpen?: boolean;
 }) {
   const location = useLocation();
-  const inGroup = items.some((i) => i.to === location.pathname);
+  const currentHash = location.hash.replace(/^#/, "");
+  const inGroup = items.some(
+    (i) =>
+      i.to === location.pathname &&
+      (i.hash === undefined ? currentHash === "" : currentHash === i.hash),
+  );
 
   const [open, setOpen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return inGroup;
+    if (typeof window === "undefined") return inGroup || defaultOpen;
     const stored = window.localStorage.getItem(storageKey);
     if (stored === "1") return true;
     if (stored === "0") return false;
-    return inGroup;
+    return inGroup || defaultOpen;
   });
 
   useEffect(() => {
@@ -155,29 +159,28 @@ function CollapsibleGroup({
         type="button"
         onClick={toggle}
         aria-expanded={open}
-        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold tracking-[0.15em] transition-all ${
           inGroup
             ? "bg-sidebar-accent text-primary shadow-card"
-            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+            : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
         }`}
       >
         <Icon className="w-4 h-4" />
         <span className="flex-1 text-left">{label}</span>
-        <ChevronDown
-          className={`w-4 h-4 transition-transform ${open ? "rotate-0" : "-rotate-90"}`}
-        />
+        <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-0" : "-rotate-90"}`} />
       </button>
       {open && (
         <div className="mt-1 ml-3 pl-3 border-l border-sidebar-border space-y-0.5">
           {items.map((item) => {
-            const active = location.pathname === item.to;
+            const active =
+              location.pathname === item.to &&
+              (item.hash === undefined ? currentHash === "" : currentHash === item.hash);
             const SubIcon = item.icon;
             return (
               <Link
-                key={item.to}
+                key={`${item.to}#${item.hash ?? ""}-${item.label}`}
                 to={item.to}
                 hash={item.hash}
-
                 className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${
                   active
                     ? "bg-sidebar-accent text-primary"
@@ -186,90 +189,6 @@ function CollapsibleGroup({
               >
                 <SubIcon className="w-3.5 h-3.5" />
                 {item.label}
-                {active && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-const HEALTH_OPEN_KEY = "enki:sidebar:health-open";
-
-function HealthGroup() {
-  const location = useLocation();
-  const inGroup =
-    location.pathname === "/health" ||
-    location.pathname === "/psychology" ||
-    location.pathname === "/exercise" ||
-    location.pathname === "/meals" ||
-    location.pathname === "/energy";
-
-  const [open, setOpen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return inGroup;
-    const stored = window.localStorage.getItem(HEALTH_OPEN_KEY);
-    if (stored === "1") return true;
-    if (stored === "0") return false;
-    return inGroup;
-  });
-
-  useEffect(() => {
-    if (inGroup) setOpen(true);
-  }, [inGroup]);
-
-  const toggle = () => {
-    const next = !open;
-    setOpen(next);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(HEALTH_OPEN_KEY, next ? "1" : "0");
-    }
-  };
-
-  const isSubActive = (sub: typeof healthSubItems[number]) => {
-    if (location.pathname !== sub.to) return false;
-    const currentHash = location.hash.replace(/^#/, "");
-    return currentHash === sub.hash;
-  };
-
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={toggle}
-        aria-expanded={open}
-        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-          inGroup
-            ? "bg-sidebar-accent text-primary shadow-card"
-            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-        }`}
-      >
-        <Heart className="w-4 h-4" />
-        <span className="flex-1 text-left">Salud</span>
-        <ChevronDown
-          className={`w-4 h-4 transition-transform ${open ? "rotate-0" : "-rotate-90"}`}
-        />
-      </button>
-
-      {open && (
-        <div className="mt-1 ml-3 pl-3 border-l border-sidebar-border space-y-0.5">
-          {healthSubItems.map((sub) => {
-            const Icon = sub.icon;
-            const active = isSubActive(sub);
-            return (
-              <Link
-                key={`${sub.to}#${sub.hash}`}
-                to={sub.to}
-                hash={sub.hash || undefined}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${
-                  active
-                    ? "bg-sidebar-accent text-primary"
-                    : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/40"
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {sub.label}
                 {active && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </Link>
             );
@@ -325,13 +244,13 @@ export function AppSidebar() {
 
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {topItems.map((item) => <NavLink key={item.to} item={item} />)}
-        <CollapsibleGroup storageKey="enki:sidebar:conocimiento-open" label="Conocimiento" icon={GraduationCap} items={conocimientoItems} />
-        <HealthGroup />
-        <CollapsibleGroup storageKey="enki:sidebar:productividad-open" label="Productividad" icon={FolderKanban} items={productividadItems} />
-        <CollapsibleGroup storageKey="enki:sidebar:hogar-open" label="Hogar" icon={HomeIcon} items={hogarGroupItems} />
-        <CollapsibleGroup storageKey="enki:sidebar:crecimiento-open" label="Crecimiento" icon={Rocket} items={crecimientoItems} />
-        <CollapsibleGroup storageKey="enki:sidebar:logros-open" label="Misiones" icon={Trophy} items={misionesItems} />
-        {bottomItems.map((item) => <NavLink key={item.to} item={item} />)}
+        <div className="h-2" />
+        <CategoryGroup storageKey="enki:sidebar:health" label="HEALTH" icon={Heart} items={healthItems} defaultOpen />
+        <CategoryGroup storageKey="enki:sidebar:home" label="HOME" icon={HomeIcon} items={homeItems} />
+        <CategoryGroup storageKey="enki:sidebar:money" label="MONEY" icon={Wallet} items={moneyItems} />
+        <CategoryGroup storageKey="enki:sidebar:insights" label="INSIGHTS" icon={BarChart3} items={insightsItems} />
+        <CategoryGroup storageKey="enki:sidebar:mind" label="MIND" icon={Brain} items={mindItems} />
+        <CategoryGroup storageKey="enki:sidebar:setup" label="SETUP" icon={Settings} items={setupItems} />
       </nav>
 
       <div className="px-3 pt-3 pb-2 border-t border-sidebar-border mt-2">
