@@ -17,15 +17,15 @@ import {
 
 type Variant = "mobile" | "desktop";
 
-const shortcuts = [
+const shortcuts: { to: string; label: string; icon: typeof Plus; search?: Record<string, string> }[] = [
   { to: "/log", label: "Registrar", icon: ClipboardList },
-  { to: "/log?tab=expense", label: "Gasto", icon: DollarSign },
+  { to: "/log", label: "Gasto", icon: DollarSign, search: { tab: "expense" } },
   { to: "/calendar", label: "Calendario", icon: CalendarIcon },
   { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/notes", label: "Notas", icon: NotebookPen },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/chat", label: "Coach IA", icon: MessageCircle },
-] as const;
+];
 
 export function QuickActionsFab({
   variant,
