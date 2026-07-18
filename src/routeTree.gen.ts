@@ -28,6 +28,7 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as NetWorthRouteImport } from './routes/net-worth'
 import { Route as MoodRouteImport } from './routes/mood'
+import { Route as MoneyToolsRouteImport } from './routes/money-tools'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
 import { Route as LogRouteImport } from './routes/log'
@@ -175,6 +176,11 @@ const NetWorthRoute = NetWorthRouteImport.update({
 const MoodRoute = MoodRouteImport.update({
   id: '/mood',
   path: '/mood',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoneyToolsRoute = MoneyToolsRouteImport.update({
+  id: '/money-tools',
+  path: '/money-tools',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MealsRoute = MealsRouteImport.update({
@@ -488,6 +494,7 @@ export interface FileRoutesByFullPath {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/money-tools': typeof MoneyToolsRoute
   '/mood': typeof MoodRoute
   '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
@@ -561,6 +568,7 @@ export interface FileRoutesByTo {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/money-tools': typeof MoneyToolsRoute
   '/mood': typeof MoodRoute
   '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
@@ -635,6 +643,7 @@ export interface FileRoutesById {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/money-tools': typeof MoneyToolsRoute
   '/mood': typeof MoodRoute
   '/net-worth': typeof NetWorthRoute
   '/notes': typeof NotesRoute
@@ -711,6 +720,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/money-tools'
     | '/mood'
     | '/net-worth'
     | '/notes'
@@ -784,6 +794,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/money-tools'
     | '/mood'
     | '/net-worth'
     | '/notes'
@@ -857,6 +868,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/money-tools'
     | '/mood'
     | '/net-worth'
     | '/notes'
@@ -932,6 +944,7 @@ export interface RootRouteChildren {
   LogRoute: typeof LogRoute
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
+  MoneyToolsRoute: typeof MoneyToolsRoute
   MoodRoute: typeof MoodRoute
   NetWorthRoute: typeof NetWorthRoute
   NotesRoute: typeof NotesRoute
@@ -1104,6 +1117,13 @@ declare module '@tanstack/react-router' {
       path: '/mood'
       fullPath: '/mood'
       preLoaderRoute: typeof MoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/money-tools': {
+      id: '/money-tools'
+      path: '/money-tools'
+      fullPath: '/money-tools'
+      preLoaderRoute: typeof MoneyToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meals': {
@@ -1542,6 +1562,7 @@ const rootRouteChildren: RootRouteChildren = {
   LogRoute: LogRoute,
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
+  MoneyToolsRoute: MoneyToolsRoute,
   MoodRoute: MoodRoute,
   NetWorthRoute: NetWorthRoute,
   NotesRoute: NotesRoute,
