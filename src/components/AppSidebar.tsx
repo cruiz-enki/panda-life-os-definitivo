@@ -15,6 +15,7 @@ import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
+import { useFocusMode } from "@/hooks/use-focus-mode";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; hash?: string };
 
