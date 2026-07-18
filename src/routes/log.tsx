@@ -7,30 +7,40 @@ import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import {
   Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
-  Check, Plus, ArrowRight, Flame,
+  Check, Plus, ArrowRight, Flame, DollarSign,
 } from "lucide-react";
 import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
 import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
 import { useSleep } from "@/hooks/use-sleep";
 import { useMeals } from "@/hooks/use-meals";
+import { useFinance } from "@/hooks/use-finance";
+import { DEFAULT_CATEGORIES, PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/finance-types";
 import type { Priority } from "@/lib/storage-types";
 
+type LogSearch = { tab?: TabKey };
+
 export const Route = createFileRoute("/log")({
+  validateSearch: (s: Record<string, unknown>): LogSearch => {
+    const t = s.tab;
+    const allowed: TabKey[] = ["habits", "tasks", "mood", "sleep", "meals", "energy", "expense"];
+    return { tab: typeof t === "string" && (allowed as string[]).includes(t) ? (t as TabKey) : undefined };
+  },
   head: () => ({
     meta: [
       { title: "Registrar · Panda's LIFE OS" },
-      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas y energía." },
+      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas, energía y gastos." },
     ],
   }),
   component: LogPage,
 });
 
-type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "energy";
+type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "energy" | "expense";
 
 const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
   { key: "habits", label: "Hábitos", icon: Repeat },
   { key: "tasks", label: "Tareas", icon: CheckSquare },
+  { key: "expense", label: "Gasto", icon: DollarSign },
   { key: "mood", label: "Mood", icon: Smile },
   { key: "sleep", label: "Sueño", icon: Moon },
   { key: "meals", label: "Comidas", icon: Utensils },
@@ -38,7 +48,8 @@ const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
 ];
 
 function LogPage() {
-  const [tab, setTab] = useState<TabKey>("habits");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState<TabKey>(search.tab ?? "habits");
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -75,11 +86,174 @@ function LogPage() {
       <div className="px-4 pt-4 max-w-2xl mx-auto">
         {tab === "habits" && <HabitsQuick />}
         {tab === "tasks" && <TasksQuick />}
+        {tab === "expense" && <ExpenseQuick />}
         {tab === "mood" && <MoodQuick />}
         {tab === "sleep" && <SleepQuick />}
         {tab === "meals" && <MealsQuick />}
         {tab === "energy" && <EnergyQuick />}
       </div>
+    </div>
+  );
+}
+
+/* ---------------- Gasto ---------------- */
+function ExpenseQuick() {
+  const { cards, categories, createExpense } = useFinance();
+  const [amount, setAmount] = useState("");
+  const [date, setDate] = useState(todayCDMX());
+  const [category, setCategory] = useState("Otros");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+  const [cardId, setCardId] = useState<string>("");
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const allCats = [
+    ...DEFAULT_CATEGORIES.filter((d) => d.kind === "expense").map((d) => ({ name: d.name, emoji: d.emoji })),
+    ...categories.filter((c) => c.kind === "expense").map((c) => ({ name: c.name, emoji: c.emoji })),
+  ];
+
+  const activeCards = cards.filter((c) => c.status === "active");
+
+  const submit = async () => {
+    const amt = Number(amount);
+    if (!amt || amt <= 0) return toast.error("Monto inválido");
+    if (paymentMethod === "credit" && !cardId) return toast.error("Selecciona tarjeta");
+    setSaving(true);
+    const err = await createExpense({
+      amount: amt,
+      date,
+      category,
+      payment_method: paymentMethod,
+      card_id: paymentMethod === "credit" ? cardId || null : null,
+      note,
+      tags: [],
+      kind: "expense",
+      expense_type: "normal",
+      msi_plan_id: null,
+    });
+    setSaving(false);
+    if (err) return toast.error("No se pudo guardar");
+    toast.success(`Gasto registrado · $${amt.toFixed(2)}`);
+    setAmount("");
+    setNote("");
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-4 rounded-2xl border border-border bg-card space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <label className="text-xs text-muted-foreground space-y-1">
+            Monto
+            <input
+              type="number"
+              inputMode="decimal"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="w-full bg-secondary/20 border border-border rounded-xl px-3 py-2 text-base mt-1 outline-none"
+              autoFocus
+            />
+          </label>
+          <label className="text-xs text-muted-foreground space-y-1">
+            Fecha
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full bg-secondary/20 border border-border rounded-xl px-3 py-2 text-sm mt-1"
+            />
+          </label>
+        </div>
+
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">Categoría</div>
+          <div className="flex flex-wrap gap-1.5">
+            {allCats.map((c) => {
+              const on = category === c.name;
+              return (
+                <button
+                  key={c.name}
+                  type="button"
+                  onClick={() => setCategory(c.name)}
+                  className={`px-2.5 py-1.5 rounded-full text-xs border ${
+                    on ? "bg-primary/10 border-primary/40 text-primary" : "border-border text-muted-foreground"
+                  }`}
+                >
+                  {c.emoji} {c.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">Método de pago</div>
+          <div className="flex flex-wrap gap-1.5">
+            {(Object.keys(PAYMENT_METHOD_LABELS) as PaymentMethod[]).map((m) => {
+              const on = paymentMethod === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setPaymentMethod(m)}
+                  className={`px-2.5 py-1.5 rounded-full text-xs border ${
+                    on ? "bg-primary/10 border-primary/40 text-primary" : "border-border text-muted-foreground"
+                  }`}
+                >
+                  {PAYMENT_METHOD_LABELS[m]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {paymentMethod === "credit" && activeCards.length > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground mb-2">Tarjeta</div>
+            <div className="flex flex-wrap gap-1.5">
+              {activeCards.map((c) => {
+                const on = cardId === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setCardId(c.id)}
+                    className={`px-2.5 py-1.5 rounded-full text-xs border ${
+                      on ? "bg-primary/10 border-primary/40 text-primary" : "border-border text-muted-foreground"
+                    }`}
+                  >
+                    {c.icon} {c.name} ····{c.last_four}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Nota (opcional)"
+          rows={2}
+          className="w-full bg-secondary/20 border border-border rounded-xl px-3 py-2 text-sm outline-none"
+        />
+
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!amount || saving}
+          className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium disabled:opacity-40 flex items-center justify-center gap-2"
+        >
+          <Plus className="w-4 h-4" /> {saving ? "Guardando…" : "Registrar gasto"}
+        </button>
+      </div>
+
+      <Link
+        to="/finance"
+        className="flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground"
+      >
+        Ver finanzas <ArrowRight className="w-4 h-4" />
+      </Link>
     </div>
   );
 }
