@@ -148,6 +148,7 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   const { state } = useAppState();
   const { level, progress } = levelFromXp(state.xp);
   const { user, signOut } = useAuth();
+  const { filterItems } = useFocusMode();
 
   const moreActive =
     !primary.some((p) => p.to === location.pathname) &&
