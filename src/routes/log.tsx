@@ -7,30 +7,40 @@ import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import {
   Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
-  Check, Plus, ArrowRight, Flame,
+  Check, Plus, ArrowRight, Flame, DollarSign,
 } from "lucide-react";
 import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
 import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
 import { useSleep } from "@/hooks/use-sleep";
 import { useMeals } from "@/hooks/use-meals";
+import { useFinance } from "@/hooks/use-finance";
+import { DEFAULT_CATEGORIES, PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/finance-types";
 import type { Priority } from "@/lib/storage-types";
 
+type LogSearch = { tab?: TabKey };
+
 export const Route = createFileRoute("/log")({
+  validateSearch: (s: Record<string, unknown>): LogSearch => {
+    const t = s.tab;
+    const allowed: TabKey[] = ["habits", "tasks", "mood", "sleep", "meals", "energy", "expense"];
+    return { tab: typeof t === "string" && (allowed as string[]).includes(t) ? (t as TabKey) : undefined };
+  },
   head: () => ({
     meta: [
       { title: "Registrar · Panda's LIFE OS" },
-      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas y energía." },
+      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas, energía y gastos." },
     ],
   }),
   component: LogPage,
 });
 
-type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "energy";
+type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "energy" | "expense";
 
 const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
   { key: "habits", label: "Hábitos", icon: Repeat },
   { key: "tasks", label: "Tareas", icon: CheckSquare },
+  { key: "expense", label: "Gasto", icon: DollarSign },
   { key: "mood", label: "Mood", icon: Smile },
   { key: "sleep", label: "Sueño", icon: Moon },
   { key: "meals", label: "Comidas", icon: Utensils },
