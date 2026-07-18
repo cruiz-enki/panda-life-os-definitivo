@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { PiggyBank, Plus, Trash2, Pencil, ShieldCheck, TrendingUp, Target } from "lucide-react";
 import { useSavingsGoals, GOAL_KIND_META, type SavingsGoal, type SavingsGoalKind } from "@/hooks/use-savings-goals";
 import { useCashflow } from "@/hooks/use-cashflow";
+import { useServices } from "@/hooks/use-services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,17 +32,18 @@ export const Route = createFileRoute("/savings")({
 
 function SavingsPage() {
   const { goals, totals, createGoal, updateGoal, deleteGoal, addContribution } = useSavingsGoals();
-  const { recurringExpenses, subscriptions } = useCashflow();
+  const { recurring } = useCashflow();
+  const { services } = useServices();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<SavingsGoal | null>(null);
   const [contribOpen, setContribOpen] = useState<SavingsGoal | null>(null);
 
   // Gastos fijos mensuales estimados (para "meses de gastos")
   const monthlyFixed = useMemo(() => {
-    const rec = (recurringExpenses ?? []).reduce((s, r: any) => s + Number(r.amount || 0), 0);
-    const subs = (subscriptions ?? []).reduce((s, r: any) => s + Number(r.monthly_cost || 0), 0);
+    const rec = (recurring ?? []).filter((r) => r.status === "active").reduce((s, r) => s + Number(r.amount || 0), 0);
+    const subs = (services ?? []).filter((r) => r.status === "active").reduce((s, r) => s + Number(r.monthly_cost || 0), 0);
     return rec + subs;
-  }, [recurringExpenses, subscriptions]);
+  }, [recurring, services]);
 
   const emergency = useMemo(() => goals.find((g) => g.kind === "emergency" && g.status === "active"), [goals]);
   const emergencyTarget = emergency?.months_of_expenses ? monthlyFixed * emergency.months_of_expenses : (emergency?.target_amount ?? 0);
