@@ -3,6 +3,7 @@
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { NotificationsCard } from "@/components/NotificationsCard";
+import { FocusModeCard } from "@/components/FocusModeCard";
 import { TelegramCard } from "@/components/TelegramCard";
 import { useAuth } from "@/lib/auth-context";
 import { useAppState } from "@/lib/storage";
@@ -45,6 +46,8 @@ function SettingsPage() {
           Activa o oculta el panel de hábitos de liderazgo y operación de alto impacto en la sección de Hábitos.
         </p>
       </Card>
+
+      <FocusModeCard />
 
       <NotificationsCard />
 

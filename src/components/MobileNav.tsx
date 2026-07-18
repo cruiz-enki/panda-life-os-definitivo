@@ -56,6 +56,7 @@ import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 import { QuickActionsFab } from "@/components/QuickActionsFab";
+import { useFocusMode } from "@/hooks/use-focus-mode";
 
 // Items principales en la barra inferior (4 + FAB centrado + Más)
 const primary = [
@@ -147,6 +148,7 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   const { state } = useAppState();
   const { level, progress } = levelFromXp(state.xp);
   const { user, signOut } = useAuth();
+  const { filterItems } = useFocusMode();
 
   const moreActive =
     !primary.some((p) => p.to === location.pathname) &&
@@ -175,13 +177,13 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   );
 
   const sections = [
-    { title: "HEALTH", items: healthItems, icon: Heart },
-    { title: "HOME", items: homeItems, icon: HomeIcon },
-    { title: "MONEY", items: moneyItems, icon: Wallet },
-    { title: "INSIGHTS", items: insightsItems, icon: BarChart3 },
-    { title: "MIND", items: mindItems, icon: Brain },
-    { title: "SETUP", items: setupItems, icon: Settings },
-  ] as const;
+    { title: "HEALTH", items: filterItems(healthItems), icon: Heart },
+    { title: "HOME", items: filterItems(homeItems), icon: HomeIcon },
+    { title: "MONEY", items: filterItems(moneyItems), icon: Wallet },
+    { title: "INSIGHTS", items: filterItems(insightsItems), icon: BarChart3 },
+    { title: "MIND", items: filterItems(mindItems), icon: Brain },
+    { title: "SETUP", items: filterItems(setupItems), icon: Settings },
+  ].filter((s) => s.items.length > 0);
 
   return (
     <>

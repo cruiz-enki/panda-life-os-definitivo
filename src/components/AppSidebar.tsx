@@ -15,6 +15,7 @@ import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
+import { useFocusMode } from "@/hooks/use-focus-mode";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; hash?: string };
 
@@ -126,8 +127,10 @@ function CategoryGroup({
   defaultOpen?: boolean;
 }) {
   const location = useLocation();
+  const { filterItems } = useFocusMode();
+  const visibleItems = filterItems(items);
   const currentHash = location.hash.replace(/^#/, "");
-  const inGroup = items.some(
+  const inGroup = visibleItems.some(
     (i) =>
       i.to === location.pathname &&
       (i.hash === undefined ? currentHash === "" : currentHash === i.hash),
@@ -153,6 +156,8 @@ function CategoryGroup({
     }
   };
 
+  if (visibleItems.length === 0) return null;
+
   return (
     <div>
       <button
@@ -171,7 +176,7 @@ function CategoryGroup({
       </button>
       {open && (
         <div className="mt-1 ml-3 pl-3 border-l border-sidebar-border space-y-0.5">
-          {items.map((item) => {
+          {visibleItems.map((item) => {
             const active =
               location.pathname === item.to &&
               (item.hash === undefined ? currentHash === "" : currentHash === item.hash);
