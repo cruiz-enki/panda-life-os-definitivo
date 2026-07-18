@@ -51,6 +51,7 @@ import { Route as DecisionsRouteImport } from './routes/decisions'
 import { Route as ContentRouteImport } from './routes/content'
 import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as ChatRouteImport } from './routes/chat'
+import { Route as CashflowRouteImport } from './routes/cashflow'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -289,6 +290,11 @@ const ChatRoute = ChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CashflowRoute = CashflowRouteImport.update({
+  id: '/cashflow',
+  path: '/cashflow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalendarRoute = CalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
@@ -444,6 +450,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendar': typeof CalendarRoute
+  '/cashflow': typeof CashflowRoute
   '/chat': typeof ChatRoute
   '/contacts': typeof ContactsRoute
   '/content': typeof ContentRoute
@@ -515,6 +522,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendar': typeof CalendarRoute
+  '/cashflow': typeof CashflowRoute
   '/chat': typeof ChatRoute
   '/contacts': typeof ContactsRoute
   '/content': typeof ContentRoute
@@ -585,6 +593,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendar': typeof CalendarRoute
+  '/cashflow': typeof CashflowRoute
   '/chat': typeof ChatRoute
   '/contacts': typeof ContactsRoute
   '/content': typeof ContentRoute
@@ -658,6 +667,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calendar'
+    | '/cashflow'
     | '/chat'
     | '/contacts'
     | '/content'
@@ -729,6 +739,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calendar'
+    | '/cashflow'
     | '/chat'
     | '/contacts'
     | '/content'
@@ -798,6 +809,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calendar'
+    | '/cashflow'
     | '/chat'
     | '/contacts'
     | '/content'
@@ -870,6 +882,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   CalendarRoute: typeof CalendarRoute
+  CashflowRoute: typeof CashflowRoute
   ChatRoute: typeof ChatRoute
   ContactsRoute: typeof ContactsRoute
   ContentRoute: typeof ContentRoute
@@ -1228,6 +1241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cashflow': {
+      id: '/cashflow'
+      path: '/cashflow'
+      fullPath: '/cashflow'
+      preLoaderRoute: typeof CashflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calendar': {
       id: '/calendar'
       path: '/calendar'
@@ -1456,6 +1476,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CalendarRoute: CalendarRoute,
+  CashflowRoute: CashflowRoute,
   ChatRoute: ChatRoute,
   ContactsRoute: ContactsRoute,
   ContentRoute: ContentRoute,
