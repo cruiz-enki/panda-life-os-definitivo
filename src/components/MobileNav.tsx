@@ -110,6 +110,7 @@ const insightsItems: MoreItem[] = [
 ];
 
 const mindItems: MoreItem[] = [
+  { to: "/calendar", label: "Calendario", icon: CalendarIcon },
   { to: "/identity", label: "Identidad", icon: Target },
   { to: "/future", label: "Futuro", icon: Sparkles },
   { to: "/goals", label: "Metas", icon: Workflow },
