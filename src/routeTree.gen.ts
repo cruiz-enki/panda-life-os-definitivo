@@ -19,6 +19,7 @@ import { Route as SkillTreeRouteImport } from './routes/skill-tree'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ScheduledRouteImport } from './routes/scheduled'
+import { Route as SavingsRouteImport } from './routes/savings'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as PsychologyRouteImport } from './routes/psychology'
 import { Route as ProjectsRouteImport } from './routes/projects'
@@ -129,6 +130,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const ScheduledRoute = ScheduledRouteImport.update({
   id: '/scheduled',
   path: '/scheduled',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavingsRoute = SavingsRouteImport.update({
+  id: '/savings',
+  path: '/savings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RewardsRoute = RewardsRouteImport.update({
@@ -490,6 +496,7 @@ export interface FileRoutesByFullPath {
   '/projects': typeof ProjectsRouteWithChildren
   '/psychology': typeof PsychologyRoute
   '/rewards': typeof RewardsRoute
+  '/savings': typeof SavingsRoute
   '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
@@ -561,6 +568,7 @@ export interface FileRoutesByTo {
   '/pomodoro': typeof PomodoroRoute
   '/psychology': typeof PsychologyRoute
   '/rewards': typeof RewardsRoute
+  '/savings': typeof SavingsRoute
   '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
@@ -635,6 +643,7 @@ export interface FileRoutesById {
   '/projects': typeof ProjectsRouteWithChildren
   '/psychology': typeof PsychologyRoute
   '/rewards': typeof RewardsRoute
+  '/savings': typeof SavingsRoute
   '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
@@ -710,6 +719,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/psychology'
     | '/rewards'
+    | '/savings'
     | '/scheduled'
     | '/services'
     | '/settings'
@@ -781,6 +791,7 @@ export interface FileRouteTypes {
     | '/pomodoro'
     | '/psychology'
     | '/rewards'
+    | '/savings'
     | '/scheduled'
     | '/services'
     | '/settings'
@@ -854,6 +865,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/psychology'
     | '/rewards'
+    | '/savings'
     | '/scheduled'
     | '/services'
     | '/settings'
@@ -928,6 +940,7 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRouteWithChildren
   PsychologyRoute: typeof PsychologyRoute
   RewardsRoute: typeof RewardsRoute
+  SavingsRoute: typeof SavingsRoute
   ScheduledRoute: typeof ScheduledRoute
   ServicesRoute: typeof ServicesRoute
   SettingsRoute: typeof SettingsRoute
@@ -1028,6 +1041,13 @@ declare module '@tanstack/react-router' {
       path: '/scheduled'
       fullPath: '/scheduled'
       preLoaderRoute: typeof ScheduledRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/savings': {
+      id: '/savings'
+      path: '/savings'
+      fullPath: '/savings'
+      preLoaderRoute: typeof SavingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rewards': {
@@ -1530,6 +1550,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRouteWithChildren,
   PsychologyRoute: PsychologyRoute,
   RewardsRoute: RewardsRoute,
+  SavingsRoute: SavingsRoute,
   ScheduledRoute: ScheduledRoute,
   ServicesRoute: ServicesRoute,
   SettingsRoute: SettingsRoute,
