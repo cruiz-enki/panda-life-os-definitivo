@@ -242,24 +242,10 @@ function NetWorthPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <div className="text-right">
                     <div className="font-display font-semibold">{formatMXN(a.current_balance)}</div>
                   </div>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={async () => {
-                      const val = window.prompt(`Nuevo saldo para ${a.name}`, String(a.current_balance));
-                      if (val === null) return;
-                      const n = Number(val);
-                      if (isNaN(n)) return toast.error("Número inválido");
-                      const err = await deleteAccount.constructor === Function ? null : null;
-                      const { updateAccount } = await import("@/hooks/use-net-worth").then(() => ({ updateAccount: null }));
-                      // usa el hook directamente
-                    }}
-                    className="hidden"
-                  />
                   <QuickBalanceEdit accountId={a.id} name={a.name} current={a.current_balance} />
                   <Button size="icon" variant="ghost" onClick={async () => {
                     if (!confirm(`Eliminar ${a.name}?`)) return;
