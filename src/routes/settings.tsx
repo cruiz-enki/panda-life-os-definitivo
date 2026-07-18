@@ -3,6 +3,7 @@
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { NotificationsCard } from "@/components/NotificationsCard";
+import { FocusModeCard } from "@/components/FocusModeCard";
 import { TelegramCard } from "@/components/TelegramCard";
 import { useAuth } from "@/lib/auth-context";
 import { useAppState } from "@/lib/storage";
