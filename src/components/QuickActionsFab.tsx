@@ -81,12 +81,13 @@ export function QuickActionsFab({
               }`}
             >
               <div className="flex flex-col gap-2 min-w-[12rem] p-2 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-card">
-                {shortcuts.map((s) => {
+                {shortcuts.map((s, idx) => {
                   const Icon = s.icon;
                   return (
                     <Link
-                      key={s.to}
+                      key={`${s.to}-${idx}`}
                       to={s.to}
+                      search={s.search as never}
                       onClick={() => setOpen(false)}
                       className="no-tap-highlight flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-foreground/90 hover:bg-secondary active:bg-secondary transition-colors"
                     >
