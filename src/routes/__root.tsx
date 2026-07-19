@@ -127,20 +127,32 @@ function AuthGate() {
     }
   }, [user, loading, isAuthRoute, navigate]);
 
-  // Service Worker: el push lo maneja OneSignal con sus propios workers
-  // (/OneSignalSDKWorker.js en scope "/"). Registrar /sw.js en el mismo scope
-  // pisaba el worker de OneSignal e impedía obtener PushSubscription.id/token.
-  // Por eso aquí solo DES-registramos cualquier /sw.js previo para liberar el scope.
+  // Service Worker: OneSignal maneja push con /OneSignalSDKWorker.js (scope "/").
+  // Para que Chrome/Edge/Android muestre "Instalar app" (beforeinstallprompt)
+  // se necesita un SW activo. Si OneSignal ya está registrado, liberamos /sw.js.
+  // Si NO hay ningún SW, registramos /sw.js para habilitar instalación PWA.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
     navigator.serviceWorker.getRegistrations().then((regs) => {
-      regs.forEach((r) => {
+      const hasOneSignal = regs.some((r) => {
         const url = r.active?.scriptURL || r.installing?.scriptURL || r.waiting?.scriptURL || "";
-        if (url.endsWith("/sw.js")) {
-          r.unregister().then(() => console.log("[SW] /sw.js des-registrado para liberar scope a OneSignal"));
-        }
+        return url.includes("OneSignalSDKWorker");
       });
+      const ownSw = regs.find((r) => {
+        const url = r.active?.scriptURL || r.installing?.scriptURL || r.waiting?.scriptURL || "";
+        return url.endsWith("/sw.js");
+      });
+      if (hasOneSignal && ownSw) {
+        ownSw.unregister().then(() => console.log("[SW] /sw.js liberado para OneSignal"));
+        return;
+      }
+      if (!hasOneSignal && !ownSw) {
+        navigator.serviceWorker
+          .register("/sw.js", { scope: "/" })
+          .then(() => console.log("[SW] /sw.js registrado (instalabilidad PWA)"))
+          .catch((err) => console.warn("[SW] Registro falló", err));
+      }
     });
   }, []);
 

@@ -9,6 +9,7 @@ import { useGamification } from "@/hooks/use-gamification";
 import { useRewardsCustom } from "@/hooks/use-rewards-custom";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { DailySummaryCard } from "@/components/DailySummaryCard";
+import { InstallPWA } from "@/components/InstallPWA";
 import {
   Sparkles,
   Flame,
@@ -137,6 +138,11 @@ function Dashboard() {
         </div>
         <ChevronRight className="w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
       </Link>
+
+      {/* Instalar como app (se auto-oculta si ya está instalada) */}
+      <div className="mb-5">
+        <InstallPWA />
+      </div>
 
       {/* Nivel + Misión activa: fila compacta */}
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
