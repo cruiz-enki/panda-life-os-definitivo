@@ -264,7 +264,7 @@ export function TelegramCard() {
                       type="time"
                       value={cfg.meal_breakfast_time?.slice(0, 5) ?? "08:00"}
                       disabled={saving}
-                      onChange={(e) => save({ meal_breakfast_time: e.target.value })}
+                      onChange={(e) => { const v = e.target.value; if (!v) return; save({ meal_breakfast_time: v.length === 5 ? `${v}:00` : v }); }}
                       className="h-8 text-xs"
                     />
                   </div>
@@ -274,7 +274,7 @@ export function TelegramCard() {
                       type="time"
                       value={cfg.meal_lunch_time?.slice(0, 5) ?? "14:00"}
                       disabled={saving}
-                      onChange={(e) => save({ meal_lunch_time: e.target.value })}
+                      onChange={(e) => { const v = e.target.value; if (!v) return; save({ meal_lunch_time: v.length === 5 ? `${v}:00` : v }); }}
                       className="h-8 text-xs"
                     />
                   </div>
@@ -284,7 +284,7 @@ export function TelegramCard() {
                       type="time"
                       value={cfg.meal_dinner_time?.slice(0, 5) ?? "20:00"}
                       disabled={saving}
-                      onChange={(e) => save({ meal_dinner_time: e.target.value })}
+                      onChange={(e) => { const v = e.target.value; if (!v) return; save({ meal_dinner_time: v.length === 5 ? `${v}:00` : v }); }}
                       className="h-8 text-xs"
                     />
                   </div>
@@ -302,7 +302,7 @@ export function TelegramCard() {
                     type="time"
                     value={cfg.exercise_time?.slice(0, 5) ?? "07:00"}
                     disabled={saving}
-                    onChange={(e) => save({ exercise_time: e.target.value })}
+                    onChange={(e) => { const v = e.target.value; if (!v) return; save({ exercise_time: v.length === 5 ? `${v}:00` : v }); }}
                     className="h-8 text-xs"
                   />
                 </div>
