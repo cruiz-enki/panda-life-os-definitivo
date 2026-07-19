@@ -12,6 +12,7 @@ import { DailySummaryCard } from "@/components/DailySummaryCard";
 import { InstallPWA } from "@/components/InstallPWA";
 import { ModeDashboardHero } from "@/components/ModeDashboardHero";
 import { useLifeMode } from "@/hooks/use-life-mode";
+import { MoneyDashboard } from "@/components/dashboards/MoneyDashboard";
 import {
   Sparkles,
   Flame,
