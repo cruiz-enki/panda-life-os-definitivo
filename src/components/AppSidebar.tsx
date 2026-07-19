@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen,
+  LayoutDashboard, Repeat, BookOpen, Sparkles, CheckSquare, NotebookPen,
   Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart,
   Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill,
   AlertCircle, Stethoscope, Home as HomeIcon, FolderKanban, Dumbbell, Download,
@@ -35,7 +35,7 @@ const healthItems: NavItem[] = [
   { to: "/health", hash: "body", label: "Cuerpo", icon: Scale },
   { to: "/meals", label: "Comida", icon: Utensils },
   { to: "/exercise", label: "Ejercicio", icon: Dumbbell },
-  { to: "/energy", label: "Energía", icon: Battery },
+  
   { to: "/sleep", label: "Sueño", icon: Moon },
   { to: "/mood", label: "Mood", icon: Smile },
   { to: "/health", hash: "meds", label: "Medicación", icon: Pill },

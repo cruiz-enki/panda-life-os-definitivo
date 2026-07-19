@@ -6,7 +6,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import {
-  Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
+  Repeat, CheckSquare, Smile, Moon, Utensils,
   Check, Plus, ArrowRight, Flame, DollarSign, Camera, Sparkles,
 } from "lucide-react";
 import { scanReceipt } from "@/lib/receipt-scan.functions";
@@ -24,19 +24,19 @@ type LogSearch = { tab?: TabKey };
 export const Route = createFileRoute("/log")({
   validateSearch: (s: Record<string, unknown>): LogSearch => {
     const t = s.tab;
-    const allowed: TabKey[] = ["habits", "tasks", "mood", "sleep", "meals", "energy", "expense"];
+    const allowed: TabKey[] = ["habits", "tasks", "mood", "sleep", "meals", "expense"];
     return { tab: typeof t === "string" && (allowed as string[]).includes(t) ? (t as TabKey) : undefined };
   },
   head: () => ({
     meta: [
       { title: "Registrar · Panda's LIFE OS" },
-      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas, energía y gastos." },
+      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas y gastos." },
     ],
   }),
   component: LogPage,
 });
 
-type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "energy" | "expense";
+type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "expense";
 
 const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
   { key: "habits", label: "Hábitos", icon: Repeat },
@@ -45,7 +45,6 @@ const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
   { key: "mood", label: "Mood", icon: Smile },
   { key: "sleep", label: "Sueño", icon: Moon },
   { key: "meals", label: "Comidas", icon: Utensils },
-  { key: "energy", label: "Energía", icon: Battery },
 ];
 
 function LogPage() {
@@ -91,7 +90,6 @@ function LogPage() {
         {tab === "mood" && <MoodQuick />}
         {tab === "sleep" && <SleepQuick />}
         {tab === "meals" && <MealsQuick />}
-        {tab === "energy" && <EnergyQuick />}
       </div>
     </div>
   );
@@ -483,6 +481,8 @@ function MoodQuick() {
   const { add, logs } = useMood();
   const [mood, setMood] = useState<string | null>(null);
   const [intensity, setIntensity] = useState(3);
+  const [energy, setEnergy] = useState(7);
+  const [pain, setPain] = useState(0);
   const [tags, setTags] = useState<string[]>([]);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -493,7 +493,7 @@ function MoodQuick() {
   const submit = async () => {
     if (!mood) return;
     setSaving(true);
-    const err = await add({ mood, intensity, tags, note: note || undefined });
+    const err = await add({ mood, intensity, tags, note: note || undefined, energy, pain });
     setSaving(false);
     if (err) return toast.error("No se pudo guardar");
     toast.success("Mood registrado");
@@ -501,6 +501,8 @@ function MoodQuick() {
     setTags([]);
     setNote("");
     setIntensity(3);
+    setEnergy(7);
+    setPain(0);
   };
 
   const last = logs[0];
@@ -537,6 +539,22 @@ function MoodQuick() {
             onChange={(e) => setIntensity(Number(e.target.value))}
             className="w-full"
           />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">Energía ⚡</span>
+            <span className="font-display text-lg font-bold">{energy}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(Number(e.target.value))} className="w-full" />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">Dolor 🩹</span>
+            <span className="font-display text-lg font-bold">{pain}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={0} max={10} value={pain} onChange={(e) => setPain(Number(e.target.value))} className="w-full" />
         </div>
 
         <div>

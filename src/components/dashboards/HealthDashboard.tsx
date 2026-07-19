@@ -183,7 +183,7 @@ export function HealthDashboard() {
         {[
           { to: "/log", label: "Registrar", emoji: "📝" },
           { to: "/exercise", label: "Ejercicio", emoji: "🏋️" },
-          { to: "/energy", label: "Energía", emoji: "🔋" },
+          { to: "/mood", label: "Mood", emoji: "🔋" },
           { to: "/psychology", label: "Psicología", emoji: "🧠" },
         ].map((t) => (
           <Link

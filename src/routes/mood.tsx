@@ -24,6 +24,8 @@ function MoodPage() {
   const { logs, add, remove, avgMood30, tagStats } = useMood();
   const [mood, setMood] = useState<string>("good");
   const [intensity, setIntensity] = useState(3);
+  const [energy, setEnergy] = useState(7);
+  const [pain, setPain] = useState(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -34,7 +36,7 @@ function MoodPage() {
 
   const save = async () => {
     setSaving(true);
-    await add({ mood, intensity, tags: selectedTags, note: note.trim() || undefined });
+    await add({ mood, intensity, tags: selectedTags, note: note.trim() || undefined, energy, pain });
     setSelectedTags([]);
     setNote("");
     setSaving(false);
@@ -96,6 +98,22 @@ function MoodPage() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs">Energía ⚡</Label>
+            <span className="text-sm font-semibold">{energy}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(Number(e.target.value))} className="w-full mt-1 accent-pink-500" />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs">Dolor 🩹</Label>
+            <span className="text-sm font-semibold">{pain}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={0} max={10} value={pain} onChange={(e) => setPain(Number(e.target.value))} className="w-full mt-1 accent-pink-500" />
         </div>
 
         <div>

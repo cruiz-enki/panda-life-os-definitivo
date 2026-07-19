@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Repeat,
-  Battery,
+ 
   Sparkles,
   CheckSquare,
   NotebookPen,
@@ -78,7 +78,7 @@ const healthItems: MoreItem[] = [
   { to: "/health", hash: "body", label: "Cuerpo", icon: Scale },
   { to: "/meals", label: "Comida", icon: Utensils },
   { to: "/exercise", label: "Ejercicio", icon: Dumbbell },
-  { to: "/energy", label: "Energía", icon: Battery },
+  
   { to: "/sleep", label: "Sueño", icon: Moon },
   { to: "/mood", label: "Mood", icon: Smile },
   { to: "/health", hash: "meds", label: "Medicación", icon: Pill },
