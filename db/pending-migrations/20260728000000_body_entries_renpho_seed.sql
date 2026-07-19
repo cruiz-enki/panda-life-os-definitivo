@@ -1,4 +1,13 @@
 -- Composición corporal Renpho (import CSV)
+-- La tabla no tiene UNIQUE (user_id, date), así que borramos primero cualquier registro del mismo día y user.
+DELETE FROM public.health_body_entries
+WHERE user_id = '49aef7da-d1c7-4adc-b3d2-fb741b9b35df'
+  AND date IN (
+    '2026-07-19','2026-07-12','2026-06-26','2026-06-25','2026-06-23','2026-06-18','2026-06-15','2026-06-13',
+    '2026-06-09','2026-06-08','2026-06-06','2026-06-05','2026-06-04','2026-06-03','2026-06-02','2026-06-01',
+    '2026-05-31','2026-05-30','2026-05-29','2026-05-28'
+  );
+
 INSERT INTO public.health_body_entries (user_id, date, measured_at, device_source, weight, bmi, body_fat, fat_mass, muscle_mass, skeletal_muscle_mass, bone_mass, protein_mass, total_body_water, fat_free_mass, lean_body_weight, subcutaneous_fat, visceral_fat, bmr, metabolic_age, whr, target_weight, body_type, notes) VALUES
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-07-19', '2026-07-19 11:42:29'::timestamptz, 'renpho_csv', 107.70, 36.0, 41.7, 44.91, 58.59, 35.76, 4.20, 12.60, 45.99, 62.79, 62.79, 29.7, 20, 1726, 44, 1.05, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-07-12', '2026-07-12 11:45:29'::timestamptz, 'renpho_csv', 107.90, 36.1, 43.3, 46.72, 57.08, 34.74, 4.10, 12.19, 44.89, 61.18, 61.18, 30.8, 20, 1691, 44, 1.06, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
