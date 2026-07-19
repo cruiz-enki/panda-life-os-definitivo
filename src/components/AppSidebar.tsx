@@ -87,6 +87,9 @@ const mindItems: NavItem[] = [
   { to: "/decisions", label: "Decisiones", icon: Scale },
   { to: "/introspection", label: "Introspección", icon: Eye },
   { to: "/notes", label: "Notas", icon: NotebookPen },
+];
+
+const productivityItems: NavItem[] = [
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
@@ -231,6 +234,7 @@ export function AppSidebar() {
     { key: "MONEY", label: "MONEY", icon: Wallet, items: moneyItems, storageKey: "enki:sidebar:money" },
     { key: "INSIGHTS", label: "INSIGHTS", icon: BarChart3, items: insightsItems, storageKey: "enki:sidebar:insights" },
     { key: "MIND", label: "MIND", icon: Brain, items: mindItems, storageKey: "enki:sidebar:mind" },
+    { key: "PRODUCTIVITY", label: "PRODUCTIVITY", icon: Sparkles, items: productivityItems, storageKey: "enki:sidebar:productivity" },
     { key: "SETUP", label: "SETUP", icon: Settings, items: setupItems, storageKey: "enki:sidebar:setup" },
   ];
 

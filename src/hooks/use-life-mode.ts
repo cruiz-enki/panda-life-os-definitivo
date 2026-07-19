@@ -18,7 +18,7 @@ import {
 
 export type LifeMode = "normal" | "health" | "home" | "money" | "mind" | "productivity";
 
-export type CategoryKey = "HEALTH" | "HOME" | "MONEY" | "INSIGHTS" | "MIND" | "SETUP";
+export type CategoryKey = "HEALTH" | "HOME" | "MONEY" | "INSIGHTS" | "MIND" | "PRODUCTIVITY" | "SETUP";
 
 export interface LifeModeConfig {
   id: LifeMode;
@@ -49,7 +49,7 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     emoji: "🌐",
     description: "Todos los módulos disponibles",
     icon: LayoutGrid,
-    categories: ["HEALTH", "HOME", "MONEY", "INSIGHTS", "MIND", "SETUP"],
+    categories: ["HEALTH", "HOME", "MONEY", "INSIGHTS", "MIND", "PRODUCTIVITY", "SETUP"],
     paths: null,
     fabLabels: null,
     dashTiles: [],
@@ -184,7 +184,7 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     emoji: "⚡",
     description: "Tareas, hábitos, tiempo, proyectos",
     icon: Sparkles,
-    categories: ["MIND"],
+    categories: ["PRODUCTIVITY"],
     paths: new Set([
       ...commonTop,
       "/pomodoro",

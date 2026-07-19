@@ -130,6 +130,9 @@ const mindItems: MoreItem[] = [
   { to: "/decisions", label: "Decisiones", icon: Scale },
   { to: "/introspection", label: "Introspección", icon: Eye },
   { to: "/notes", label: "Notas", icon: NotebookPen },
+];
+
+const productivityItems: MoreItem[] = [
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
@@ -198,6 +201,7 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
     { key: "MONEY", title: "MONEY", items: moneyItems, icon: Wallet },
     { key: "INSIGHTS", title: "INSIGHTS", items: insightsItems, icon: BarChart3 },
     { key: "MIND", title: "MIND", items: mindItems, icon: Brain },
+    { key: "PRODUCTIVITY", title: "PRODUCTIVITY", items: productivityItems, icon: Sparkles },
     { key: "SETUP", title: "SETUP", items: setupItems, icon: Settings },
   ];
 
