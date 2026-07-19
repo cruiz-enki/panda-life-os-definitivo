@@ -284,7 +284,7 @@ export function TelegramCard() {
                       type="time"
                       value={cfg.meal_dinner_time?.slice(0, 5) ?? "20:00"}
                       disabled={saving}
-                      onChange={(e) => save({ meal_dinner_time: e.target.value })}
+                      onChange={(e) => { const v = e.target.value; if (!v) return; save({ meal_dinner_time: v.length === 5 ? `${v}:00` : v }); }}
                       className="h-8 text-xs"
                     />
                   </div>
