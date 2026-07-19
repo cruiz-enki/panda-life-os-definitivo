@@ -48,8 +48,8 @@ WHERE NOT EXISTS (
 INSERT INTO public.home_tasks
   (user_id, area_id, title, description, emoji, task_type, frequency, day_of_week, xp_reward, is_key, active, sort_order)
 VALUES
-  (uid, NULL, 'Lavar ropa',           'Cargar lavadora y secar',              '🧺', 'weekly',  'weekly', 6, 8,  false, 100),
-  (uid, NULL, 'Doblar y guardar ropa','Doblar, acomodar en clósets',          '👕', 'weekly',  'weekly', 0, 6,  false, 110),
-  (uid, NULL, 'Lavar ropa entre semana','Carga rápida si es necesario',       '🧺', 'weekly',  'weekly', 3, 6,  false, 120);
+  (uid, NULL, 'Lavar ropa',           'Cargar lavadora y secar',              '🧺', 'weekly',  'weekly', 6, 8,  false, true, 100),
+  (uid, NULL, 'Doblar y guardar ropa','Doblar, acomodar en clósets',          '👕', 'weekly',  'weekly', 0, 6,  false, true, 110),
+  (uid, NULL, 'Lavar ropa entre semana','Carga rápida si es necesario',       '🧺', 'weekly',  'weekly', 3, 6,  false, true, 120);
 
 END $$;
