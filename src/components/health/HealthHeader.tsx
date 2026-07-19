@@ -40,20 +40,20 @@ export function HealthHeader() {
   };
 
   return (
-    <div className="flex gap-2 mb-8 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none no-scrollbar">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-2 mb-8">
       {tabs.map((t) => (
         <Link
           key={t.id}
           to={t.to}
           hash={t.hash || undefined}
-          className={`shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
+          className={`min-w-0 flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-[11px] font-medium text-center transition-all ${
             isActive(t)
               ? "bg-primary text-primary-foreground shadow-glow"
               : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"
           }`}
         >
           {t.icon}
-          {t.label}
+          <span className="truncate w-full leading-tight">{t.label}</span>
         </Link>
       ))}
     </div>
