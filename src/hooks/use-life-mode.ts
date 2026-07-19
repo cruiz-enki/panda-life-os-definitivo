@@ -184,7 +184,7 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     emoji: "⚡",
     description: "Tareas, hábitos, tiempo, proyectos",
     icon: Sparkles,
-    categories: ["MIND"],
+    categories: ["PRODUCTIVITY"],
     paths: new Set([
       ...commonTop,
       "/pomodoro",
