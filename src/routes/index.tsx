@@ -133,8 +133,14 @@ function Dashboard() {
 
       {mode === "money" ? (
         <MoneyDashboard />
+      ) : mode === "health" ? (
+        <HealthDashboard />
       ) : (
+        <></>
+      )}
+      {mode === "normal" || (mode !== "money" && mode !== "health") ? (
         <>
+
       {/* CTA principal: Registrar */}
       <Link
         to="/log"
