@@ -101,6 +101,22 @@ function MoodPage() {
         </div>
 
         <div>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs">Energía ⚡</Label>
+            <span className="text-sm font-semibold">{energy}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(Number(e.target.value))} className="w-full mt-1 accent-pink-500" />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs">Dolor 🩹</Label>
+            <span className="text-sm font-semibold">{pain}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={0} max={10} value={pain} onChange={(e) => setPain(Number(e.target.value))} className="w-full mt-1 accent-pink-500" />
+        </div>
+
+        <div>
           <Label className="text-xs">Tags ({selectedTags.length})</Label>
           <div className="flex flex-wrap gap-1.5 mt-1">
             {MOOD_TAGS.map((t) => (
