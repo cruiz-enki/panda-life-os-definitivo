@@ -190,6 +190,7 @@ function AuthGate() {
       <div className="flex min-h-dvh">
         <AppSidebar />
         <main className="flex-1 min-w-0 pb-20 md:pb-0">
+          <ModeBackButton />
           <Outlet />
         </main>
         <QuickCapture />
