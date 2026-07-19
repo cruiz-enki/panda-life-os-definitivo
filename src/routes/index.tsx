@@ -10,6 +10,8 @@ import { useRewardsCustom } from "@/hooks/use-rewards-custom";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { DailySummaryCard } from "@/components/DailySummaryCard";
 import { InstallPWA } from "@/components/InstallPWA";
+import { ModeDashboardHero } from "@/components/ModeDashboardHero";
+import { useLifeMode } from "@/hooks/use-life-mode";
 import {
   Sparkles,
   Flame,
@@ -112,6 +114,8 @@ function Dashboard() {
 
   const questPct = activeQuest ? Math.min(100, (activeQuest.progress / activeQuest.quest.target) * 100) : 0;
 
+  useLifeMode(); // suscribe cambios de modo para re-render del hero
+
   return (
     <div className="px-4 md:px-8 py-6 max-w-3xl mx-auto pb-24">
       {/* Header minimal */}
@@ -121,6 +125,9 @@ function Dashboard() {
           {greeting}, panda 🐼
         </h1>
       </header>
+
+      {/* Hero por modo (visible cuando mode !== normal) */}
+      <ModeDashboardHero />
 
       {/* CTA principal: Registrar */}
       <Link

@@ -15,6 +15,8 @@ import {
   DollarSign,
 } from "lucide-react";
 
+import { useLifeMode } from "@/hooks/use-life-mode";
+
 type Variant = "mobile" | "desktop";
 
 const shortcuts: { to: string; label: string; icon: typeof Plus; search?: Record<string, string> }[] = [
@@ -35,6 +37,8 @@ export function QuickActionsFab({
   onCapture: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const { isFabLabelAllowed } = useLifeMode();
+  const visibleShortcuts = shortcuts.filter((s) => isFabLabelAllowed(s.label));
 
   useEffect(() => {
     if (!open) return;
@@ -81,7 +85,7 @@ export function QuickActionsFab({
               }`}
             >
               <div className="flex flex-col gap-2 min-w-[12rem] p-2 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-card">
-                {shortcuts.map((s, idx) => {
+                {visibleShortcuts.map((s, idx) => {
                   const Icon = s.icon;
                   return (
                     <Link

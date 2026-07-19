@@ -31,6 +31,7 @@ import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MonthCloseRouteImport } from './routes/month-close'
 import { Route as MoneyToolsRouteImport } from './routes/money-tools'
 import { Route as MoneySetupRouteImport } from './routes/money-setup'
+import { Route as ModeRouteImport } from './routes/mode'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
 import { Route as LogRouteImport } from './routes/log'
@@ -197,6 +198,11 @@ const MoneyToolsRoute = MoneyToolsRouteImport.update({
 const MoneySetupRoute = MoneySetupRouteImport.update({
   id: '/money-setup',
   path: '/money-setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModeRoute = ModeRouteImport.update({
+  id: '/mode',
+  path: '/mode',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MealsRoute = MealsRouteImport.update({
@@ -534,6 +540,7 @@ export interface FileRoutesByFullPath {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/mode': typeof ModeRoute
   '/money-setup': typeof MoneySetupRoute
   '/money-tools': typeof MoneyToolsRoute
   '/month-close': typeof MonthCloseRoute
@@ -614,6 +621,7 @@ export interface FileRoutesByTo {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/mode': typeof ModeRoute
   '/money-setup': typeof MoneySetupRoute
   '/money-tools': typeof MoneyToolsRoute
   '/month-close': typeof MonthCloseRoute
@@ -695,6 +703,7 @@ export interface FileRoutesById {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/mode': typeof ModeRoute
   '/money-setup': typeof MoneySetupRoute
   '/money-tools': typeof MoneyToolsRoute
   '/month-close': typeof MonthCloseRoute
@@ -778,6 +787,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/mode'
     | '/money-setup'
     | '/money-tools'
     | '/month-close'
@@ -858,6 +868,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/mode'
     | '/money-setup'
     | '/money-tools'
     | '/month-close'
@@ -938,6 +949,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/mode'
     | '/money-setup'
     | '/money-tools'
     | '/month-close'
@@ -1020,6 +1032,7 @@ export interface RootRouteChildren {
   LogRoute: typeof LogRoute
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
+  ModeRoute: typeof ModeRoute
   MoneySetupRoute: typeof MoneySetupRoute
   MoneyToolsRoute: typeof MoneyToolsRoute
   MonthCloseRoute: typeof MonthCloseRoute
@@ -1216,6 +1229,13 @@ declare module '@tanstack/react-router' {
       path: '/money-setup'
       fullPath: '/money-setup'
       preLoaderRoute: typeof MoneySetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mode': {
+      id: '/mode'
+      path: '/mode'
+      fullPath: '/mode'
+      preLoaderRoute: typeof ModeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meals': {
@@ -1686,6 +1706,7 @@ const rootRouteChildren: RootRouteChildren = {
   LogRoute: LogRoute,
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
+  ModeRoute: ModeRoute,
   MoneySetupRoute: MoneySetupRoute,
   MoneyToolsRoute: MoneyToolsRoute,
   MonthCloseRoute: MonthCloseRoute,
