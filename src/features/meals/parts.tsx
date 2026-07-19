@@ -193,7 +193,65 @@ export function TodayTab({ m, addBonusXp }: { m: ReturnType<typeof useMeals>; ad
           )}
         </CardContent>
       </Card>
+      <DailySupplements today={m.today} addBonusXp={addBonusXp} />
     </div>
+  );
+}
+
+// Suplementos diarios: creatina + electrolitos (+4 XP c/u).
+// Estado persistido en localStorage por fecha.
+function DailySupplements({ today, addBonusXp }: { today: string; addBonusXp: (n: number) => void }) {
+  const items = [
+    { key: "creatina", label: "Creatina", emoji: "💪" },
+    { key: "electrolitos", label: "Electrolitos", emoji: "⚡" },
+  ];
+  const storageKey = `daily-supplements:${today}`;
+  const [done, setDone] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      setDone(raw ? JSON.parse(raw) : {});
+    } catch { setDone({}); }
+  }, [storageKey]);
+
+  const toggle = (key: string) => {
+    setDone(prev => {
+      const wasDone = !!prev[key];
+      const next = { ...prev, [key]: !wasDone };
+      try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch { /* noop */ }
+      const delta = wasDone ? -4 : 4;
+      addBonusXp(delta);
+      toast.success(delta > 0 ? `+${delta} XP` : `${delta} XP`);
+      return next;
+    });
+  };
+
+  const pendingXp = items.filter(i => !done[i.key]).length * 4;
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center justify-between">
+          <span>Suplementos diarios</span>
+          <Badge variant="secondary">+{pendingXp} XP potencial</Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {items.map(it => {
+          const isDone = !!done[it.key];
+          return (
+            <div key={it.key} className={`flex items-center gap-3 p-3 rounded-lg border ${isDone ? "bg-secondary/40 border-primary/30" : "bg-card"}`}>
+              <Checkbox checked={isDone} onCheckedChange={() => toggle(it.key)} />
+              <div className={`flex-1 font-medium ${isDone ? "line-through text-muted-foreground" : ""}`}>
+                {it.emoji} {it.label}
+              </div>
+              {!isDone && <span className="text-xs text-muted-foreground">+4 XP</span>}
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
   );
 }
 
