@@ -245,9 +245,6 @@ export function useFinance() {
     if (!error) await refresh();
     return error;
   };
-    if (!error) await refresh();
-    return error;
-  };
 
   return {
     cards,
@@ -272,6 +269,7 @@ export function useFinance() {
     upsertBudget,
     deleteBudget,
     createCategory,
+    updateCategory,
     deleteCategory,
   };
 }
