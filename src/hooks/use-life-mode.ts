@@ -18,7 +18,7 @@ import {
 
 export type LifeMode = "normal" | "health" | "home" | "money" | "mind" | "productivity";
 
-export type CategoryKey = "HEALTH" | "HOME" | "MONEY" | "INSIGHTS" | "MIND" | "SETUP";
+export type CategoryKey = "HEALTH" | "HOME" | "MONEY" | "INSIGHTS" | "MIND" | "PRODUCTIVITY" | "SETUP";
 
 export interface LifeModeConfig {
   id: LifeMode;
