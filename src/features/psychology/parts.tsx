@@ -514,7 +514,7 @@ function InsightsView({ moodLogs, sessions }: { moodLogs: MoodLog[]; sessions: P
   const emotionCount = useMemo(() => {
     const map: Record<string, number> = {};
     last30.forEach((l) => {
-      if (l.emoji) map[l.emoji] = (map[l.emoji] ?? 0) + 1;
+      if (l.mood) map[l.mood] = (map[l.mood] ?? 0) + 1;
     });
     return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
   }, [last30]);
