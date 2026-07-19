@@ -146,72 +146,8 @@ function Dashboard() {
         <ChevronRight className="w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
       </Link>
 
-      {/* Instalar como app (se auto-oculta si ya está instalada) */}
-      <div className="mb-5">
-        <InstallPWA />
-      </div>
 
-      {/* Nivel + Misión activa: fila compacta */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-        <Link to="/rewards" className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 hover:border-primary/40 transition-colors">
-          <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-tr from-[#00c68a] to-[#50e3c2] flex items-center justify-center">
-              <PandaAvatar xp={state.xp} size="sm" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border-2 border-card text-[10px] font-bold text-[#00c68a] flex items-center justify-center shadow">
-              {level}
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-baseline justify-between gap-2 mb-1">
-              <span className="text-sm font-semibold">Nivel {level}</span>
-              <span className="text-xs text-muted-foreground">{state.xp} XP</span>
-            </div>
-            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-              <div className="h-full bg-[#00c68a] transition-all" style={{ width: `${Math.max(4, progress * 100)}%` }} />
-            </div>
-            <div className="text-[11px] text-muted-foreground mt-1">
-              {nextLevelXp - state.xp} XP al nivel {level + 1}
-            </div>
-          </div>
-        </Link>
 
-        {activeQuest && (
-          <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="w-3.5 h-3.5 text-primary" />
-              <span className="text-[11px] font-bold text-primary uppercase tracking-wider">Misión activa</span>
-            </div>
-            <div className="font-semibold text-sm truncate mb-2">{activeQuest.quest.emoji} {activeQuest.quest.title}</div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-primary" style={{ width: `${questPct}%` }} />
-              </div>
-              <span className="text-[11px] font-bold tabular-nums">{Math.min(activeQuest.progress, activeQuest.quest.target)}/{activeQuest.quest.target}</span>
-            </div>
-            {!activeQuest.completed ? (
-              <button
-                onClick={() => {
-                  if ((activeQuest.quest as any).isCustom) {
-                    custom.incrementQuestProgress(activeQuest.quest.id, activeQuest.quest.target, activeQuest.quest.xp, 1);
-                  } else {
-                    gam.incrementQuestProgress(activeQuest.quest.id, activeQuest.quest.target, activeQuest.quest.xp, 1);
-                  }
-                }}
-                className="w-full py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider transition-colors"
-              >
-                +1 Progreso
-              </button>
-            ) : !activeQuest.claimed ? (
-              <Link to="/rewards" className="w-full py-1.5 flex items-center justify-center gap-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold uppercase animate-pulse">
-                <Gift className="w-3 h-3" /> Reclamar
-              </Link>
-            ) : (
-              <div className="text-[11px] text-muted-foreground text-center py-1">Completada ✓</div>
-            )}
-          </div>
-        )}
-      </section>
 
       {/* Recomendación de hoy — compacta */}
       <Link
