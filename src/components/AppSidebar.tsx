@@ -24,10 +24,9 @@ type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; hash?:
 // Items sueltos arriba — accesos rápidos siempre visibles
 const topItems: NavItem[] = [
   { to: "/", label: "Hoy", icon: LayoutDashboard },
-  { to: "/calendar", label: "Plan", icon: CalendarIcon },
-  { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/chat", label: "Chat IA", icon: MessageCircle },
 ];
+
 
 // ===== 6 categorías estilo iOS =====
 
