@@ -108,6 +108,7 @@ const moneyItems: MoreItem[] = [
   { to: "/month-close", label: "Cierre mensual", icon: CalendarIcon },
   { to: "/finance", label: "Finanzas", icon: Wallet },
   { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
+  { to: "/finance/setup", label: "⚙️ Setup Finanzas", icon: Sparkles },
 ];
 
 const insightsItems: MoreItem[] = [

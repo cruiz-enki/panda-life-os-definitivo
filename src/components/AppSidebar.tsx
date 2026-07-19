@@ -66,6 +66,7 @@ const moneyItems: NavItem[] = [
   { to: "/month-close", label: "Cierre mensual", icon: Target },
   { to: "/finance", label: "Finanzas", icon: Wallet },
   { to: "/subscriptions", label: "Suscripciones", icon: Repeat },
+  { to: "/finance/setup", label: "⚙️ Setup Finanzas", icon: Sparkles },
 ];
 
 const insightsItems: NavItem[] = [
