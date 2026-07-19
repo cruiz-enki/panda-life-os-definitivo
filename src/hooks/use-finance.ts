@@ -234,8 +234,17 @@ export function useFinance() {
     return error;
   };
 
+  const updateCategory = async (id: string, patch: Partial<FinanceCategory>) => {
+    const { error } = await supabase.from("finance_categories").update(patch as any).eq("id", id);
+    if (!error) await refresh();
+    return error;
+  };
+
   const deleteCategory = async (id: string) => {
     const { error } = await supabase.from("finance_categories").delete().eq("id", id);
+    if (!error) await refresh();
+    return error;
+  };
     if (!error) await refresh();
     return error;
   };
