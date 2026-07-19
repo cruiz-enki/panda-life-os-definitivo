@@ -177,6 +177,34 @@ function ExpenseQuick() {
 
   return (
     <div className="space-y-4">
+      <button
+        type="button"
+        onClick={() => fileRef.current?.click()}
+        disabled={scanning}
+        className="w-full p-4 rounded-2xl border border-dashed border-primary/40 bg-primary/5 flex items-center justify-center gap-2 text-sm font-medium text-primary disabled:opacity-60"
+      >
+        {scanning ? (
+          <>
+            <Sparkles className="w-4 h-4 animate-pulse" /> Leyendo recibo con IA…
+          </>
+        ) : (
+          <>
+            <Camera className="w-4 h-4" /> Escanear recibo con IA
+          </>
+        )}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onPickReceipt(f);
+          e.target.value = "";
+        }}
+      />
       <div className="p-4 rounded-2xl border border-border bg-card space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <label className="text-xs text-muted-foreground space-y-1">
