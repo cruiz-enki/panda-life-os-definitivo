@@ -18,6 +18,7 @@ import { DateQuickPicker } from "@/components/DateQuickPicker";
 import { MedicalTab } from "@/components/health/MedicalTab";
 import { SymptomsTab } from "@/components/health/SymptomsTab";
 import { BodyImporter } from "@/components/health/BodyImporter";
+import { BodyOverview } from "@/components/health/BodyOverview";
 import { HealthHeader } from "@/components/health/HealthHeader";
 import {
   Heart,
