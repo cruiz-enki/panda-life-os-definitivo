@@ -201,6 +201,7 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
     { key: "MONEY", title: "MONEY", items: moneyItems, icon: Wallet },
     { key: "INSIGHTS", title: "INSIGHTS", items: insightsItems, icon: BarChart3 },
     { key: "MIND", title: "MIND", items: mindItems, icon: Brain },
+    { key: "PRODUCTIVITY", title: "PRODUCTIVITY", items: productivityItems, icon: Sparkles },
     { key: "SETUP", title: "SETUP", items: setupItems, icon: Settings },
   ];
 
