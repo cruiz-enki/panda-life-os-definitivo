@@ -9,7 +9,6 @@ import {
   Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
   Check, Plus, ArrowRight, Flame, DollarSign, Camera, Sparkles,
 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import { scanReceipt } from "@/lib/receipt-scan.functions";
 import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
