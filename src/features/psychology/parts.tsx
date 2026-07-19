@@ -32,10 +32,15 @@ const todayISO = () => todayCDMX();
 
 export function PsychologyPage() {
   const psych = usePsych();
+  const mood = useMood();
   const { user } = useAuth();
   const [tab, setTab] = useState("panel");
 
-  const todayCheckin = useMemo(() => psych.checkins.find((c) => c.date === todayISO()), [psych.checkins]);
+  // Últimas 24 h de mood_logs con check-in emocional
+  const todayMood = useMemo(() => {
+    const today = todayISO();
+    return mood.logs.find((l) => l.logged_at.slice(0, 10) === today && (l.anxiety != null || l.stress != null));
+  }, [mood.logs]);
   const lastSession = psych.sessions[0];
   const pendingTasks = psych.tasks.filter((t) => t.status !== "completed");
   const nextSession = useMemo(() => {
@@ -46,28 +51,29 @@ export function PsychologyPage() {
     return future[0];
   }, [psych.sessions]);
 
-  // Tendencia 7d
+  // Tendencia 7d desde mood_logs (promedio diario de ansiedad/estrés)
   const trend7 = useMemo(() => {
     const days: { day: string; ansiedad: number; estres: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const iso = d.toISOString().slice(0, 10);
-      const c = psych.checkins.find((x) => x.date === iso);
+      const entries = mood.logs.filter((l) => l.logged_at.slice(0, 10) === iso);
+      const anx = entries.filter((l) => l.anxiety != null);
+      const str = entries.filter((l) => l.stress != null);
       days.push({
         day: d.toLocaleDateString("es", { weekday: "short" }),
-        ansiedad: c?.anxiety ?? 0,
-        estres: c?.stress ?? 0,
+        ansiedad: anx.length ? anx.reduce((s, l) => s + (l.anxiety ?? 0), 0) / anx.length : 0,
+        estres: str.length ? str.reduce((s, l) => s + (l.stress ?? 0), 0) / str.length : 0,
       });
     }
     return days;
-  }, [psych.checkins]);
+  }, [mood.logs]);
 
-  // Recomendación diaria simple
   const dailyMessage = useMemo(() => {
-    if (!todayCheckin) return "Empieza tu día con un check-in rápido. 1 minuto puede cambiar tu enfoque.";
-    if (todayCheckin.anxiety >= 4) return "Tu ansiedad está alta hoy. Respira 4-7-8 tres veces y aleja la pantalla 5 minutos.";
-    if (todayCheckin.stress >= 4) return "Estrés elevado. Identifica una sola tarea prioritaria y posterga el resto sin culpa.";
+    if (!todayMood) return "Registra tu check-in emocional en Mood (⚡ ansiedad, estrés, detonante). 1 minuto puede cambiar tu enfoque.";
+    if ((todayMood.anxiety ?? 0) >= 4) return "Tu ansiedad está alta hoy. Respira 4-7-8 tres veces y aleja la pantalla 5 minutos.";
+    if ((todayMood.stress ?? 0) >= 4) return "Estrés elevado. Identifica una sola tarea prioritaria y posterga el resto sin culpa.";
     if (pendingTasks.length > 3) return `Tienes ${pendingTasks.length} acuerdos terapéuticos pendientes. Elige uno pequeño para hoy.`;
     if (lastSession && Date.now() - new Date(lastSession.date).getTime() > 14 * 86400000) return "Hace más de 2 semanas de tu última sesión. ¿Agendamos la próxima?";
     return "Vas bien. Mantén tu práctica: presencia, respiración y autocompasión.";
