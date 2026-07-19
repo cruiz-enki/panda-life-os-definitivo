@@ -1,4 +1,13 @@
 -- Composición corporal Renpho (import CSV)
+-- La tabla no tiene UNIQUE (user_id, date), así que borramos primero cualquier registro del mismo día y user.
+DELETE FROM public.health_body_entries
+WHERE user_id = '49aef7da-d1c7-4adc-b3d2-fb741b9b35df'
+  AND date IN (
+    '2026-07-19','2026-07-12','2026-06-26','2026-06-25','2026-06-23','2026-06-18','2026-06-15','2026-06-13',
+    '2026-06-09','2026-06-08','2026-06-06','2026-06-05','2026-06-04','2026-06-03','2026-06-02','2026-06-01',
+    '2026-05-31','2026-05-30','2026-05-29','2026-05-28'
+  );
+
 INSERT INTO public.health_body_entries (user_id, date, measured_at, device_source, weight, bmi, body_fat, fat_mass, muscle_mass, skeletal_muscle_mass, bone_mass, protein_mass, total_body_water, fat_free_mass, lean_body_weight, subcutaneous_fat, visceral_fat, bmr, metabolic_age, whr, target_weight, body_type, notes) VALUES
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-07-19', '2026-07-19 11:42:29'::timestamptz, 'renpho_csv', 107.70, 36.0, 41.7, 44.91, 58.59, 35.76, 4.20, 12.60, 45.99, 62.79, 62.79, 29.7, 20, 1726, 44, 1.05, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-07-12', '2026-07-12 11:45:29'::timestamptz, 'renpho_csv', 107.90, 36.1, 43.3, 46.72, 57.08, 34.74, 4.10, 12.19, 44.89, 61.18, 61.18, 30.8, 20, 1691, 44, 1.06, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
@@ -19,6 +28,4 @@ INSERT INTO public.health_body_entries (user_id, date, measured_at, device_sourc
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-05-31', '2026-05-31 10:37:30'::timestamptz, 'renpho_csv', 112.20, 37.5, 43.1, 48.36, 59.58, 36.35, 4.30, 12.79, 46.79, 63.84, 63.84, 30.7, 20, 1748, 44, 1.06, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-05-30', '2026-05-30 09:56:53'::timestamptz, 'renpho_csv', 112.00, 37.4, 41.6, 46.59, 61.04, 37.41, 4.40, 13.10, 47.94, 65.41, 65.41, 29.6, 20, 1782, 44, 1.02, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
 ('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-05-29', '2026-05-29 07:42:52'::timestamptz, 'renpho_csv', 112.40, 37.6, 43.9, 49.34, 58.79, 35.86, 4.20, 12.59, 46.20, 63.06, 63.06, 31.2, 20, 1730, 44, 1.09, 65.80, 'Sobrepeso', 'Nivel de obesidad II'),
-('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-05-28', '2026-05-28 20:00:03'::timestamptz, 'renpho_csv', 113.80, 38.0, 35.2, 40.06, 68.74, 42.45, 4.90, 14.79, 54.06, 73.74, 73.74, 25.1, 17, 1961, 43, 0.84, 65.80, 'Sobrepeso', 'Nivel de obesidad II')
-ON CONFLICT (user_id, date) DO UPDATE SET
-measured_at=EXCLUDED.measured_at, device_source=EXCLUDED.device_source, weight=EXCLUDED.weight, bmi=EXCLUDED.bmi, body_fat=EXCLUDED.body_fat, fat_mass=EXCLUDED.fat_mass, muscle_mass=EXCLUDED.muscle_mass, skeletal_muscle_mass=EXCLUDED.skeletal_muscle_mass, bone_mass=EXCLUDED.bone_mass, protein_mass=EXCLUDED.protein_mass, total_body_water=EXCLUDED.total_body_water, fat_free_mass=EXCLUDED.fat_free_mass, lean_body_weight=EXCLUDED.lean_body_weight, subcutaneous_fat=EXCLUDED.subcutaneous_fat, visceral_fat=EXCLUDED.visceral_fat, bmr=EXCLUDED.bmr, metabolic_age=EXCLUDED.metabolic_age, whr=EXCLUDED.whr, target_weight=EXCLUDED.target_weight, body_type=EXCLUDED.body_type, notes=EXCLUDED.notes;
+('49aef7da-d1c7-4adc-b3d2-fb741b9b35df', '2026-05-28', '2026-05-28 20:00:03'::timestamptz, 'renpho_csv', 113.80, 38.0, 35.2, 40.06, 68.74, 42.45, 4.90, 14.79, 54.06, 73.74, 73.74, 25.1, 17, 1961, 43, 0.84, 65.80, 'Sobrepeso', 'Nivel de obesidad II');
