@@ -3,12 +3,14 @@
  * mood, sueño, comidas y energía. Diseño móvil-first estilo iOS con tabs.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import {
   Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
-  Check, Plus, ArrowRight, Flame, DollarSign,
+  Check, Plus, ArrowRight, Flame, DollarSign, Camera, Sparkles,
 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { scanReceipt } from "@/lib/receipt-scan.functions";
 import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
 import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
