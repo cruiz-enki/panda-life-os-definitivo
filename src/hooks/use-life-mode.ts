@@ -49,7 +49,7 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     emoji: "🌐",
     description: "Todos los módulos disponibles",
     icon: LayoutGrid,
-    categories: ["HEALTH", "HOME", "MONEY", "INSIGHTS", "MIND", "SETUP"],
+    categories: ["HEALTH", "HOME", "MONEY", "INSIGHTS", "MIND", "PRODUCTIVITY", "SETUP"],
     paths: null,
     fabLabels: null,
     dashTiles: [],
