@@ -77,7 +77,7 @@ export function PsychologyPage() {
     if (pendingTasks.length > 3) return `Tienes ${pendingTasks.length} acuerdos terapéuticos pendientes. Elige uno pequeño para hoy.`;
     if (lastSession && Date.now() - new Date(lastSession.date).getTime() > 14 * 86400000) return "Hace más de 2 semanas de tu última sesión. ¿Agendamos la próxima?";
     return "Vas bien. Mantén tu práctica: presencia, respiración y autocompasión.";
-  }, [todayCheckin, pendingTasks.length, lastSession]);
+  }, [todayMood, pendingTasks.length, lastSession]);
 
   return (
     <div className="container max-w-5xl py-6 space-y-6">
