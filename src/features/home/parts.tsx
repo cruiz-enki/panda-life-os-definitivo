@@ -208,6 +208,13 @@ export function HomePage() {
           emptyMsg="No hay tareas programadas para hoy."
         />
       )}
+      {tab === "areas" && (
+        <AreaGrid
+          areas={areas}
+          onDelete={(id) => { if (confirm("¿Eliminar esta área?")) home.deleteArea(id); }}
+          onEdit={(a) => setEditingArea(a)}
+        />
+      )}
 
       {openTask && (
         <TaskDialog onClose={() => setOpenTask(false)} onSave={async (input) => { await home.createTask(input); setOpenTask(false); }} areas={areas} />
