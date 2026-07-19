@@ -16,6 +16,8 @@ import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 import { useFocusMode } from "@/hooks/use-focus-mode";
+import { useLifeMode, type CategoryKey } from "@/hooks/use-life-mode";
+import { ModeIndicator } from "@/components/ModeIndicator";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; hash?: string };
 
