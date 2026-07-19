@@ -140,7 +140,8 @@ function CategoryGroup({
 }) {
   const location = useLocation();
   const { filterItems } = useFocusMode();
-  const visibleItems = filterItems(items);
+  const { isPathAllowed } = useLifeMode();
+  const visibleItems = filterItems(items).filter((i) => isPathAllowed(i.to));
   const currentHash = location.hash.replace(/^#/, "");
   const inGroup = visibleItems.some(
     (i) =>
