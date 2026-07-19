@@ -6,7 +6,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import {
-  Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
+  Repeat, CheckSquare, Smile, Moon, Utensils,
   Check, Plus, ArrowRight, Flame, DollarSign, Camera, Sparkles,
 } from "lucide-react";
 import { scanReceipt } from "@/lib/receipt-scan.functions";

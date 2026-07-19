@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Repeat,
-  Battery,
+ 
   Sparkles,
   CheckSquare,
   NotebookPen,

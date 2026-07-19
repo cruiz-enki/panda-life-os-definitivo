@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Repeat, BookOpen, Battery, Sparkles, CheckSquare, NotebookPen,
+  LayoutDashboard, Repeat, BookOpen, Sparkles, CheckSquare, NotebookPen,
   Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart,
   Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill,
   AlertCircle, Stethoscope, Home as HomeIcon, FolderKanban, Dumbbell, Download,
