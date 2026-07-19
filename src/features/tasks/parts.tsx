@@ -90,7 +90,7 @@ export function TasksPage() {
   }, [hideWork]);
 
   const workListIds = useMemo(() => {
-    const rx = /(enki|trabajo|work|oficina|job)/i;
+    const rx = /(enki|cliente|aprendiendum)/i;
     return new Set(state.taskLists.filter((l) => rx.test(l.name)).map((l) => l.id));
   }, [state.taskLists]);
 
