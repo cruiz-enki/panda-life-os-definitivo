@@ -139,6 +139,11 @@ function Dashboard() {
         <ChevronRight className="w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
       </Link>
 
+      {/* Instalar como app (se auto-oculta si ya está instalada) */}
+      <div className="mb-5">
+        <InstallPWA />
+      </div>
+
       {/* Nivel + Misión activa: fila compacta */}
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
         <Link to="/rewards" className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 hover:border-primary/40 transition-colors">
