@@ -133,10 +133,12 @@ export function TasksPage() {
       const bd = b.due ? new Date(b.due).getTime() : Infinity;
       return ad - bd;
     });
-  }, [state.tasks, view, activeTagFilter, today]);
+  }, [state.tasks, view, activeTagFilter, today, hideWork, workListIds]);
 
   const counts = useMemo(() => {
-    const pending = state.tasks.filter((t) => t.status !== "completed");
+    const isWork = (t: Task) => !!t.listId && workListIds.has(t.listId);
+    const base = hideWork ? state.tasks.filter((t) => !isWork(t)) : state.tasks;
+    const pending = base.filter((t) => t.status !== "completed");
     return {
       today: pending.filter((t) => isDueToday(t, today) || isOverdue(t)).length,
       upcoming: pending.filter((t) => {
@@ -145,10 +147,10 @@ export function TasksPage() {
         return d > Date.now() && d <= Date.now() + 7 * 86400000;
       }).length,
       all: pending.length,
-      completed: state.tasks.filter((t) => t.status === "completed").length,
+      completed: base.filter((t) => t.status === "completed").length,
       high: pending.filter((t) => t.priority === "high").length,
     };
-  }, [state.tasks, today]);
+  }, [state.tasks, today, hideWork, workListIds]);
 
   return (
     <div className="px-4 md:px-10 py-6 md:py-8 max-w-7xl mx-auto">
