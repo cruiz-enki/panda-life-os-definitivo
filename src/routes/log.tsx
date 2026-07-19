@@ -109,7 +109,7 @@ function ExpenseQuick() {
   const [saving, setSaving] = useState(false);
   const [scanning, setScanning] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const runScan = useServerFn(scanReceipt);
+  const runScan = scanReceipt;
 
   const allCats = [
     ...DEFAULT_CATEGORIES.filter((d) => d.kind === "expense").map((d) => ({ name: d.name, emoji: d.emoji })),
