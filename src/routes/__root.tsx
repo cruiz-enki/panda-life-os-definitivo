@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import appCss from "../styles.css?url";
 import { AppSidebar, MobileNav } from "@/components/AppSidebar";
 import { QuickCapture } from "@/components/QuickCapture";
+import { ModeBackButton } from "@/components/ModeBackButton";
 
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
@@ -190,6 +191,7 @@ function AuthGate() {
       <div className="flex min-h-dvh">
         <AppSidebar />
         <main className="flex-1 min-w-0 pb-20 md:pb-0">
+          <ModeBackButton />
           <Outlet />
         </main>
         <QuickCapture />
