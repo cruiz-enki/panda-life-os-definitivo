@@ -42,6 +42,7 @@ import {
   Repeat,
   Zap,
   Flame,
+  Briefcase,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
