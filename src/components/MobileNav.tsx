@@ -163,8 +163,8 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   const { filterItems } = useFocusMode();
   const { isPathAllowed, isCategoryVisible } = useLifeMode();
 
-  const applyMode = <T extends { to: string }>(items: T[]) =>
-    filterItems(items as never).filter((i: T) => isPathAllowed(i.to));
+  const applyMode = (items: MoreItem[]): MoreItem[] =>
+    filterItems(items).filter((i) => isPathAllowed(i.to));
 
   const moreActive =
     !primary.some((p) => p.to === location.pathname) &&
