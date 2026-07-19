@@ -14,6 +14,7 @@ import { ModeDashboardHero } from "@/components/ModeDashboardHero";
 import { useLifeMode } from "@/hooks/use-life-mode";
 import { MoneyDashboard } from "@/components/dashboards/MoneyDashboard";
 import { HealthDashboard } from "@/components/dashboards/HealthDashboard";
+import { ProductivityDashboard } from "@/components/dashboards/ProductivityDashboard";
 import {
   Sparkles,
   Flame,
@@ -135,6 +136,8 @@ function Dashboard() {
         <MoneyDashboard />
       ) : mode === "health" ? (
         <HealthDashboard />
+      ) : mode === "productivity" ? (
+        <ProductivityDashboard />
       ) : (
         <>
 
