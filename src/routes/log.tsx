@@ -481,6 +481,8 @@ function MoodQuick() {
   const { add, logs } = useMood();
   const [mood, setMood] = useState<string | null>(null);
   const [intensity, setIntensity] = useState(3);
+  const [energy, setEnergy] = useState(7);
+  const [pain, setPain] = useState(0);
   const [tags, setTags] = useState<string[]>([]);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -491,7 +493,7 @@ function MoodQuick() {
   const submit = async () => {
     if (!mood) return;
     setSaving(true);
-    const err = await add({ mood, intensity, tags, note: note || undefined });
+    const err = await add({ mood, intensity, tags, note: note || undefined, energy, pain });
     setSaving(false);
     if (err) return toast.error("No se pudo guardar");
     toast.success("Mood registrado");
@@ -499,6 +501,8 @@ function MoodQuick() {
     setTags([]);
     setNote("");
     setIntensity(3);
+    setEnergy(7);
+    setPain(0);
   };
 
   const last = logs[0];
