@@ -57,6 +57,8 @@ import { PandaAvatar } from "@/components/PandaAvatar";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 import { QuickActionsFab } from "@/components/QuickActionsFab";
 import { useFocusMode } from "@/hooks/use-focus-mode";
+import { useLifeMode, type CategoryKey } from "@/hooks/use-life-mode";
+import { ModeIndicator } from "@/components/ModeIndicator";
 
 // Items principales en la barra inferior (4 + FAB centrado + Más)
 const primary = [
