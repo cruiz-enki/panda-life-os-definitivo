@@ -79,6 +79,20 @@ export function TasksPage() {
   const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
   const [listModal, setListModal] = useState(false);
   const [tagModal, setTagModal] = useState(false);
+  const [hideWork, setHideWork] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("enki:tasks:hide-work") === "1";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("enki:tasks:hide-work", hideWork ? "1" : "0");
+    }
+  }, [hideWork]);
+
+  const workListIds = useMemo(() => {
+    const rx = /(enki|trabajo|work|oficina|job)/i;
+    return new Set(state.taskLists.filter((l) => rx.test(l.name)).map((l) => l.id));
+  }, [state.taskLists]);
 
   const { tasks: smartList, alert } = useMemo(
     () => smartTaskRecommendation(state.tasks, today),
