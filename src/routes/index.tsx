@@ -142,6 +142,8 @@ function Dashboard() {
         <ProductivityDashboard />
       ) : mode === "mind" ? (
         <MindDashboard />
+      ) : mode === "home" ? (
+        <HomeDashboard />
       ) : (
         <>
 
