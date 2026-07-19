@@ -85,7 +85,7 @@ export function QuickActionsFab({
               }`}
             >
               <div className="flex flex-col gap-2 min-w-[12rem] p-2 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-card">
-                {shortcuts.map((s, idx) => {
+                {visibleShortcuts.map((s, idx) => {
                   const Icon = s.icon;
                   return (
                     <Link
