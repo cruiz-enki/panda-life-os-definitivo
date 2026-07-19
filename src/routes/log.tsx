@@ -24,19 +24,19 @@ type LogSearch = { tab?: TabKey };
 export const Route = createFileRoute("/log")({
   validateSearch: (s: Record<string, unknown>): LogSearch => {
     const t = s.tab;
-    const allowed: TabKey[] = ["habits", "tasks", "mood", "sleep", "meals", "energy", "expense"];
+    const allowed: TabKey[] = ["habits", "tasks", "mood", "sleep", "meals", "expense"];
     return { tab: typeof t === "string" && (allowed as string[]).includes(t) ? (t as TabKey) : undefined };
   },
   head: () => ({
     meta: [
       { title: "Registrar · Panda's LIFE OS" },
-      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas, energía y gastos." },
+      { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas y gastos." },
     ],
   }),
   component: LogPage,
 });
 
-type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "energy" | "expense";
+type TabKey = "habits" | "tasks" | "mood" | "sleep" | "meals" | "expense";
 
 const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
   { key: "habits", label: "Hábitos", icon: Repeat },
@@ -45,7 +45,6 @@ const TABS: { key: TabKey; label: string; icon: typeof Repeat }[] = [
   { key: "mood", label: "Mood", icon: Smile },
   { key: "sleep", label: "Sueño", icon: Moon },
   { key: "meals", label: "Comidas", icon: Utensils },
-  { key: "energy", label: "Energía", icon: Battery },
 ];
 
 function LogPage() {
@@ -91,7 +90,6 @@ function LogPage() {
         {tab === "mood" && <MoodQuick />}
         {tab === "sleep" && <SleepQuick />}
         {tab === "meals" && <MealsQuick />}
-        {tab === "energy" && <EnergyQuick />}
       </div>
     </div>
   );

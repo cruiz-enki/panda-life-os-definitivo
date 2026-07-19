@@ -4,7 +4,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Heart, Scale, Utensils, Pill, AlertCircle, Stethoscope, Activity, Dumbbell, Battery, Brain, Beaker } from "lucide-react";
 
-export type HealthTabId = "overview" | "body" | "meals" | "exercise" | "energy" | "meds" | "symptoms" | "medical" | "labs" | "insights" | "psychology";
+export type HealthTabId = "overview" | "body" | "meals" | "exercise" | "mood" | "meds" | "symptoms" | "medical" | "labs" | "insights" | "psychology";
 
 interface Tab {
   id: HealthTabId;
@@ -19,7 +19,7 @@ const tabs: Tab[] = [
   { id: "body", label: "Cuerpo", icon: <Scale className="w-4 h-4" />, to: "/health", hash: "body" },
   { id: "meals", label: "Comida", icon: <Utensils className="w-4 h-4" />, to: "/meals" },
   { id: "exercise", label: "Ejercicio", icon: <Dumbbell className="w-4 h-4" />, to: "/exercise" },
-  { id: "energy", label: "Energía", icon: <Battery className="w-4 h-4" />, to: "/energy" },
+  { id: "mood", label: "Mood + Energía", icon: <Battery className="w-4 h-4" />, to: "/mood" },
   { id: "meds", label: "Medicación", icon: <Pill className="w-4 h-4" />, to: "/health", hash: "meds" },
   { id: "psychology", label: "Psicología", icon: <Brain className="w-4 h-4" />, to: "/psychology" },
   { id: "symptoms", label: "Malestares", icon: <AlertCircle className="w-4 h-4" />, to: "/health", hash: "symptoms" },

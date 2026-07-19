@@ -11,6 +11,8 @@ export type MoodLog = {
   intensity: number;
   tags: string[];
   note: string | null;
+  energy: number | null;
+  pain: number | null;
 };
 
 export const MOOD_OPTIONS = [
@@ -49,7 +51,7 @@ export function useMood() {
   const logs = data ?? [];
   const refresh = useCallback(() => qc.invalidateQueries({ queryKey: ["mood-logs", userId] }), [qc, userId]);
 
-  const add = async (input: { mood: string; intensity?: number; tags?: string[]; note?: string }) => {
+  const add = async (input: { mood: string; intensity?: number; tags?: string[]; note?: string; energy?: number; pain?: number }) => {
     if (!userId) return;
     const payload = {
       user_id: userId,
@@ -57,6 +59,8 @@ export function useMood() {
       intensity: input.intensity ?? 3,
       tags: input.tags ?? [],
       note: input.note ?? null,
+      energy: input.energy ?? null,
+      pain: input.pain ?? null,
     };
     const { error } = await supabase.from("mood_logs" as never).insert(payload as never);
     if (!error) refresh();
