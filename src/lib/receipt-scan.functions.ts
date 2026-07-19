@@ -57,7 +57,7 @@ Responde SOLO el JSON, sin markdown, sin explicación.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-5.5",
         messages: [
           { role: "system", content: system },
           {
