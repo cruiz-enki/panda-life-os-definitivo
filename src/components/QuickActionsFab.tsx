@@ -37,6 +37,8 @@ export function QuickActionsFab({
   onCapture: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const { isFabLabelAllowed } = useLifeMode();
+  const visibleShortcuts = shortcuts.filter((s) => isFabLabelAllowed(s.label));
 
   useEffect(() => {
     if (!open) return;
