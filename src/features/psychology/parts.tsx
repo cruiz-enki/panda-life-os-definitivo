@@ -108,9 +108,8 @@ export function PsychologyPage() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <div className="-mx-4 px-4 overflow-x-auto scrollbar-none sm:mx-0 sm:px-0 sm:overflow-visible">
-          <TabsList className="inline-flex w-max sm:grid sm:w-full sm:grid-cols-4">
+          <TabsList className="inline-flex w-max sm:grid sm:w-full sm:grid-cols-3">
             <TabsTrigger value="panel">Panel</TabsTrigger>
-            <TabsTrigger value="checkin">Check-in</TabsTrigger>
             <TabsTrigger value="sessions">Sesiones</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
           </TabsList>
@@ -152,9 +151,28 @@ export function PsychologyPage() {
             </Card>
           </div>
 
+          <Card className="p-4 bg-muted/30">
+            <div className="flex items-start gap-3">
+              <Heart className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <div className="font-semibold text-sm">Check-in emocional</div>
+                {todayMood ? (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Hoy registraste ansiedad <b>{todayMood.anxiety ?? "—"}/5</b> · estrés <b>{todayMood.stress ?? "—"}/5</b>
+                    {todayMood.trigger && <> · detonante: <b className="capitalize">{todayMood.trigger}</b></>}
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-1">Aún no registras tu ansiedad y estrés de hoy.</p>
+                )}
+              </div>
+              <Link to="/mood"><Button size="sm" variant="outline">Ir a Mood <ArrowRight className="w-3 h-3 ml-1" /></Button></Link>
+            </div>
+          </Card>
+
           <Card className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="font-semibold flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Tendencia semanal</div>
+              <div className="text-[10px] text-muted-foreground">desde Mood</div>
             </div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
@@ -197,37 +215,6 @@ export function PsychologyPage() {
           </Card>
         </TabsContent>
 
-        {/* CHECK-IN */}
-        <TabsContent value="checkin" className="space-y-4 mt-4">
-          <CheckinForm existing={todayCheckin} onSave={psych.upsertCheckin} />
-          <Card className="p-4">
-            <div className="font-semibold mb-3 text-sm">Últimos 7 días</div>
-            {psych.checkins.slice(0, 7).length === 0 ? (
-              <div className="text-sm text-muted-foreground text-center py-4">Sin registros aún</div>
-            ) : (
-              <div className="space-y-2">
-                {psych.checkins.slice(0, 7).map((c) => {
-                  const emo = EMOTIONS.find((e) => e.value === c.dominant_emotion);
-                  return (
-                    <div key={c.id} className="flex items-center gap-3 p-2 rounded-lg border border-border text-sm">
-                      <div className="text-xs text-muted-foreground w-20 shrink-0">{new Date(c.date).toLocaleDateString("es", { weekday: "short", day: "numeric" })}</div>
-                      <div className="text-lg">{emo?.emoji ?? "·"}</div>
-                      <div className="flex gap-3 text-xs">
-                        <span>Ansiedad: <b>{c.anxiety}</b></span>
-                        <span>Estrés: <b>{c.stress}</b></span>
-                      </div>
-                      {c.is_private && <Lock className="w-3 h-3 text-muted-foreground ml-auto" />}
-                      <button onClick={() => psych.deleteCheckin(c.id)} className="text-muted-foreground hover:text-destructive ml-auto" aria-label="Eliminar">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Card>
-        </TabsContent>
-
         {/* SESSIONS */}
         <TabsContent value="sessions" className="space-y-4 mt-4">
           <SessionForm onSave={psych.createSession} />
@@ -247,7 +234,7 @@ export function PsychologyPage() {
 
         {/* INSIGHTS */}
         <TabsContent value="insights" className="space-y-4 mt-4">
-          <InsightsView checkins={psych.checkins} sessions={psych.sessions} />
+          <InsightsView moodLogs={mood.logs} sessions={psych.sessions} />
         </TabsContent>
       </Tabs>
     </div>
