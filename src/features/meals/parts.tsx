@@ -98,15 +98,15 @@ export function TodayTab({ m, addBonusXp }: { m: ReturnType<typeof useMeals>; ad
                     <span className="text-sm text-muted-foreground">Sin desayuno planeado</span>
                     <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5" onClick={async () => {
                       const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                      const dish = m.dishes.find(d => 
-                        d.allowed_meal_types?.includes("desayuno") ||
-                        (norm(d.name).includes("huevos") && norm(d.name).includes("espinaca"))
-                      );
+                      const dish =
+                        m.dishes.find(d => norm(d.name).includes("huevos") && norm(d.name).includes("estrellado")) ||
+                        m.dishes.find(d => norm(d.name).includes("huevos") && norm(d.name).includes("espinaca")) ||
+                        m.dishes.find(d => norm(d.name).includes("huevos"));
                       if (dish) {
                         await m.setPlanEntry(m.today, "desayuno", dish.id, "");
                         toast.success("Desayuno agregado");
                       } else {
-                        toast.error("No se encontró 'Huevos con espinaca' en tu catálogo");
+                        toast.error("No se encontró un platillo de huevos en tu catálogo");
                       }
                     }}>
                       <Sparkles className="w-3 h-3" /> Agregar huevos...
