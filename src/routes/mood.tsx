@@ -4,9 +4,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Smile, Trash2, Sparkles } from "lucide-react";
-import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
+import { useMood, MOOD_OPTIONS, MOOD_TAGS, PSYCH_TRIGGERS } from "@/hooks/use-mood";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
