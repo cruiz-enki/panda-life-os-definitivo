@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import appCss from "../styles.css?url";
 import { AppSidebar, MobileNav } from "@/components/AppSidebar";
 import { QuickCapture } from "@/components/QuickCapture";
+import { ModeBackButton } from "@/components/ModeBackButton";
 
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
