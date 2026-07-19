@@ -322,6 +322,8 @@ function Dashboard() {
           )}
         </div>
       )}
+        </>
+      )}
     </div>
   );
 }
