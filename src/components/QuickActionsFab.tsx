@@ -15,6 +15,8 @@ import {
   DollarSign,
 } from "lucide-react";
 
+import { useLifeMode } from "@/hooks/use-life-mode";
+
 type Variant = "mobile" | "desktop";
 
 const shortcuts: { to: string; label: string; icon: typeof Plus; search?: Record<string, string> }[] = [
