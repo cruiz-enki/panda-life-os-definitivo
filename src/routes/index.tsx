@@ -130,6 +130,8 @@ function Dashboard() {
       {/* Hero por modo (visible cuando mode !== normal) */}
       <ModeDashboardHero />
 
+      {mode === "money" && <MoneyDashboard />}
+
       {/* CTA principal: Registrar */}
       <Link
         to="/log"
