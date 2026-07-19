@@ -42,6 +42,7 @@ import {
   Repeat,
   Zap,
   Flame,
+  Briefcase,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
@@ -78,6 +79,20 @@ export function TasksPage() {
   const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
   const [listModal, setListModal] = useState(false);
   const [tagModal, setTagModal] = useState(false);
+  const [hideWork, setHideWork] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("enki:tasks:hide-work") === "1";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("enki:tasks:hide-work", hideWork ? "1" : "0");
+    }
+  }, [hideWork]);
+
+  const workListIds = useMemo(() => {
+    const rx = /(enki|trabajo|work|oficina|job)/i;
+    return new Set(state.taskLists.filter((l) => rx.test(l.name)).map((l) => l.id));
+  }, [state.taskLists]);
 
   const { tasks: smartList, alert } = useMemo(
     () => smartTaskRecommendation(state.tasks, today),
@@ -107,6 +122,9 @@ export function TasksPage() {
       list = list.filter((t) => t.listId === view);
     }
     if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
+    if (hideWork && !(typeof view === "string" && workListIds.has(view))) {
+      list = list.filter((t) => !t.listId || !workListIds.has(t.listId));
+    }
     return list.sort((a, b) => {
       if (a.status !== b.status) return a.status === "completed" ? 1 : -1;
       const pr = priorityRank(a.priority) - priorityRank(b.priority);
@@ -115,10 +133,12 @@ export function TasksPage() {
       const bd = b.due ? new Date(b.due).getTime() : Infinity;
       return ad - bd;
     });
-  }, [state.tasks, view, activeTagFilter, today]);
+  }, [state.tasks, view, activeTagFilter, today, hideWork, workListIds]);
 
   const counts = useMemo(() => {
-    const pending = state.tasks.filter((t) => t.status !== "completed");
+    const isWork = (t: Task) => !!t.listId && workListIds.has(t.listId);
+    const base = hideWork ? state.tasks.filter((t) => !isWork(t)) : state.tasks;
+    const pending = base.filter((t) => t.status !== "completed");
     return {
       today: pending.filter((t) => isDueToday(t, today) || isOverdue(t)).length,
       upcoming: pending.filter((t) => {
@@ -127,10 +147,10 @@ export function TasksPage() {
         return d > Date.now() && d <= Date.now() + 7 * 86400000;
       }).length,
       all: pending.length,
-      completed: state.tasks.filter((t) => t.status === "completed").length,
+      completed: base.filter((t) => t.status === "completed").length,
       high: pending.filter((t) => t.priority === "high").length,
     };
-  }, [state.tasks, today]);
+  }, [state.tasks, today, hideWork, workListIds]);
 
   return (
     <div className="px-4 md:px-10 py-6 md:py-8 max-w-7xl mx-auto">
@@ -144,12 +164,26 @@ export function TasksPage() {
             Racha productiva: <span className="text-primary font-semibold">{state.productivity.streak}d</span> · {counts.all} pendientes
           </p>
         </div>
-        <button
-          onClick={() => { setEditingTask(null); setComposerOpen(true); }}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow hover:scale-105 transition-transform"
-        >
-          <Plus className="w-4 h-4" /> Nueva tarea
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setHideWork((v) => !v)}
+            title={workListIds.size === 0 ? "Crea una lista con 'Enki', 'Trabajo' o 'Work' en el nombre para poder ocultarla" : hideWork ? "Mostrar tareas de trabajo" : "Ocultar tareas de trabajo"}
+            className={`inline-flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium border transition-all ${
+              hideWork
+                ? "bg-primary/15 border-primary/40 text-primary"
+                : "bg-card border-border text-foreground/80 hover:border-primary/40"
+            }`}
+          >
+            <Briefcase className="w-4 h-4" />
+            {hideWork ? "Modo Enki: OFF trabajo" : "Modo Enki"}
+          </button>
+          <button
+            onClick={() => { setEditingTask(null); setComposerOpen(true); }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow hover:scale-105 transition-transform"
+          >
+            <Plus className="w-4 h-4" /> Nueva tarea
+          </button>
+        </div>
       </header>
 
       {/* Smart alert */}
