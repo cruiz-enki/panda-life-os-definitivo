@@ -16,6 +16,7 @@ import { MoneyDashboard } from "@/components/dashboards/MoneyDashboard";
 import { HealthDashboard } from "@/components/dashboards/HealthDashboard";
 import { ProductivityDashboard } from "@/components/dashboards/ProductivityDashboard";
 import { MindDashboard } from "@/components/dashboards/MindDashboard";
+import { HomeDashboard } from "@/components/dashboards/HomeDashboard";
 import {
   Sparkles,
   Flame,
