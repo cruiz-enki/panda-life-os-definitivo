@@ -483,24 +483,26 @@ function SessionCard({
 }
 
 // ============== INSIGHTS ==============
-function InsightsView({ checkins, sessions }: { checkins: PsychCheckin[]; sessions: PsychSession[] }) {
+function InsightsView({ moodLogs, sessions }: { moodLogs: MoodLog[]; sessions: PsychSession[] }) {
   const last30 = useMemo(() => {
     const cutoff = Date.now() - 30 * 86400000;
-    return checkins.filter((c) => new Date(c.date).getTime() >= cutoff);
-  }, [checkins]);
+    return moodLogs.filter((l) => new Date(l.logged_at).getTime() >= cutoff);
+  }, [moodLogs]);
 
-  const avgAnxiety = last30.length ? (last30.reduce((s, c) => s + c.anxiety, 0) / last30.length).toFixed(1) : "—";
-  const avgStress = last30.length ? (last30.reduce((s, c) => s + c.stress, 0) / last30.length).toFixed(1) : "—";
+  const anxEntries = last30.filter((l) => l.anxiety != null);
+  const strEntries = last30.filter((l) => l.stress != null);
+  const avgAnxiety = anxEntries.length ? (anxEntries.reduce((s, l) => s + (l.anxiety ?? 0), 0) / anxEntries.length).toFixed(1) : "—";
+  const avgStress = strEntries.length ? (strEntries.reduce((s, l) => s + (l.stress ?? 0), 0) / strEntries.length).toFixed(1) : "—";
 
   // Top detonantes
   const triggerCount = useMemo(() => {
     const map: Record<string, { count: number; avgAnx: number }> = {};
-    last30.forEach((c) => {
-      if (!c.trigger) return;
-      const k = c.trigger.toLowerCase();
+    last30.forEach((l) => {
+      if (!l.trigger) return;
+      const k = l.trigger.toLowerCase();
       if (!map[k]) map[k] = { count: 0, avgAnx: 0 };
       map[k].count++;
-      map[k].avgAnx += c.anxiety;
+      map[k].avgAnx += l.anxiety ?? 0;
     });
     return Object.entries(map)
       .map(([k, v]) => ({ trigger: k, count: v.count, avgAnx: +(v.avgAnx / v.count).toFixed(1) }))
@@ -508,15 +510,17 @@ function InsightsView({ checkins, sessions }: { checkins: PsychCheckin[]; sessio
       .slice(0, 5);
   }, [last30]);
 
-  // Top emociones
+  // Top emociones desde mood.emoji/tags
   const emotionCount = useMemo(() => {
     const map: Record<string, number> = {};
-    last30.forEach((c) => { if (c.dominant_emotion) map[c.dominant_emotion] = (map[c.dominant_emotion] ?? 0) + 1; });
-    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    last30.forEach((l) => {
+      if (l.emoji) map[l.emoji] = (map[l.emoji] ?? 0) + 1;
+    });
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
   }, [last30]);
 
-  // Patrón: días alta ansiedad
-  const highAnxDays = last30.filter((c) => c.anxiety >= 4).length;
+  const highAnxDays = anxEntries.filter((l) => (l.anxiety ?? 0) >= 4).length;
+
 
   return (
     <>
