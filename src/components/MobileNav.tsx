@@ -130,6 +130,9 @@ const mindItems: MoreItem[] = [
   { to: "/decisions", label: "Decisiones", icon: Scale },
   { to: "/introspection", label: "Introspección", icon: Eye },
   { to: "/notes", label: "Notas", icon: NotebookPen },
+];
+
+const productivityItems: MoreItem[] = [
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
