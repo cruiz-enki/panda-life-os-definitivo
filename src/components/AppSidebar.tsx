@@ -90,6 +90,8 @@ const mindItems: NavItem[] = [
 ];
 
 const productivityItems: NavItem[] = [
+  { to: "/calendar", label: "Plan", icon: CalendarIcon },
+  { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
@@ -97,6 +99,7 @@ const productivityItems: NavItem[] = [
   { to: "/projects", label: "Proyectos", icon: FolderKanban },
   { to: "/scheduled", label: "Al futuro", icon: Send },
 ];
+
 
 const setupItems: NavItem[] = [
   { to: "/notifications", label: "Notificaciones", icon: Bell },
