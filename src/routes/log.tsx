@@ -542,6 +542,22 @@ function MoodQuick() {
         </div>
 
         <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">Energía ⚡</span>
+            <span className="font-display text-lg font-bold">{energy}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(Number(e.target.value))} className="w-full" />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">Dolor 🩹</span>
+            <span className="font-display text-lg font-bold">{pain}<span className="text-xs text-muted-foreground">/10</span></span>
+          </div>
+          <input type="range" min={0} max={10} value={pain} onChange={(e) => setPain(Number(e.target.value))} className="w-full" />
+        </div>
+
+        <div>
           <div className="text-xs text-muted-foreground mb-2">Etiquetas</div>
           <div className="flex flex-wrap gap-1.5">
             {MOOD_TAGS.map((t) => {
