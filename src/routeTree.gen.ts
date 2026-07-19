@@ -30,6 +30,7 @@ import { Route as NetWorthRouteImport } from './routes/net-worth'
 import { Route as MoodRouteImport } from './routes/mood'
 import { Route as MonthCloseRouteImport } from './routes/month-close'
 import { Route as MoneyToolsRouteImport } from './routes/money-tools'
+import { Route as MoneySetupRouteImport } from './routes/money-setup'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
 import { Route as LogRouteImport } from './routes/log'
@@ -66,7 +67,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as IntrospectionIndexRouteImport } from './routes/introspection.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
-import { Route as FinanceSetupRouteImport } from './routes/finance.setup'
 import { Route as ApiTestPushRouteImport } from './routes/api.test-push'
 import { Route as AdminResetRouteImport } from './routes/admin.reset'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
@@ -192,6 +192,11 @@ const MonthCloseRoute = MonthCloseRouteImport.update({
 const MoneyToolsRoute = MoneyToolsRouteImport.update({
   id: '/money-tools',
   path: '/money-tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoneySetupRoute = MoneySetupRouteImport.update({
+  id: '/money-setup',
+  path: '/money-setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MealsRoute = MealsRouteImport.update({
@@ -374,11 +379,6 @@ const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   path: '/$projectId',
   getParentRoute: () => ProjectsRoute,
 } as any)
-const FinanceSetupRoute = FinanceSetupRouteImport.update({
-  id: '/setup',
-  path: '/setup',
-  getParentRoute: () => FinanceRoute,
-} as any)
 const ApiTestPushRoute = ApiTestPushRouteImport.update({
   id: '/api/test-push',
   path: '/api/test-push',
@@ -516,7 +516,7 @@ export interface FileRoutesByFullPath {
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
-  '/finance': typeof FinanceRouteWithChildren
+  '/finance': typeof FinanceRoute
   '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
@@ -534,6 +534,7 @@ export interface FileRoutesByFullPath {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/money-setup': typeof MoneySetupRoute
   '/money-tools': typeof MoneyToolsRoute
   '/month-close': typeof MonthCloseRoute
   '/mood': typeof MoodRoute
@@ -558,7 +559,6 @@ export interface FileRoutesByFullPath {
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
-  '/finance/setup': typeof FinanceSetupRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -597,7 +597,7 @@ export interface FileRoutesByTo {
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
-  '/finance': typeof FinanceRouteWithChildren
+  '/finance': typeof FinanceRoute
   '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
@@ -614,6 +614,7 @@ export interface FileRoutesByTo {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/money-setup': typeof MoneySetupRoute
   '/money-tools': typeof MoneyToolsRoute
   '/month-close': typeof MonthCloseRoute
   '/mood': typeof MoodRoute
@@ -637,7 +638,6 @@ export interface FileRoutesByTo {
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
-  '/finance/setup': typeof FinanceSetupRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/introspection': typeof IntrospectionIndexRoute
   '/projects': typeof ProjectsIndexRoute
@@ -677,7 +677,7 @@ export interface FileRoutesById {
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
-  '/finance': typeof FinanceRouteWithChildren
+  '/finance': typeof FinanceRoute
   '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
@@ -695,6 +695,7 @@ export interface FileRoutesById {
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
   '/meals': typeof MealsRoute
+  '/money-setup': typeof MoneySetupRoute
   '/money-tools': typeof MoneyToolsRoute
   '/month-close': typeof MonthCloseRoute
   '/mood': typeof MoodRoute
@@ -719,7 +720,6 @@ export interface FileRoutesById {
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
-  '/finance/setup': typeof FinanceSetupRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -778,6 +778,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/money-setup'
     | '/money-tools'
     | '/month-close'
     | '/mood'
@@ -802,7 +803,6 @@ export interface FileRouteTypes {
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
-    | '/finance/setup'
     | '/projects/$projectId'
     | '/introspection/'
     | '/projects/'
@@ -858,6 +858,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/money-setup'
     | '/money-tools'
     | '/month-close'
     | '/mood'
@@ -881,7 +882,6 @@ export interface FileRouteTypes {
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
-    | '/finance/setup'
     | '/projects/$projectId'
     | '/introspection'
     | '/projects'
@@ -938,6 +938,7 @@ export interface FileRouteTypes {
     | '/log'
     | '/maintenance'
     | '/meals'
+    | '/money-setup'
     | '/money-tools'
     | '/month-close'
     | '/mood'
@@ -962,7 +963,6 @@ export interface FileRouteTypes {
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
-    | '/finance/setup'
     | '/projects/$projectId'
     | '/introspection/'
     | '/projects/'
@@ -1002,7 +1002,7 @@ export interface RootRouteChildren {
   EnergyRoute: typeof EnergyRoute
   ExerciseRoute: typeof ExerciseRoute
   FamilyRoute: typeof FamilyRoute
-  FinanceRoute: typeof FinanceRouteWithChildren
+  FinanceRoute: typeof FinanceRoute
   FinanceInsightsRoute: typeof FinanceInsightsRoute
   FutureRoute: typeof FutureRoute
   GoalsRoute: typeof GoalsRoute
@@ -1020,6 +1020,7 @@ export interface RootRouteChildren {
   LogRoute: typeof LogRoute
   MaintenanceRoute: typeof MaintenanceRoute
   MealsRoute: typeof MealsRoute
+  MoneySetupRoute: typeof MoneySetupRoute
   MoneyToolsRoute: typeof MoneyToolsRoute
   MonthCloseRoute: typeof MonthCloseRoute
   MoodRoute: typeof MoodRoute
@@ -1208,6 +1209,13 @@ declare module '@tanstack/react-router' {
       path: '/money-tools'
       fullPath: '/money-tools'
       preLoaderRoute: typeof MoneyToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/money-setup': {
+      id: '/money-setup'
+      path: '/money-setup'
+      fullPath: '/money-setup'
+      preLoaderRoute: typeof MoneySetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meals': {
@@ -1462,13 +1470,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
       parentRoute: typeof ProjectsRoute
     }
-    '/finance/setup': {
-      id: '/finance/setup'
-      path: '/setup'
-      fullPath: '/finance/setup'
-      preLoaderRoute: typeof FinanceSetupRouteImport
-      parentRoute: typeof FinanceRoute
-    }
     '/api/test-push': {
       id: '/api/test-push'
       path: '/api/test-push'
@@ -1619,17 +1620,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface FinanceRouteChildren {
-  FinanceSetupRoute: typeof FinanceSetupRoute
-}
-
-const FinanceRouteChildren: FinanceRouteChildren = {
-  FinanceSetupRoute: FinanceSetupRoute,
-}
-
-const FinanceRouteWithChildren =
-  FinanceRoute._addFileChildren(FinanceRouteChildren)
-
 interface IntrospectionRouteChildren {
   IntrospectionIndexRoute: typeof IntrospectionIndexRoute
   IntrospectionCategoryCategoryKeyRoute: typeof IntrospectionCategoryCategoryKeyRoute
@@ -1678,7 +1668,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnergyRoute: EnergyRoute,
   ExerciseRoute: ExerciseRoute,
   FamilyRoute: FamilyRoute,
-  FinanceRoute: FinanceRouteWithChildren,
+  FinanceRoute: FinanceRoute,
   FinanceInsightsRoute: FinanceInsightsRoute,
   FutureRoute: FutureRoute,
   GoalsRoute: GoalsRoute,
@@ -1696,6 +1686,7 @@ const rootRouteChildren: RootRouteChildren = {
   LogRoute: LogRoute,
   MaintenanceRoute: MaintenanceRoute,
   MealsRoute: MealsRoute,
+  MoneySetupRoute: MoneySetupRoute,
   MoneyToolsRoute: MoneyToolsRoute,
   MonthCloseRoute: MonthCloseRoute,
   MoodRoute: MoodRoute,
