@@ -12,6 +12,7 @@ import { DailySummaryCard } from "@/components/DailySummaryCard";
 import { InstallPWA } from "@/components/InstallPWA";
 import { ModeDashboardHero } from "@/components/ModeDashboardHero";
 import { useLifeMode } from "@/hooks/use-life-mode";
+import { MoneyDashboard } from "@/components/dashboards/MoneyDashboard";
 import {
   Sparkles,
   Flame,
@@ -114,7 +115,7 @@ function Dashboard() {
 
   const questPct = activeQuest ? Math.min(100, (activeQuest.progress / activeQuest.quest.target) * 100) : 0;
 
-  useLifeMode(); // suscribe cambios de modo para re-render del hero
+  const { mode } = useLifeMode(); // suscribe cambios de modo para re-render del hero
 
   return (
     <div className="px-4 md:px-8 py-6 max-w-3xl mx-auto pb-24">
@@ -129,6 +130,10 @@ function Dashboard() {
       {/* Hero por modo (visible cuando mode !== normal) */}
       <ModeDashboardHero />
 
+      {mode === "money" ? (
+        <MoneyDashboard />
+      ) : (
+        <>
       {/* CTA principal: Registrar */}
       <Link
         to="/log"
@@ -316,6 +321,8 @@ function Dashboard() {
             </div>
           )}
         </div>
+      )}
+        </>
       )}
     </div>
   );
