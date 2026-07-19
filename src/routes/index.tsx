@@ -114,6 +114,9 @@ function Dashboard() {
 
   const questPct = activeQuest ? Math.min(100, (activeQuest.progress / activeQuest.quest.target) * 100) : 0;
 
+  const { mode } = useLifeMode();
+  const isFocused = mode !== "normal";
+
   return (
     <div className="px-4 md:px-8 py-6 max-w-3xl mx-auto pb-24">
       {/* Header minimal */}
@@ -123,6 +126,9 @@ function Dashboard() {
           {greeting}, panda 🐼
         </h1>
       </header>
+
+      {/* Hero por modo (visible cuando mode !== normal) */}
+      <ModeDashboardHero />
 
       {/* CTA principal: Registrar */}
       <Link
