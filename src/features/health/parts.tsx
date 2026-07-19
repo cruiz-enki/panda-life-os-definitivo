@@ -517,6 +517,7 @@ function BodyTab({ h, today }: { h: ReturnType<typeof useHealth>; today: string 
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }
