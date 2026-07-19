@@ -3,12 +3,14 @@
  * mood, sueño, comidas y energía. Diseño móvil-first estilo iOS con tabs.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import {
   Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
-  Check, Plus, ArrowRight, Flame, DollarSign,
+  Check, Plus, ArrowRight, Flame, DollarSign, Camera, Sparkles,
 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { scanReceipt } from "@/lib/receipt-scan.functions";
 import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
 import { useMood, MOOD_OPTIONS, MOOD_TAGS } from "@/hooks/use-mood";
@@ -106,6 +108,9 @@ function ExpenseQuick() {
   const [cardId, setCardId] = useState<string>("");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const runScan = useServerFn(scanReceipt);
 
   const allCats = [
     ...DEFAULT_CATEGORIES.filter((d) => d.kind === "expense").map((d) => ({ name: d.name, emoji: d.emoji })),
@@ -113,6 +118,38 @@ function ExpenseQuick() {
   ];
 
   const activeCards = cards.filter((c) => c.status === "active");
+
+  const onPickReceipt = async (file: File) => {
+    if (!file) return;
+    setScanning(true);
+    try {
+      // Downscale a máximo 1600px de lado para bajar tokens/latencia
+      const dataUrl = await compressImage(file, 1600, 0.85);
+      const result = await runScan({
+        data: {
+          imageDataUrl: dataUrl,
+          categories: allCats.map((c) => c.name),
+          today: todayCDMX(),
+        },
+      });
+      if (result.amount) setAmount(String(result.amount));
+      if (result.date) setDate(result.date);
+      if (result.category && allCats.some((c) => c.name === result.category)) {
+        setCategory(result.category);
+      }
+      if (result.payment_method) setPaymentMethod(result.payment_method);
+      const noteBits = [result.merchant, result.note].filter(Boolean);
+      if (noteBits.length > 0) setNote(noteBits.join(" · "));
+      toast.success(
+        `Recibo leído${result.confidence === "low" ? " (revisa los datos)" : ""}`,
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error("No se pudo leer el recibo");
+    } finally {
+      setScanning(false);
+    }
+  };
 
   const submit = async () => {
     const amt = Number(amount);
@@ -140,6 +177,34 @@ function ExpenseQuick() {
 
   return (
     <div className="space-y-4">
+      <button
+        type="button"
+        onClick={() => fileRef.current?.click()}
+        disabled={scanning}
+        className="w-full p-4 rounded-2xl border border-dashed border-primary/40 bg-primary/5 flex items-center justify-center gap-2 text-sm font-medium text-primary disabled:opacity-60"
+      >
+        {scanning ? (
+          <>
+            <Sparkles className="w-4 h-4 animate-pulse" /> Leyendo recibo con IA…
+          </>
+        ) : (
+          <>
+            <Camera className="w-4 h-4" /> Escanear recibo con IA
+          </>
+        )}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onPickReceipt(f);
+          e.target.value = "";
+        }}
+      />
       <div className="p-4 rounded-2xl border border-border bg-card space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <label className="text-xs text-muted-foreground space-y-1">
@@ -808,4 +873,19 @@ function EmptyState({ title, cta }: { title: string; cta: { to: string; label: s
       </Link>
     </div>
   );
+}
+
+/* ---------------- Utils ---------------- */
+async function compressImage(file: File, maxSide = 1600, quality = 0.85): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const w = Math.round(bitmap.width * scale);
+  const h = Math.round(bitmap.height * scale);
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas no disponible");
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  return canvas.toDataURL("image/jpeg", quality);
 }
