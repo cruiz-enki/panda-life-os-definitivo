@@ -66,6 +66,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as IntrospectionIndexRouteImport } from './routes/introspection.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as FinanceSetupRouteImport } from './routes/finance.setup'
 import { Route as ApiTestPushRouteImport } from './routes/api.test-push'
 import { Route as AdminResetRouteImport } from './routes/admin.reset'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
@@ -373,6 +374,11 @@ const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   path: '/$projectId',
   getParentRoute: () => ProjectsRoute,
 } as any)
+const FinanceSetupRoute = FinanceSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => FinanceRoute,
+} as any)
 const ApiTestPushRoute = ApiTestPushRouteImport.update({
   id: '/api/test-push',
   path: '/api/test-push',
@@ -510,7 +516,7 @@ export interface FileRoutesByFullPath {
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
-  '/finance': typeof FinanceRoute
+  '/finance': typeof FinanceRouteWithChildren
   '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
@@ -552,6 +558,7 @@ export interface FileRoutesByFullPath {
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
+  '/finance/setup': typeof FinanceSetupRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -590,7 +597,7 @@ export interface FileRoutesByTo {
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
-  '/finance': typeof FinanceRoute
+  '/finance': typeof FinanceRouteWithChildren
   '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
@@ -630,6 +637,7 @@ export interface FileRoutesByTo {
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
+  '/finance/setup': typeof FinanceSetupRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/introspection': typeof IntrospectionIndexRoute
   '/projects': typeof ProjectsIndexRoute
@@ -669,7 +677,7 @@ export interface FileRoutesById {
   '/energy': typeof EnergyRoute
   '/exercise': typeof ExerciseRoute
   '/family': typeof FamilyRoute
-  '/finance': typeof FinanceRoute
+  '/finance': typeof FinanceRouteWithChildren
   '/finance-insights': typeof FinanceInsightsRoute
   '/future': typeof FutureRoute
   '/goals': typeof GoalsRoute
@@ -711,6 +719,7 @@ export interface FileRoutesById {
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
+  '/finance/setup': typeof FinanceSetupRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -793,6 +802,7 @@ export interface FileRouteTypes {
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
+    | '/finance/setup'
     | '/projects/$projectId'
     | '/introspection/'
     | '/projects/'
@@ -871,6 +881,7 @@ export interface FileRouteTypes {
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
+    | '/finance/setup'
     | '/projects/$projectId'
     | '/introspection'
     | '/projects'
@@ -951,6 +962,7 @@ export interface FileRouteTypes {
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
+    | '/finance/setup'
     | '/projects/$projectId'
     | '/introspection/'
     | '/projects/'
@@ -990,7 +1002,7 @@ export interface RootRouteChildren {
   EnergyRoute: typeof EnergyRoute
   ExerciseRoute: typeof ExerciseRoute
   FamilyRoute: typeof FamilyRoute
-  FinanceRoute: typeof FinanceRoute
+  FinanceRoute: typeof FinanceRouteWithChildren
   FinanceInsightsRoute: typeof FinanceInsightsRoute
   FutureRoute: typeof FutureRoute
   GoalsRoute: typeof GoalsRoute
@@ -1450,6 +1462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
       parentRoute: typeof ProjectsRoute
     }
+    '/finance/setup': {
+      id: '/finance/setup'
+      path: '/setup'
+      fullPath: '/finance/setup'
+      preLoaderRoute: typeof FinanceSetupRouteImport
+      parentRoute: typeof FinanceRoute
+    }
     '/api/test-push': {
       id: '/api/test-push'
       path: '/api/test-push'
@@ -1600,6 +1619,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface FinanceRouteChildren {
+  FinanceSetupRoute: typeof FinanceSetupRoute
+}
+
+const FinanceRouteChildren: FinanceRouteChildren = {
+  FinanceSetupRoute: FinanceSetupRoute,
+}
+
+const FinanceRouteWithChildren =
+  FinanceRoute._addFileChildren(FinanceRouteChildren)
+
 interface IntrospectionRouteChildren {
   IntrospectionIndexRoute: typeof IntrospectionIndexRoute
   IntrospectionCategoryCategoryKeyRoute: typeof IntrospectionCategoryCategoryKeyRoute
@@ -1648,7 +1678,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnergyRoute: EnergyRoute,
   ExerciseRoute: ExerciseRoute,
   FamilyRoute: FamilyRoute,
-  FinanceRoute: FinanceRoute,
+  FinanceRoute: FinanceRouteWithChildren,
   FinanceInsightsRoute: FinanceInsightsRoute,
   FutureRoute: FutureRoute,
   GoalsRoute: GoalsRoute,
