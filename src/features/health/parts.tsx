@@ -384,7 +384,10 @@ function BodyTab({ h, today }: { h: ReturnType<typeof useHealth>; today: string 
   }, [h.body]);
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
+    <div>
+      <BodyOverview entries={h.body as never} />
+      <div className="grid lg:grid-cols-2 gap-6">
+
       <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
         <div className="flex flex-col gap-4 mb-6">
           <div className="flex items-center justify-between">
