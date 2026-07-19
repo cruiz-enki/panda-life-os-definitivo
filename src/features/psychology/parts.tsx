@@ -22,7 +22,8 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { parseISO } from "date-fns";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { usePsych } from "@/hooks/use-psych";
-import { EMOTIONS, COMMON_TRIGGERS, type PsychSession, type PsychCheckin } from "@/lib/psych-types";
+import { useMood, type MoodLog, MOOD_OPTIONS } from "@/hooks/use-mood";
+import { type PsychSession } from "@/lib/psych-types";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { HealthHeader } from "@/components/health/HealthHeader";
@@ -31,10 +32,15 @@ const todayISO = () => todayCDMX();
 
 export function PsychologyPage() {
   const psych = usePsych();
+  const mood = useMood();
   const { user } = useAuth();
   const [tab, setTab] = useState("panel");
 
-  const todayCheckin = useMemo(() => psych.checkins.find((c) => c.date === todayISO()), [psych.checkins]);
+  // Últimas 24 h de mood_logs con check-in emocional
+  const todayMood = useMemo(() => {
+    const today = todayISO();
+    return mood.logs.find((l) => l.logged_at.slice(0, 10) === today && (l.anxiety != null || l.stress != null));
+  }, [mood.logs]);
   const lastSession = psych.sessions[0];
   const pendingTasks = psych.tasks.filter((t) => t.status !== "completed");
   const nextSession = useMemo(() => {
@@ -45,32 +51,33 @@ export function PsychologyPage() {
     return future[0];
   }, [psych.sessions]);
 
-  // Tendencia 7d
+  // Tendencia 7d desde mood_logs (promedio diario de ansiedad/estrés)
   const trend7 = useMemo(() => {
     const days: { day: string; ansiedad: number; estres: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const iso = d.toISOString().slice(0, 10);
-      const c = psych.checkins.find((x) => x.date === iso);
+      const entries = mood.logs.filter((l) => l.logged_at.slice(0, 10) === iso);
+      const anx = entries.filter((l) => l.anxiety != null);
+      const str = entries.filter((l) => l.stress != null);
       days.push({
         day: d.toLocaleDateString("es", { weekday: "short" }),
-        ansiedad: c?.anxiety ?? 0,
-        estres: c?.stress ?? 0,
+        ansiedad: anx.length ? anx.reduce((s, l) => s + (l.anxiety ?? 0), 0) / anx.length : 0,
+        estres: str.length ? str.reduce((s, l) => s + (l.stress ?? 0), 0) / str.length : 0,
       });
     }
     return days;
-  }, [psych.checkins]);
+  }, [mood.logs]);
 
-  // Recomendación diaria simple
   const dailyMessage = useMemo(() => {
-    if (!todayCheckin) return "Empieza tu día con un check-in rápido. 1 minuto puede cambiar tu enfoque.";
-    if (todayCheckin.anxiety >= 4) return "Tu ansiedad está alta hoy. Respira 4-7-8 tres veces y aleja la pantalla 5 minutos.";
-    if (todayCheckin.stress >= 4) return "Estrés elevado. Identifica una sola tarea prioritaria y posterga el resto sin culpa.";
+    if (!todayMood) return "Registra tu check-in emocional en Mood (⚡ ansiedad, estrés, detonante). 1 minuto puede cambiar tu enfoque.";
+    if ((todayMood.anxiety ?? 0) >= 4) return "Tu ansiedad está alta hoy. Respira 4-7-8 tres veces y aleja la pantalla 5 minutos.";
+    if ((todayMood.stress ?? 0) >= 4) return "Estrés elevado. Identifica una sola tarea prioritaria y posterga el resto sin culpa.";
     if (pendingTasks.length > 3) return `Tienes ${pendingTasks.length} acuerdos terapéuticos pendientes. Elige uno pequeño para hoy.`;
     if (lastSession && Date.now() - new Date(lastSession.date).getTime() > 14 * 86400000) return "Hace más de 2 semanas de tu última sesión. ¿Agendamos la próxima?";
     return "Vas bien. Mantén tu práctica: presencia, respiración y autocompasión.";
-  }, [todayCheckin, pendingTasks.length, lastSession]);
+  }, [todayMood, pendingTasks.length, lastSession]);
 
   return (
     <div className="container max-w-5xl py-6 space-y-6">
@@ -101,9 +108,8 @@ export function PsychologyPage() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <div className="-mx-4 px-4 overflow-x-auto scrollbar-none sm:mx-0 sm:px-0 sm:overflow-visible">
-          <TabsList className="inline-flex w-max sm:grid sm:w-full sm:grid-cols-4">
+          <TabsList className="inline-flex w-max sm:grid sm:w-full sm:grid-cols-3">
             <TabsTrigger value="panel">Panel</TabsTrigger>
-            <TabsTrigger value="checkin">Check-in</TabsTrigger>
             <TabsTrigger value="sessions">Sesiones</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
           </TabsList>
@@ -145,9 +151,28 @@ export function PsychologyPage() {
             </Card>
           </div>
 
+          <Card className="p-4 bg-muted/30">
+            <div className="flex items-start gap-3">
+              <Heart className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <div className="font-semibold text-sm">Check-in emocional</div>
+                {todayMood ? (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Hoy registraste ansiedad <b>{todayMood.anxiety ?? "—"}/5</b> · estrés <b>{todayMood.stress ?? "—"}/5</b>
+                    {todayMood.trigger && <> · detonante: <b className="capitalize">{todayMood.trigger}</b></>}
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-1">Aún no registras tu ansiedad y estrés de hoy.</p>
+                )}
+              </div>
+              <Link to="/mood"><Button size="sm" variant="outline">Ir a Mood <ArrowRight className="w-3 h-3 ml-1" /></Button></Link>
+            </div>
+          </Card>
+
           <Card className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="font-semibold flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Tendencia semanal</div>
+              <div className="text-[10px] text-muted-foreground">desde Mood</div>
             </div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
@@ -190,37 +215,6 @@ export function PsychologyPage() {
           </Card>
         </TabsContent>
 
-        {/* CHECK-IN */}
-        <TabsContent value="checkin" className="space-y-4 mt-4">
-          <CheckinForm existing={todayCheckin} onSave={psych.upsertCheckin} />
-          <Card className="p-4">
-            <div className="font-semibold mb-3 text-sm">Últimos 7 días</div>
-            {psych.checkins.slice(0, 7).length === 0 ? (
-              <div className="text-sm text-muted-foreground text-center py-4">Sin registros aún</div>
-            ) : (
-              <div className="space-y-2">
-                {psych.checkins.slice(0, 7).map((c) => {
-                  const emo = EMOTIONS.find((e) => e.value === c.dominant_emotion);
-                  return (
-                    <div key={c.id} className="flex items-center gap-3 p-2 rounded-lg border border-border text-sm">
-                      <div className="text-xs text-muted-foreground w-20 shrink-0">{new Date(c.date).toLocaleDateString("es", { weekday: "short", day: "numeric" })}</div>
-                      <div className="text-lg">{emo?.emoji ?? "·"}</div>
-                      <div className="flex gap-3 text-xs">
-                        <span>Ansiedad: <b>{c.anxiety}</b></span>
-                        <span>Estrés: <b>{c.stress}</b></span>
-                      </div>
-                      {c.is_private && <Lock className="w-3 h-3 text-muted-foreground ml-auto" />}
-                      <button onClick={() => psych.deleteCheckin(c.id)} className="text-muted-foreground hover:text-destructive ml-auto" aria-label="Eliminar">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Card>
-        </TabsContent>
-
         {/* SESSIONS */}
         <TabsContent value="sessions" className="space-y-4 mt-4">
           <SessionForm onSave={psych.createSession} />
@@ -240,85 +234,14 @@ export function PsychologyPage() {
 
         {/* INSIGHTS */}
         <TabsContent value="insights" className="space-y-4 mt-4">
-          <InsightsView checkins={psych.checkins} sessions={psych.sessions} />
+          <InsightsView moodLogs={mood.logs} sessions={psych.sessions} />
         </TabsContent>
       </Tabs>
     </div>
   );
 }
 
-// ============== CHECK-IN FORM ==============
-function CheckinForm({ existing, onSave }: { existing?: PsychCheckin; onSave: (input: Omit<PsychCheckin, "id" | "created_at" | "updated_at">) => Promise<unknown> }) {
-  const [anxiety, setAnxiety] = useState(existing?.anxiety ?? 0);
-  const [stress, setStress] = useState(existing?.stress ?? 0);
-  const [emotion, setEmotion] = useState(existing?.dominant_emotion ?? "");
-  const [trigger, setTrigger] = useState(existing?.trigger ?? "");
-  const [thought, setThought] = useState(existing?.dominant_thought ?? "");
-  const [isPrivate, setIsPrivate] = useState(existing?.is_private ?? false);
-
-  const submit = async () => {
-    const err = await onSave({
-      date: todayISO(),
-      anxiety, stress,
-      dominant_emotion: emotion,
-      trigger, dominant_thought: thought,
-      is_private: isPrivate,
-    });
-    if (err) toast.error("Error al guardar");
-    else toast.success(existing ? "Check-in actualizado" : "Check-in guardado");
-  };
-
-  return (
-    <Card className="p-4 space-y-4">
-      <div className="font-semibold text-sm">Check-in de hoy {existing && <Badge variant="secondary" className="ml-2 text-[10px]">guardado</Badge>}</div>
-
-      <ScaleField label="Ansiedad" value={anxiety} onChange={setAnxiety} color="oklch(0.7 0.18 25)" />
-      <ScaleField label="Estrés" value={stress} onChange={setStress} color="oklch(0.7 0.18 280)" />
-
-      <div>
-        <Label className="text-xs">Emoción dominante</Label>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {EMOTIONS.map((e) => (
-            <button
-              key={e.value}
-              onClick={() => setEmotion(e.value)}
-              className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                emotion === e.value ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary/50"
-              }`}
-            >
-              {e.emoji} {e.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <Label className="text-xs">Detonante (opcional)</Label>
-        <div className="flex flex-wrap gap-1.5 my-2">
-          {COMMON_TRIGGERS.map((t) => (
-            <button key={t} onClick={() => setTrigger(t)} className={`px-2 py-0.5 rounded-full text-[11px] border ${trigger === t ? "bg-secondary border-foreground/30" : "border-border"}`}>
-              {t}
-            </button>
-          ))}
-        </div>
-        <Input value={trigger} onChange={(e) => setTrigger(e.target.value)} placeholder="O escribe libremente…" />
-      </div>
-
-      <div>
-        <Label className="text-xs">Pensamiento dominante (opcional)</Label>
-        <Textarea value={thought} onChange={(e) => setThought(e.target.value)} rows={2} placeholder='"No voy a poder…", "tengo que…"' className="mt-1" />
-      </div>
-
-      <div className="flex items-center justify-between pt-2 border-t border-border">
-        <label className="flex items-center gap-2 text-xs cursor-pointer">
-          <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-          <Lock className="w-3 h-3" /> Marcar como privado
-        </label>
-        <Button onClick={submit} size="sm">Guardar check-in</Button>
-      </div>
-    </Card>
-  );
-}
+// Check-in emocional se registra ahora en /mood (mood_logs con anxiety/stress/trigger/dominant_thought).
 
 function ScaleField({ label, value, onChange, color }: { label: string; value: number; onChange: (v: number) => void; color: string }) {
   return (
@@ -342,6 +265,9 @@ function ScaleField({ label, value, onChange, color }: { label: string; value: n
     </div>
   );
 }
+
+
+
 
 // ============== SESSION FORM ==============
 function SessionForm({ onSave }: { onSave: (input: Omit<PsychSession, "id" | "created_at" | "updated_at">) => Promise<unknown> }) {
@@ -557,24 +483,26 @@ function SessionCard({
 }
 
 // ============== INSIGHTS ==============
-function InsightsView({ checkins, sessions }: { checkins: PsychCheckin[]; sessions: PsychSession[] }) {
+function InsightsView({ moodLogs, sessions }: { moodLogs: MoodLog[]; sessions: PsychSession[] }) {
   const last30 = useMemo(() => {
     const cutoff = Date.now() - 30 * 86400000;
-    return checkins.filter((c) => new Date(c.date).getTime() >= cutoff);
-  }, [checkins]);
+    return moodLogs.filter((l) => new Date(l.logged_at).getTime() >= cutoff);
+  }, [moodLogs]);
 
-  const avgAnxiety = last30.length ? (last30.reduce((s, c) => s + c.anxiety, 0) / last30.length).toFixed(1) : "—";
-  const avgStress = last30.length ? (last30.reduce((s, c) => s + c.stress, 0) / last30.length).toFixed(1) : "—";
+  const anxEntries = last30.filter((l) => l.anxiety != null);
+  const strEntries = last30.filter((l) => l.stress != null);
+  const avgAnxiety = anxEntries.length ? (anxEntries.reduce((s, l) => s + (l.anxiety ?? 0), 0) / anxEntries.length).toFixed(1) : "—";
+  const avgStress = strEntries.length ? (strEntries.reduce((s, l) => s + (l.stress ?? 0), 0) / strEntries.length).toFixed(1) : "—";
 
   // Top detonantes
   const triggerCount = useMemo(() => {
     const map: Record<string, { count: number; avgAnx: number }> = {};
-    last30.forEach((c) => {
-      if (!c.trigger) return;
-      const k = c.trigger.toLowerCase();
+    last30.forEach((l) => {
+      if (!l.trigger) return;
+      const k = l.trigger.toLowerCase();
       if (!map[k]) map[k] = { count: 0, avgAnx: 0 };
       map[k].count++;
-      map[k].avgAnx += c.anxiety;
+      map[k].avgAnx += l.anxiety ?? 0;
     });
     return Object.entries(map)
       .map(([k, v]) => ({ trigger: k, count: v.count, avgAnx: +(v.avgAnx / v.count).toFixed(1) }))
@@ -582,15 +510,17 @@ function InsightsView({ checkins, sessions }: { checkins: PsychCheckin[]; sessio
       .slice(0, 5);
   }, [last30]);
 
-  // Top emociones
+  // Top emociones desde mood.emoji/tags
   const emotionCount = useMemo(() => {
     const map: Record<string, number> = {};
-    last30.forEach((c) => { if (c.dominant_emotion) map[c.dominant_emotion] = (map[c.dominant_emotion] ?? 0) + 1; });
-    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    last30.forEach((l) => {
+      if (l.mood) map[l.mood] = (map[l.mood] ?? 0) + 1;
+    });
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
   }, [last30]);
 
-  // Patrón: días alta ansiedad
-  const highAnxDays = last30.filter((c) => c.anxiety >= 4).length;
+  const highAnxDays = anxEntries.filter((l) => (l.anxiety ?? 0) >= 4).length;
+
 
   return (
     <>
@@ -631,7 +561,7 @@ function InsightsView({ checkins, sessions }: { checkins: PsychCheckin[]; sessio
         ) : (
           <div className="flex flex-wrap gap-2">
             {emotionCount.map(([k, v]) => {
-              const e = EMOTIONS.find((x) => x.value === k);
+              const e = MOOD_OPTIONS.find((x) => x.key === k);
               return (
                 <div key={k} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-sm">
                   <span>{e?.emoji}</span>
