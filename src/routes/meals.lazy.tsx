@@ -30,30 +30,28 @@ function MealsPage() {
   const [tab, setTab] = useState("today");
   const { user } = useAuth();
 
-  // Auto-fill protein snack for today if missing
+  // Auto-fill sugerido SOLO cuando el día está completamente vacío.
+  // Si el usuario elimina una comida, no la volvemos a poner.
   useEffect(() => {
     if (m.loading || m.dishes.length === 0 || !user) return;
+    if (m.todayPlan.length > 0) return;
 
-    const hasTodaySnack = m.todayPlan.some((p) => p.meal_type === "snack");
-    const hasTodayDinner = m.todayPlan.some((p) => p.meal_type === "cena");
-
-    const findShake = (mt: PlanMealType) =>
+    const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const findByName = (needles: string[]) =>
       m.dishes.find((d) => {
-        const n = d.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return (
-          d.allowed_meal_types?.includes(mt) ||
-          ((n.includes("batido") || n.includes("bebida") || n.includes("shake")) && n.includes("proteina"))
-        );
+        const n = norm(d.name);
+        return needles.every((k) => n.includes(k));
       });
 
-    if (!hasTodaySnack) {
-      const dish = findShake("snack");
-      if (dish) m.setPlanEntry(m.today, "snack", dish.id, "");
-    }
-    if (!hasTodayDinner) {
-      const dish = findShake("cena");
-      if (dish) m.setPlanEntry(m.today, "cena", dish.id, "");
-    }
+    const desayuno = findByName(["huevos", "estrellado"]);
+    const snack = findByName(["creatina"]);
+    const cena =
+      m.dishes.find((d) => d.allowed_meal_types?.includes("cena") && norm(d.name).includes("batido")) ||
+      findByName(["batido", "proteina"]);
+
+    if (desayuno) m.setPlanEntry(m.today, "desayuno", desayuno.id, "");
+    if (snack) m.setPlanEntry(m.today, "snack", snack.id, "");
+    if (cena) m.setPlanEntry(m.today, "cena", cena.id, "");
   }, [m.loading, m.dishes.length, m.todayPlan.length, m.today, user?.id]);
 
   const todayDone = m.dayCompletion(m.today);
