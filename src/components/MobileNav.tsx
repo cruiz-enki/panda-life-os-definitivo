@@ -161,6 +161,10 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   const { level, progress } = levelFromXp(state.xp);
   const { user, signOut } = useAuth();
   const { filterItems } = useFocusMode();
+  const { isPathAllowed, isCategoryVisible } = useLifeMode();
+
+  const applyMode = <T extends { to: string }>(items: T[]) =>
+    filterItems(items as never).filter((i: T) => isPathAllowed(i.to));
 
   const moreActive =
     !primary.some((p) => p.to === location.pathname) &&
@@ -188,14 +192,19 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
     </Link>
   );
 
-  const sections = [
-    { title: "HEALTH", items: filterItems(healthItems), icon: Heart },
-    { title: "HOME", items: filterItems(homeItems), icon: HomeIcon },
-    { title: "MONEY", items: filterItems(moneyItems), icon: Wallet },
-    { title: "INSIGHTS", items: filterItems(insightsItems), icon: BarChart3 },
-    { title: "MIND", items: filterItems(mindItems), icon: Brain },
-    { title: "SETUP", items: filterItems(setupItems), icon: Settings },
-  ].filter((s) => s.items.length > 0);
+  const allSections: { key: CategoryKey; title: string; items: MoreItem[]; icon: typeof LayoutDashboard }[] = [
+    { key: "HEALTH", title: "HEALTH", items: healthItems, icon: Heart },
+    { key: "HOME", title: "HOME", items: homeItems, icon: HomeIcon },
+    { key: "MONEY", title: "MONEY", items: moneyItems, icon: Wallet },
+    { key: "INSIGHTS", title: "INSIGHTS", items: insightsItems, icon: BarChart3 },
+    { key: "MIND", title: "MIND", items: mindItems, icon: Brain },
+    { key: "SETUP", title: "SETUP", items: setupItems, icon: Settings },
+  ];
+
+  const sections = allSections
+    .filter((s) => isCategoryVisible(s.key))
+    .map((s) => ({ title: s.title, items: applyMode(s.items), icon: s.icon }))
+    .filter((s) => s.items.length > 0);
 
   return (
     <>
