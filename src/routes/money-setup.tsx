@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/finance/setup")({
+export const Route = createFileRoute("/money-setup")({
   head: () => ({
     meta: [
-      { title: "Setup Finanzas — ENKI Life OS" },
+      { title: "Money Setup — ENKI Life OS" },
       { name: "description", content: "Configura categorías, tarjetas, cuentas, presupuestos y reglas" },
     ],
   }),
@@ -45,7 +45,7 @@ function FinanceSetupPage() {
           <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Setup Finanzas</h1>
+          <h1 className="text-2xl font-bold">Money Setup</h1>
           <p className="text-sm text-muted-foreground">
             Todo lo que configuras una vez para que el día a día vuele
           </p>
