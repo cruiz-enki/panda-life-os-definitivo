@@ -108,6 +108,9 @@ function ExpenseQuick() {
   const [cardId, setCardId] = useState<string>("");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const runScan = useServerFn(scanReceipt);
 
   const allCats = [
     ...DEFAULT_CATEGORIES.filter((d) => d.kind === "expense").map((d) => ({ name: d.name, emoji: d.emoji })),
@@ -115,6 +118,38 @@ function ExpenseQuick() {
   ];
 
   const activeCards = cards.filter((c) => c.status === "active");
+
+  const onPickReceipt = async (file: File) => {
+    if (!file) return;
+    setScanning(true);
+    try {
+      // Downscale a máximo 1600px de lado para bajar tokens/latencia
+      const dataUrl = await compressImage(file, 1600, 0.85);
+      const result = await runScan({
+        data: {
+          imageDataUrl: dataUrl,
+          categories: allCats.map((c) => c.name),
+          today: todayCDMX(),
+        },
+      });
+      if (result.amount) setAmount(String(result.amount));
+      if (result.date) setDate(result.date);
+      if (result.category && allCats.some((c) => c.name === result.category)) {
+        setCategory(result.category);
+      }
+      if (result.payment_method) setPaymentMethod(result.payment_method);
+      const noteBits = [result.merchant, result.note].filter(Boolean);
+      if (noteBits.length > 0) setNote(noteBits.join(" · "));
+      toast.success(
+        `Recibo leído${result.confidence === "low" ? " (revisa los datos)" : ""}`,
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error("No se pudo leer el recibo");
+    } finally {
+      setScanning(false);
+    }
+  };
 
   const submit = async () => {
     const amt = Number(amount);
