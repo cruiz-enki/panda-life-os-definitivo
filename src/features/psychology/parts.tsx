@@ -243,6 +243,30 @@ export function PsychologyPage() {
 
 // Check-in emocional se registra ahora en /mood (mood_logs con anxiety/stress/trigger/dominant_thought).
 
+function ScaleField({ label, value, onChange, color }: { label: string; value: number; onChange: (v: number) => void; color: string }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <Label className="text-xs">{label}</Label>
+        <span className="text-xs font-bold">{value}/5</span>
+      </div>
+      <div className="flex gap-1.5">
+        {[0, 1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            onClick={() => onChange(n)}
+            className={`flex-1 h-9 rounded-md border text-xs font-semibold transition-all ${value === n ? "text-white border-transparent" : "border-border hover:border-foreground/30"}`}
+            style={value === n ? { background: color } : undefined}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 
 
 // ============== SESSION FORM ==============
