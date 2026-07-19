@@ -120,12 +120,21 @@ function AuthGate() {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthRoute = location.pathname === "/auth";
+  const isModeRoute = location.pathname === "/mode";
 
   useEffect(() => {
     if (!loading && !user && !isAuthRoute) {
       navigate({ to: "/auth" });
     }
   }, [user, loading, isAuthRoute, navigate]);
+
+  // Primera entrada tras login: si no hay modo elegido, pedirlo.
+  useEffect(() => {
+    if (loading || !user || isAuthRoute || isModeRoute) return;
+    if (typeof window === "undefined") return;
+    const chosen = window.localStorage.getItem("enki:life-mode");
+    if (!chosen) navigate({ to: "/mode" });
+  }, [user, loading, isAuthRoute, isModeRoute, navigate]);
 
   // Service Worker: OneSignal maneja push con /OneSignalSDKWorker.js (scope "/").
   // Para que Chrome/Edge/Android muestre "Instalar app" (beforeinstallprompt)
