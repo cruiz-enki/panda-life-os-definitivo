@@ -27,6 +27,10 @@ function MoodPage() {
   const [intensity, setIntensity] = useState(3);
   const [energy, setEnergy] = useState(7);
   const [pain, setPain] = useState(0);
+  const [anxiety, setAnxiety] = useState(0);
+  const [stress, setStress] = useState(0);
+  const [trigger, setTrigger] = useState("");
+  const [thought, setThought] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -37,9 +41,19 @@ function MoodPage() {
 
   const save = async () => {
     setSaving(true);
-    await add({ mood, intensity, tags: selectedTags, note: note.trim() || undefined, energy, pain });
+    await add({
+      mood, intensity, tags: selectedTags, note: note.trim() || undefined,
+      energy, pain,
+      anxiety: anxiety || null, stress: stress || null,
+      trigger: trigger.trim() || null,
+      dominant_thought: thought.trim() || null,
+    });
     setSelectedTags([]);
     setNote("");
+    setTrigger("");
+    setThought("");
+    setAnxiety(0);
+    setStress(0);
     setSaving(false);
   };
 
