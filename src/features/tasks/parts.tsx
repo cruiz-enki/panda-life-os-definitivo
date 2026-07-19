@@ -122,6 +122,9 @@ export function TasksPage() {
       list = list.filter((t) => t.listId === view);
     }
     if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
+    if (hideWork && !(typeof view === "string" && workListIds.has(view))) {
+      list = list.filter((t) => !t.listId || !workListIds.has(t.listId));
+    }
     return list.sort((a, b) => {
       if (a.status !== b.status) return a.status === "completed" ? 1 : -1;
       const pr = priorityRank(a.priority) - priorityRank(b.priority);
