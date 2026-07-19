@@ -13,7 +13,15 @@ export type MoodLog = {
   note: string | null;
   energy: number | null;
   pain: number | null;
+  anxiety: number | null;
+  stress: number | null;
+  trigger: string | null;
+  dominant_thought: string | null;
 };
+
+export const PSYCH_TRIGGERS = [
+  "Trabajo", "Dinero", "Pareja", "Familia", "Salud", "Redes sociales", "Soledad", "Sueño",
+];
 
 export const MOOD_OPTIONS = [
   { key: "great", emoji: "🤩", label: "Excelente" },
