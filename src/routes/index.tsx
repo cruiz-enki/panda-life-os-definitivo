@@ -9,6 +9,7 @@ import { useGamification } from "@/hooks/use-gamification";
 import { useRewardsCustom } from "@/hooks/use-rewards-custom";
 import { PandaAvatar } from "@/components/PandaAvatar";
 import { DailySummaryCard } from "@/components/DailySummaryCard";
+import { InstallPWA } from "@/components/InstallPWA";
 import {
   Sparkles,
   Flame,
