@@ -561,7 +561,7 @@ function InsightsView({ moodLogs, sessions }: { moodLogs: MoodLog[]; sessions: P
         ) : (
           <div className="flex flex-wrap gap-2">
             {emotionCount.map(([k, v]) => {
-              const e = EMOTIONS.find((x) => x.value === k);
+              const e = MOOD_OPTIONS.find((x) => x.key === k);
               return (
                 <div key={k} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-sm">
                   <span>{e?.emoji}</span>
