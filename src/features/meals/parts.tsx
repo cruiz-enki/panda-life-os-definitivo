@@ -137,6 +137,32 @@ export function TodayTab({ m, addBonusXp }: { m: ReturnType<typeof useMeals>; ad
                   </div>
                 );
               }
+              if (mt === "comida") {
+                return (
+                  <div key="suggest-comida" className="flex items-center justify-between p-3 rounded-lg border border-dashed bg-secondary/10">
+                    <span className="text-sm text-muted-foreground">Sin comida planeada</span>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5" onClick={async () => {
+                      const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      const candidates = m.dishes.filter(d =>
+                        d.allowed_meal_types?.includes("comida") ||
+                        (!d.allowed_meal_types?.length && d.dish_type !== "snack" &&
+                          !norm(d.name).includes("huevos") &&
+                          !((norm(d.name).includes("batido") || norm(d.name).includes("shake")) && norm(d.name).includes("proteina")) &&
+                          !norm(d.name).includes("creatina") && !norm(d.name).includes("electrolito"))
+                      );
+                      const dish = candidates[Math.floor(Math.random() * candidates.length)];
+                      if (dish) {
+                        await m.setPlanEntry(m.today, "comida", dish.id, "");
+                        toast.success("Comida agregada");
+                      } else {
+                        toast.error("No se encontró un platillo para la comida en tu catálogo");
+                      }
+                    }}>
+                      <Sparkles className="w-3 h-3" /> Agregar comida...
+                    </Button>
+                  </div>
+                );
+              }
               return null;
             }
             const dish = m.dishById(e.dish_id);
