@@ -24,6 +24,8 @@ function MoodPage() {
   const { logs, add, remove, avgMood30, tagStats } = useMood();
   const [mood, setMood] = useState<string>("good");
   const [intensity, setIntensity] = useState(3);
+  const [energy, setEnergy] = useState(7);
+  const [pain, setPain] = useState(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -34,7 +36,7 @@ function MoodPage() {
 
   const save = async () => {
     setSaving(true);
-    await add({ mood, intensity, tags: selectedTags, note: note.trim() || undefined });
+    await add({ mood, intensity, tags: selectedTags, note: note.trim() || undefined, energy, pain });
     setSelectedTags([]);
     setNote("");
     setSaving(false);
