@@ -547,14 +547,23 @@ function SleepQuick() {
 
   const submit = async () => {
     setSaving(true);
+    // bedtime/wake_time son TIMESTAMPTZ en la DB. Convertimos las horas locales
+    // asumiendo que la fecha "date" es la del despertar; si dormí >=18h, es el día anterior.
+    const [bh, bm] = bedtime.split(":").map(Number);
+    const [wh, wm] = wake.split(":").map(Number);
+    const bed = new Date(`${date}T${bedtime}:00`);
+    if (bh >= 18) bed.setDate(bed.getDate() - 1);
+    const wk = new Date(`${date}T${wake}:00`);
+    void bm; void wh; void wm;
     const err = await upsert({
       date,
-      bedtime,
-      wake_time: wake,
+      bedtime: bed.toISOString(),
+      wake_time: wk.toISOString(),
       duration_minutes: durationMin,
       quality,
       notes: notes || null,
     });
+
     setSaving(false);
     if (err) return toast.error("No se pudo guardar");
     toast.success("Sueño registrado");
