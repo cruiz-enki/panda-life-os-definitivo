@@ -131,6 +131,58 @@ function MoodPage() {
           <input type="range" min={0} max={10} value={pain} onChange={(e) => setPain(Number(e.target.value))} className="w-full mt-1 accent-pink-500" />
         </div>
 
+        <div className="pt-3 border-t border-border/60 space-y-3">
+          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Check-in emocional (opcional)</div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <Label className="text-xs">Ansiedad</Label>
+              <span className="text-xs font-semibold">{anxiety}/5</span>
+            </div>
+            <div className="flex gap-1.5">
+              {[0,1,2,3,4,5].map((n) => (
+                <button key={n} onClick={() => setAnxiety(n)}
+                  className={`flex-1 h-8 rounded-md border text-xs font-semibold transition-all ${anxiety === n ? "bg-rose-500 text-white border-rose-500" : "border-border hover:border-foreground/30"}`}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <Label className="text-xs">Estrés</Label>
+              <span className="text-xs font-semibold">{stress}/5</span>
+            </div>
+            <div className="flex gap-1.5">
+              {[0,1,2,3,4,5].map((n) => (
+                <button key={n} onClick={() => setStress(n)}
+                  className={`flex-1 h-8 rounded-md border text-xs font-semibold transition-all ${stress === n ? "bg-violet-500 text-white border-violet-500" : "border-border hover:border-foreground/30"}`}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-xs">Detonante (opcional)</Label>
+            <div className="flex flex-wrap gap-1.5 my-1.5">
+              {PSYCH_TRIGGERS.map((t) => (
+                <button key={t} onClick={() => setTrigger(t)}
+                  className={`px-2 py-0.5 rounded-full text-[11px] border ${trigger === t ? "bg-secondary border-foreground/30" : "border-border"}`}>
+                  {t}
+                </button>
+              ))}
+            </div>
+            <Input value={trigger} onChange={(e) => setTrigger(e.target.value)} placeholder="O escribe libremente…" />
+          </div>
+
+          <div>
+            <Label className="text-xs">Pensamiento dominante (opcional)</Label>
+            <Textarea value={thought} onChange={(e) => setThought(e.target.value)} rows={2} placeholder='"No voy a poder…", "tengo que…"' className="mt-1" />
+          </div>
+        </div>
+
         <div>
           <Label className="text-xs">Tags ({selectedTags.length})</Label>
           <div className="flex flex-wrap gap-1.5 mt-1">
