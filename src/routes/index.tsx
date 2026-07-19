@@ -115,7 +115,7 @@ function Dashboard() {
 
   const questPct = activeQuest ? Math.min(100, (activeQuest.progress / activeQuest.quest.target) * 100) : 0;
 
-  useLifeMode(); // suscribe cambios de modo para re-render del hero
+  const { mode } = useLifeMode(); // suscribe cambios de modo para re-render del hero
 
   return (
     <div className="px-4 md:px-8 py-6 max-w-3xl mx-auto pb-24">
