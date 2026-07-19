@@ -221,6 +221,18 @@ export function AppSidebar() {
   const { state } = useAppState();
   const { level, progress } = levelFromXp(state.xp);
   const { user, signOut } = useAuth();
+  const { isPathAllowed, isCategoryVisible } = useLifeMode();
+
+  const visibleTop = topItems.filter((i) => isPathAllowed(i.to));
+
+  const categories: { key: CategoryKey; label: string; icon: typeof LayoutDashboard; items: NavItem[]; defaultOpen?: boolean; storageKey: string }[] = [
+    { key: "HEALTH", label: "HEALTH", icon: Heart, items: healthItems, defaultOpen: true, storageKey: "enki:sidebar:health" },
+    { key: "HOME", label: "HOME", icon: HomeIcon, items: homeItems, storageKey: "enki:sidebar:home" },
+    { key: "MONEY", label: "MONEY", icon: Wallet, items: moneyItems, storageKey: "enki:sidebar:money" },
+    { key: "INSIGHTS", label: "INSIGHTS", icon: BarChart3, items: insightsItems, storageKey: "enki:sidebar:insights" },
+    { key: "MIND", label: "MIND", icon: Brain, items: mindItems, storageKey: "enki:sidebar:mind" },
+    { key: "SETUP", label: "SETUP", icon: Settings, items: setupItems, storageKey: "enki:sidebar:setup" },
+  ];
 
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
@@ -234,6 +246,10 @@ export function AppSidebar() {
             <div className="font-display font-bold text-sm text-gradient-primary leading-tight">LIFE OS</div>
           </div>
         </Link>
+      </div>
+
+      <div className="px-4 mb-3">
+        <ModeIndicator />
       </div>
 
       <Link to="/rewards" className="mx-4 mb-6 p-4 rounded-2xl bg-sidebar-accent/60 border border-sidebar-border block hover:border-primary/40 transition-colors">
@@ -261,14 +277,18 @@ export function AppSidebar() {
       </div>
 
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-        {topItems.map((item) => <NavLink key={item.to} item={item} />)}
+        {visibleTop.map((item) => <NavLink key={item.to} item={item} />)}
         <div className="h-2" />
-        <CategoryGroup storageKey="enki:sidebar:health" label="HEALTH" icon={Heart} items={healthItems} defaultOpen />
-        <CategoryGroup storageKey="enki:sidebar:home" label="HOME" icon={HomeIcon} items={homeItems} />
-        <CategoryGroup storageKey="enki:sidebar:money" label="MONEY" icon={Wallet} items={moneyItems} />
-        <CategoryGroup storageKey="enki:sidebar:insights" label="INSIGHTS" icon={BarChart3} items={insightsItems} />
-        <CategoryGroup storageKey="enki:sidebar:mind" label="MIND" icon={Brain} items={mindItems} />
-        <CategoryGroup storageKey="enki:sidebar:setup" label="SETUP" icon={Settings} items={setupItems} />
+        {categories.filter((c) => isCategoryVisible(c.key)).map((c) => (
+          <CategoryGroup
+            key={c.key}
+            storageKey={c.storageKey}
+            label={c.label}
+            icon={c.icon}
+            items={c.items}
+            defaultOpen={c.defaultOpen}
+          />
+        ))}
       </nav>
 
       <div className="px-3 pt-3 pb-2 border-t border-sidebar-border mt-2">
