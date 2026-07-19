@@ -136,6 +136,8 @@ function Dashboard() {
         <MoneyDashboard />
       ) : mode === "health" ? (
         <HealthDashboard />
+      ) : mode === "productivity" ? (
+        <ProductivityDashboard />
       ) : (
         <>
 
