@@ -164,12 +164,26 @@ export function TasksPage() {
             Racha productiva: <span className="text-primary font-semibold">{state.productivity.streak}d</span> · {counts.all} pendientes
           </p>
         </div>
-        <button
-          onClick={() => { setEditingTask(null); setComposerOpen(true); }}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow hover:scale-105 transition-transform"
-        >
-          <Plus className="w-4 h-4" /> Nueva tarea
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setHideWork((v) => !v)}
+            title={workListIds.size === 0 ? "Crea una lista con 'Enki', 'Trabajo' o 'Work' en el nombre para poder ocultarla" : hideWork ? "Mostrar tareas de trabajo" : "Ocultar tareas de trabajo"}
+            className={`inline-flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium border transition-all ${
+              hideWork
+                ? "bg-primary/15 border-primary/40 text-primary"
+                : "bg-card border-border text-foreground/80 hover:border-primary/40"
+            }`}
+          >
+            <Briefcase className="w-4 h-4" />
+            {hideWork ? "Modo Enki: OFF trabajo" : "Modo Enki"}
+          </button>
+          <button
+            onClick={() => { setEditingTask(null); setComposerOpen(true); }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow hover:scale-105 transition-transform"
+          >
+            <Plus className="w-4 h-4" /> Nueva tarea
+          </button>
+        </div>
       </header>
 
       {/* Smart alert */}
