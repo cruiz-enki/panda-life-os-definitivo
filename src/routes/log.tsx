@@ -9,7 +9,6 @@ import {
   Repeat, CheckSquare, Smile, Moon, Utensils, Battery,
   Check, Plus, ArrowRight, Flame, DollarSign, Camera, Sparkles,
 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import { scanReceipt } from "@/lib/receipt-scan.functions";
 import { useAppState } from "@/lib/storage";
 import { todayCDMX } from "@/lib/date-utils";
@@ -110,7 +109,7 @@ function ExpenseQuick() {
   const [saving, setSaving] = useState(false);
   const [scanning, setScanning] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const runScan = useServerFn(scanReceipt);
+  const runScan = scanReceipt;
 
   const allCats = [
     ...DEFAULT_CATEGORIES.filter((d) => d.kind === "expense").map((d) => ({ name: d.name, emoji: d.emoji })),
