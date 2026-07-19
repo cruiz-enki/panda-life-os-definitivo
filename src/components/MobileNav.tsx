@@ -123,7 +123,6 @@ const insightsItems: MoreItem[] = [
 ];
 
 const mindItems: MoreItem[] = [
-  { to: "/calendar", label: "Calendario", icon: CalendarIcon },
   { to: "/identity", label: "Identidad", icon: Target },
   { to: "/future", label: "Futuro", icon: Sparkles },
   { to: "/goals", label: "Metas", icon: Workflow },
@@ -133,6 +132,8 @@ const mindItems: MoreItem[] = [
 ];
 
 const productivityItems: MoreItem[] = [
+  { to: "/calendar", label: "Plan", icon: CalendarIcon },
+  { to: "/tasks", label: "Tareas", icon: CheckSquare },
   { to: "/pomodoro", label: "Pomodoro", icon: Brain },
   { to: "/habits", label: "Hábitos", icon: Repeat },
   { to: "/time", label: "Tiempo", icon: Clock },
@@ -140,6 +141,7 @@ const productivityItems: MoreItem[] = [
   { to: "/projects", label: "Proyectos", icon: FolderKanban },
   { to: "/scheduled", label: "Al futuro", icon: Send },
 ];
+
 
 const setupItems: MoreItem[] = [
   { to: "/notifications", label: "Notificaciones", icon: Bell },
