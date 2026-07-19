@@ -229,7 +229,11 @@ export function TelegramCard() {
                   type="time"
                   value={cfg.notify_time?.slice(0, 5) ?? "08:00"}
                   disabled={saving}
-                  onChange={(e) => save({ notify_time: e.target.value })}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (!v) return;
+                    save({ notify_time: v.length === 5 ? `${v}:00` : v });
+                  }}
                   className="w-32"
                 />
               </div>
