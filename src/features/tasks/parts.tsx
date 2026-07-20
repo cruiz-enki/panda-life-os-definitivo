@@ -71,6 +71,7 @@ export function TasksPage() {
     duplicateTask,
     toggleTaskComplete,
     toggleSubtask,
+    snoozeTask,
     addList,
     addTag,
     deleteList,
