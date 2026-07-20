@@ -428,35 +428,6 @@ export function TasksPage() {
 
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
-              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Etiquetas</h3>
-              <button onClick={() => setTagModal(true)} className="text-muted-foreground hover:text-primary">
-                <Plus className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-1.5 px-2">
-              {state.tags.map((tag) => {
-                const active = activeTagFilter === tag.id;
-                return (
-                  <button
-                    key={tag.id}
-                    onClick={() => setActiveTagFilter(active ? null : tag.id)}
-                    className={`text-xs px-2 py-1 rounded-md border transition-all ${
-                      active ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                    }`}
-                    style={{ color: tag.color }}
-                  >
-                    #{tag.name}
-                  </button>
-                );
-              })}
-              {state.tags.length === 0 && (
-                <span className="text-xs text-muted-foreground">Sin etiquetas</span>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between px-2 mb-2">
               <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                 <Bookmark className="w-3 h-3" /> Filtros guardados
               </h3>
