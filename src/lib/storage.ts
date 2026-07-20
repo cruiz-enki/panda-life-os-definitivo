@@ -922,21 +922,71 @@ export function taskXp(t: Pick<Task, "priority" | "xpReward">): number {
 
 /**
  * Avanza una fecha según un patrón de recurrencia.
+ *
+ * Soporta:
+ * - daily / weekly / monthly / yearly con intervalo
+ * - weekly.byWeekday: siguiente día de la semana en el conjunto
+ * - monthly.monthlyMode:
+ *    - `day-of-month`: mismo día del mes (default)
+ *    - `nth-weekday`: mismo N-ésimo día de semana (ej: "primer lunes")
+ *    - `last-weekday`: último día de semana del mes (ej: "último viernes")
+ * - fromCompletion: usa `opts.completedAt` como ancla en vez de la fecha base.
  */
-export function advanceDate(date: Date, r: Recurrence): Date {
-  const d = new Date(date);
+export function advanceDate(
+  anchor: Date,
+  r: Recurrence,
+  opts?: { completedAt?: Date },
+): Date {
   const n = Math.max(1, r.interval || 1);
-  const step = () => {
-    switch (r.frequency) {
-      case "daily": d.setDate(d.getDate() + n); break;
-      case "weekly": d.setDate(d.getDate() + 7 * n); break;
-      case "monthly": d.setMonth(d.getMonth() + n); break;
-      case "yearly": d.setFullYear(d.getFullYear() + n); break;
-    }
+  const base = r.fromCompletion && opts?.completedAt ? new Date(opts.completedAt) : new Date(anchor);
+
+  // Preserva la hora del anchor original en la próxima ocurrencia
+  const setAnchorTime = (d: Date) => {
+    d.setHours(anchor.getHours(), anchor.getMinutes(), anchor.getSeconds(), anchor.getMilliseconds());
+    return d;
   };
-  step();
-  while (d.getTime() < Date.now()) step();
-  return d;
+
+  // Weekly con días específicos: buscar el siguiente día en el set
+  if (r.frequency === "weekly" && r.byWeekday && r.byWeekday.length > 0) {
+    const days = Array.from(new Set(r.byWeekday.filter((d) => d >= 0 && d <= 6))).sort((a, b) => a - b);
+    if (days.length > 0) {
+      const start = new Date(base);
+      start.setHours(0, 0, 0, 0);
+      for (let i = 1; i <= 7 * n + 7; i++) {
+        const d = new Date(start);
+        d.setDate(d.getDate() + i);
+        if (days.includes(d.getDay())) return setAnchorTime(d);
+      }
+    }
+  }
+
+  // Monthly nth-weekday: replicar el N-ésimo weekday del anchor original
+  if (r.frequency === "monthly" && r.monthlyMode === "nth-weekday") {
+    const dow = anchor.getDay();
+    const nth = Math.min(5, Math.max(1, Math.ceil(anchor.getDate() / 7)));
+    const d = new Date(base.getFullYear(), base.getMonth() + n, 1);
+    const offset = (dow - d.getDay() + 7) % 7;
+    d.setDate(1 + offset + (nth - 1) * 7);
+    return setAnchorTime(d);
+  }
+
+  // Monthly last-weekday: último día de semana del mes objetivo
+  if (r.frequency === "monthly" && r.monthlyMode === "last-weekday") {
+    const dow = anchor.getDay();
+    const last = new Date(base.getFullYear(), base.getMonth() + n + 1, 0);
+    const diff = (last.getDay() - dow + 7) % 7;
+    last.setDate(last.getDate() - diff);
+    return setAnchorTime(last);
+  }
+
+  const d = new Date(base);
+  switch (r.frequency) {
+    case "daily": d.setDate(d.getDate() + n); break;
+    case "weekly": d.setDate(d.getDate() + 7 * n); break;
+    case "monthly": d.setMonth(d.getMonth() + n); break;
+    case "yearly": d.setFullYear(d.getFullYear() + n); break;
+  }
+  return setAnchorTime(d);
 }
 
 /**
@@ -944,11 +994,24 @@ export function advanceDate(date: Date, r: Recurrence): Date {
  */
 export function recurrenceLabel(r: Recurrence): string {
   const n = Math.max(1, r.interval || 1);
+  const DOW = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
+  if (r.frequency === "weekly" && r.byWeekday && r.byWeekday.length > 0) {
+    const dias = [...r.byWeekday].sort((a, b) => a - b).map((d) => DOW[d]).join(", ");
+    const suf = r.fromCompletion ? " (desde completada)" : "";
+    return n === 1 ? `Cada ${dias}${suf}` : `Cada ${n} semanas: ${dias}${suf}`;
+  }
+  if (r.frequency === "monthly" && r.monthlyMode === "nth-weekday") {
+    return n === 1 ? "Mensual (mismo día de semana)" : `Cada ${n} meses (mismo día de semana)`;
+  }
+  if (r.frequency === "monthly" && r.monthlyMode === "last-weekday") {
+    return n === 1 ? "Último día de semana del mes" : `Cada ${n} meses, último día de semana`;
+  }
   const unit = r.frequency === "daily" ? (n === 1 ? "día" : "días")
     : r.frequency === "weekly" ? (n === 1 ? "semana" : "semanas")
     : r.frequency === "monthly" ? (n === 1 ? "mes" : "meses")
     : (n === 1 ? "año" : "años");
-  return n === 1 ? `Cada ${unit}` : `Cada ${n} ${unit}`;
+  const suf = r.fromCompletion ? " (desde completada)" : "";
+  return (n === 1 ? `Cada ${unit}` : `Cada ${n} ${unit}`) + suf;
 }
 
 /**
