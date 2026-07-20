@@ -80,7 +80,7 @@ type SavedFilter = {
   id: string;
   name: string;
   view: ViewKey;
-  tag: string | null;
+  tagIds: string[];
   hideWork: boolean;
   priority: "" | "high" | "medium" | "low";
 };
@@ -94,7 +94,16 @@ function loadSavedFilters(): SavedFilter[] {
     const raw = window.localStorage.getItem(SAVED_FILTERS_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    // Migra formato antiguo (tag: string | null) → tagIds: string[]
+    return parsed.map((f: any) => ({
+      id: f.id,
+      name: f.name,
+      view: f.view,
+      tagIds: Array.isArray(f.tagIds) ? f.tagIds : (f.tag ? [f.tag] : []),
+      hideWork: !!f.hideWork,
+      priority: f.priority ?? "",
+    })) as SavedFilter[];
   } catch {
     return [];
   }
@@ -110,8 +119,12 @@ export function TasksPage() {
     duplicateTask,
     toggleTaskComplete,
     toggleSubtask,
+    togglePin,
+    reorderTasks,
     snoozeTask,
     addList,
+    updateList,
+    reorderLists,
     addTag,
     deleteList,
     deleteTag,
@@ -120,9 +133,10 @@ export function TasksPage() {
   const [view, setView] = useState<ViewKey>("today");
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
+  const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<"" | "high" | "medium" | "low">("");
   const [listModal, setListModal] = useState(false);
+  const [editingList, setEditingList] = useState<{ id: string } | null>(null);
   const [tagModal, setTagModal] = useState(false);
   const [layout, setLayout] = useState<LayoutKey>(() => {
     if (typeof window === "undefined") return "list";
