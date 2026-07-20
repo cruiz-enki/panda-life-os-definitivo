@@ -245,6 +245,7 @@ export async function pushTask(userId: string, t: Task) {
     subtasks: t.subtasks,
     reminder: t.reminder ?? null,
     reminders: t.reminders ?? [],
+    reminder_channels: t.reminderChannels ?? ["push"],
     recurrence: t.recurrence ?? null,
     snoozed_until: t.snoozedUntil ?? null,
     xp_reward: t.xpReward ?? null,
