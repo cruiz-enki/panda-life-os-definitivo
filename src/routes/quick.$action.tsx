@@ -12,7 +12,6 @@
  */
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { CheckCircle2, XCircle, Loader2, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -25,27 +24,23 @@ import { useMood } from "@/hooks/use-mood";
 import { todayCDMX } from "@/lib/date-utils";
 import { toast } from "sonner";
 
-const searchSchema = z.object({
-  amount: fallback(z.string(), "").default(""),
-  cat: fallback(z.string(), "").default(""),
-  category: fallback(z.string(), "").default(""),
-  note: fallback(z.string(), "").default(""),
-  method: fallback(z.string(), "cash").default("cash"),
-  name: fallback(z.string(), "").default(""),
-  id: fallback(z.string(), "").default(""),
-  lat: fallback(z.string(), "").default(""),
-  lng: fallback(z.string(), "").default(""),
-  mood: fallback(z.string(), "").default(""),
-  intensity: fallback(z.string(), "").default(""),
-  energy: fallback(z.string(), "").default(""),
-  pain: fallback(z.string(), "").default(""),
-  auto: fallback(z.string(), "1").default("1"),
-  redirect: fallback(z.string(), "").default(""),
-});
+type QuickSearch = {
+  amount: string; cat: string; category: string; note: string; method: string;
+  name: string; id: string; lat: string; lng: string;
+  mood: string; intensity: string; energy: string; pain: string;
+  auto: string; redirect: string;
+};
+
+const s = (v: unknown, d = "") => (typeof v === "string" ? v : v == null ? d : String(v));
 
 export const Route = createFileRoute("/quick/$action")({
   head: () => ({ meta: [{ title: "Acción rápida · Panda OS" }] }),
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (r: Record<string, unknown>): QuickSearch => ({
+    amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
+    method: s(r.method, "cash"), name: s(r.name), id: s(r.id),
+    lat: s(r.lat), lng: s(r.lng), mood: s(r.mood), intensity: s(r.intensity),
+    energy: s(r.energy), pain: s(r.pain), auto: s(r.auto, "1"), redirect: s(r.redirect),
+  }),
   component: QuickActionPage,
 });
 
@@ -173,8 +168,8 @@ function QuickActionPage() {
             intensity: search.intensity ? Number(search.intensity) : 3,
             tags: [],
             note: search.note || "",
-            energy: search.energy ? Number(search.energy) : null,
-            pain: search.pain ? Number(search.pain) : null,
+            energy: search.energy ? Number(search.energy) : undefined,
+            pain: search.pain ? Number(search.pain) : undefined,
           });
           setMessage("Check-in emocional registrado");
           setDetail(`Mood: ${moodKey}`);
@@ -185,7 +180,7 @@ function QuickActionPage() {
           const today = todayCDMX();
           const existing = health.waterLogs.find((w) => w.date === today);
           const total = (existing?.amount_ml ?? 0) + amount;
-          const err = await health.upsertWater({ date: today, amount_ml: total });
+          const err = await health.logWater(today, total);
           if (err) throw new Error(err.message);
           setMessage("Agua registrada");
           setDetail(`+${amount} ml · Hoy: ${total} ml`);
