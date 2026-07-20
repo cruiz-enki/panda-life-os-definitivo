@@ -12,7 +12,7 @@
  */
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { z } from "zod";
+
 import { CheckCircle2, XCircle, Loader2, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
