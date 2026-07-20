@@ -149,6 +149,8 @@ export function TasksPage() {
   }, [layout]);
 
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>(() => loadSavedFilters());
+  const dragTaskRef = useRef<string | null>(null);
+  const removeFilter = (id: string) => setSavedFilters((xs) => xs.filter((f) => f.id !== id));
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(savedFilters));
