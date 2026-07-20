@@ -653,6 +653,9 @@ export function TasksPage() {
           tags={state.tags}
         />
       )}
+      {weeklyOpen && (
+        <WeeklyReviewModal state={state} onClose={() => setWeeklyOpen(false)} /> 
+      )}
     </div>
   );
 }
