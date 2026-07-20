@@ -62,6 +62,26 @@ const SHORTCUTS: Shortcut[] = [
     ],
   },
   {
+    action: "meds",
+    label: "Meds AM (mañana)",
+    emoji: "🌅",
+    example: "/quick/meds?names=telmisartan,hidroclorotiazida,atorvastatina,colageno,dapagliflozina",
+    params: [
+      { name: "names", desc: "lista separada por comas (match parcial por nombre)" },
+      { name: "note", desc: "nota opcional" },
+    ],
+  },
+  {
+    action: "meds",
+    label: "Meds PM (noche)",
+    emoji: "🌙",
+    example: "/quick/meds?names=escitalopram,pregabalina,melatonina,amlodipino,diasporal",
+    params: [
+      { name: "names", desc: "lista separada por comas" },
+      { name: "note", desc: "nota opcional" },
+    ],
+  },
+  {
     action: "location",
     label: "Check-in de ubicación",
     emoji: "📍",
@@ -134,7 +154,7 @@ function QuickIndex() {
 
       <div className="space-y-3">
         {SHORTCUTS.map((sc) => (
-          <Card key={sc.action} className="p-5">
+          <Card key={sc.example} className="p-5">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
                 <h3 className="font-display font-bold text-lg">

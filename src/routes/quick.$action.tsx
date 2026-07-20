@@ -26,7 +26,7 @@ import { toast } from "sonner";
 
 type QuickSearch = {
   amount: string; cat: string; category: string; note: string; method: string;
-  name: string; id: string; lat: string; lng: string;
+  name: string; names: string; id: string; lat: string; lng: string;
   mood: string; intensity: string; energy: string; pain: string;
   auto: string; redirect: string;
 };
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/quick/$action")({
   head: () => ({ meta: [{ title: "Acción rápida · Panda OS" }] }),
   validateSearch: (r: Record<string, unknown>): QuickSearch => ({
     amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
-    method: s(r.method, "cash"), name: s(r.name), id: s(r.id),
+    method: s(r.method, "cash"), name: s(r.name), names: s(r.names), id: s(r.id),
     lat: s(r.lat), lng: s(r.lng), mood: s(r.mood), intensity: s(r.intensity),
     energy: s(r.energy), pain: s(r.pain), auto: s(r.auto, "1"), redirect: s(r.redirect),
   }),
@@ -139,6 +139,31 @@ function QuickActionPage() {
           if (err) throw new Error(err.message);
           setMessage("Medicamento tomado");
           setDetail(`${med.emoji} ${med.name} ${med.dose}${med.unit}`);
+          break;
+        }
+        case "meds": {
+          const list = (search.names || search.name).split(",").map((n: string) => n.trim().toLowerCase()).filter(Boolean);
+          if (!list.length) throw new Error("Falta names=med1,med2,...");
+          const now = new Date();
+          const scheduled = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          const ok: string[] = [];
+          const miss: string[] = [];
+          for (const q of list) {
+            const med = health.medications.find((m) => m.name.toLowerCase().includes(q));
+            if (!med) { miss.push(q); continue; }
+            const err = await health.logMedication({
+              medication_id: med.id,
+              date: todayCDMX(),
+              scheduled_time: scheduled,
+              taken: true,
+              taken_at: now.toISOString(),
+              notes: search.note || "",
+            });
+            if (err) miss.push(q); else ok.push(med.emoji ? `${med.emoji} ${med.name}` : med.name);
+          }
+          if (!ok.length) throw new Error(`No encontré: ${miss.join(", ")}`);
+          setMessage(`${ok.length} medicamento${ok.length > 1 ? "s" : ""} registrado${ok.length > 1 ? "s" : ""}`);
+          setDetail(ok.join(" · ") + (miss.length ? ` — sin match: ${miss.join(", ")}` : ""));
           break;
         }
         case "location":
