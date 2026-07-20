@@ -738,6 +738,9 @@ function TaskRow({
   onDelete,
   onReschedule,
   onSnooze,
+  onTogglePin,
+  onDragStart,
+  onDropOn,
 }: {
   task: Task;
   state: ReturnType<typeof useAppState>["state"];
@@ -749,8 +752,12 @@ function TaskRow({
   onDelete: () => void;
   onReschedule: () => void;
   onSnooze: (until: Date | null) => void;
+  onTogglePin?: () => void;
+  onDragStart?: () => void;
+  onDropOn?: (overId: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
   const done = task.status === "completed";
   const overdue = isOverdue(task);
   const list = state.taskLists.find((l) => l.id === task.listId);
@@ -764,7 +771,28 @@ function TaskRow({
 
   return (
     <li
+      draggable={!!onDragStart}
+      onDragStart={(e) => {
+        if (!onDragStart) return;
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", task.id);
+        onDragStart();
+      }}
+      onDragOver={(e) => {
+        if (!onDropOn) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        setIsDragOver(true);
+      }}
+      onDragLeave={() => setIsDragOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setIsDragOver(false);
+        if (onDropOn) onDropOn(task.id);
+      }}
       className={`group rounded-2xl border p-3 sm:p-4 shadow-card transition-all ${
+        isDragOver ? "ring-2 ring-primary/60" : ""
+      } ${
         done
           ? "border-border bg-card/50 opacity-60"
           : snoozed
