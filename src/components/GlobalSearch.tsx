@@ -36,10 +36,23 @@ import {
   BarChart3,
   Settings,
   Target,
+  MapPin,
+  Users,
+  Pill,
+  Utensils,
+  Moon,
+  Activity,
+  Clock,
 } from "lucide-react";
 import { useAppState } from "@/lib/storage";
 import { useContentLog, useWishlist } from "@/hooks/use-content";
 import { useFinance } from "@/hooks/use-finance";
+import { useContacts } from "@/hooks/use-contacts";
+import { useHealth } from "@/hooks/use-health";
+import { useMeals } from "@/hooks/use-meals";
+import { useLocations } from "@/hooks/use-locations";
+import { useMood } from "@/hooks/use-mood";
+import { useSleep } from "@/hooks/use-sleep";
 import { useAuth } from "@/lib/auth-context";
 
 type Ctx = { open: boolean; setOpen: (v: boolean) => void; toggle: () => void };
