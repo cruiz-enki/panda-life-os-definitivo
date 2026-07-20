@@ -736,6 +736,26 @@ function SnoozeMenu({ onPick }: { onPick: (until: Date | null) => void }) {
   );
 }
 
+function CommentChecklistAdder({ onAdd }: { onAdd: (title: string) => void }) {
+  const [v, setV] = useState("");
+  return (
+    <div className="mt-2 flex gap-2">
+      <input
+        value={v}
+        onChange={(e) => setV(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && v.trim()) {
+            onAdd(v.trim());
+            setV("");
+          }
+        }}
+        placeholder="+ ítem de checklist…"
+        className="flex-1 px-2 py-1 rounded-md bg-background border border-border focus:border-primary outline-none text-xs"
+      />
+    </div>
+  );
+}
+
 function SubtaskRow({
   subtask,
   onToggle,
