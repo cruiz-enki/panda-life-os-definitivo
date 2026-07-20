@@ -379,6 +379,7 @@ export function TasksPage() {
                     next.setHours(9, 0, 0, 0);
                     updateTask(task.id, { due: next.toISOString() });
                   }}
+                  onSnooze={(until) => snoozeTask(task.id, until)}
                 />
               ))}
             </ul>
