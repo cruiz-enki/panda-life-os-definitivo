@@ -1,0 +1,526 @@
+{
+  "version": 1,
+  "sdk_version": "0.23.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://ledeulabpfbebzoqfzlg.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "panda-os-mcp",
+      "version": "0.1.0",
+      "title": "Panda OS"
+    },
+    "tools": [
+      {
+        "name": "add_expense",
+        "title": "Registrar gasto",
+        "description": "Registra un gasto en Panda OS para el usuario autenticado.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Monto en MXN"
+            },
+            "category": {
+              "type": "string",
+              "description": "Categoría (ej. comida, transporte, salud)"
+            },
+            "payment_method": {
+              "default": "cash",
+              "description": "Método de pago",
+              "type": "string",
+              "enum": [
+                "cash",
+                "debit",
+                "credit",
+                "transfer",
+                "mercadopago",
+                "other"
+              ]
+            },
+            "date": {
+              "description": "Fecha YYYY-MM-DD (default hoy CDMX)",
+              "type": "string"
+            },
+            "note": {
+              "description": "Nota corta",
+              "type": "string"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "amount",
+            "category"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_income",
+        "title": "Registrar ingreso",
+        "description": "Registra un ingreso (kind=income) en finanzas.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "category": {
+              "default": "ingreso",
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "amount"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_recent_expenses",
+        "title": "Listar gastos recientes",
+        "description": "Devuelve los gastos más recientes con opción de filtrar por categoría.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string"
+            },
+            "limit": {
+              "default": 20,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_note",
+        "title": "Crear nota",
+        "description": "Crea una nota rápida en Panda OS.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content": {
+              "default": "",
+              "type": "string"
+            },
+            "category": {
+              "description": "Categoría / carpeta",
+              "type": "string"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "importance": {
+              "default": "normal",
+              "type": "string",
+              "enum": [
+                "low",
+                "normal",
+                "high"
+              ]
+            }
+          },
+          "required": [
+            "title"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_notes",
+        "title": "Listar notas",
+        "description": "Lista notas recientes del usuario. Opcionalmente busca por texto.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "description": "Texto para buscar en título o contenido",
+              "type": "string"
+            },
+            "limit": {
+              "default": 20,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_medication",
+        "title": "Registrar toma de medicamento",
+        "description": "Marca uno o más medicamentos como tomados. Busca por nombre parcial.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "names": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Nombres (match parcial, case-insensitive)"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "names"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_medications",
+        "title": "Listar medicamentos",
+        "description": "Lista los medicamentos activos del usuario con dosis y frecuencia.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_mood",
+        "title": "Check-in emocional",
+        "description": "Registra estado de ánimo, energía y dolor.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "mood": {
+              "default": "good",
+              "type": "string",
+              "enum": [
+                "great",
+                "good",
+                "meh",
+                "low",
+                "bad"
+              ]
+            },
+            "intensity": {
+              "default": 3,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "energy": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "pain": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_sleep",
+        "title": "Registrar sueño",
+        "description": "Registra (upsert) sueño para una fecha.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "date": {
+              "description": "YYYY-MM-DD (default hoy)",
+              "type": "string"
+            },
+            "bedtime": {
+              "description": "ISO datetime",
+              "type": "string"
+            },
+            "wake_time": {
+              "description": "ISO datetime",
+              "type": "string"
+            },
+            "duration_minutes": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "quality": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_water",
+        "title": "Registrar agua",
+        "description": "Suma ml de agua al total del día.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "amount_ml": {
+              "default": 250,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "checkin_location",
+        "title": "Check-in de ubicación",
+        "description": "Registra un lugar visitado.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "category": {
+              "default": "momento",
+              "type": "string"
+            },
+            "latitude": {
+              "type": "number"
+            },
+            "longitude": {
+              "type": "number"
+            },
+            "note": {
+              "type": "string"
+            },
+            "rating": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_task",
+        "title": "Crear tarea",
+        "description": "Crea una tarea en la bandeja del usuario.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notes": {
+              "type": "string"
+            },
+            "due_date": {
+              "description": "YYYY-MM-DD",
+              "type": "string"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "low",
+                "normal",
+                "high",
+                "urgent"
+              ]
+            },
+            "list": {
+              "description": "Nombre de la lista",
+              "type": "string"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "title"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_tasks",
+        "title": "Listar tareas",
+        "description": "Lista tareas del usuario con filtros básicos.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "status": {
+              "default": "pending",
+              "type": "string",
+              "enum": [
+                "pending",
+                "done",
+                "all"
+              ]
+            },
+            "query": {
+              "type": "string"
+            },
+            "limit": {
+              "default": 30,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "complete_task",
+        "title": "Marcar tarea como completada",
+        "description": "Marca una tarea como done por id o por match parcial de título.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "title_match": {
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "daily_summary",
+        "title": "Resumen del día",
+        "description": "Resumen consolidado del día: gastos, sueño, mood, agua, tareas y check-ins.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "date": {
+              "description": "YYYY-MM-DD (default hoy CDMX)",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

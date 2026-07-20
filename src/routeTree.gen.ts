@@ -35,6 +35,7 @@ import { Route as MoneyToolsRouteImport } from './routes/money-tools'
 import { Route as MoneySetupRouteImport } from './routes/money-setup'
 import { Route as ModeRouteImport } from './routes/mode'
 import { Route as MealsRouteImport } from './routes/meals'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MaintenanceRouteImport } from './routes/maintenance'
 import { Route as LogRouteImport } from './routes/log'
 import { Route as LocationsRouteImport } from './routes/locations'
@@ -75,11 +76,14 @@ import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projec
 import { Route as ApiTestPushRouteImport } from './routes/api.test-push'
 import { Route as AdminResetRouteImport } from './routes/admin.reset'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as IntrospectionResultSessionIdRouteImport } from './routes/introspection.result.$sessionId'
 import { Route as IntrospectionExerciseExerciseIdRouteImport } from './routes/introspection.exercise.$exerciseId'
 import { Route as IntrospectionCategoryCategoryKeyRouteImport } from './routes/introspection.category.$categoryKey'
 import { Route as FinanceCardsCardIdRouteImport } from './routes/finance_.cards.$cardId'
 import { Route as ApiPublicVapidKeyRouteImport } from './routes/api.public.vapid-key'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicHooksTelegramWebhookRouteImport } from './routes/api.public.hooks.telegram-webhook'
 import { Route as ApiPublicHooksTelegramSendRouteImport } from './routes/api.public.hooks.telegram-send'
@@ -226,6 +230,11 @@ const MealsRoute = MealsRouteImport.update({
   path: '/meals',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/meals.lazy').then((d) => d.Route))
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MaintenanceRoute = MaintenanceRouteImport.update({
   id: '/maintenance',
   path: '/maintenance',
@@ -426,6 +435,18 @@ const AdminInvitesRoute = AdminInvitesRouteImport.update({
   path: '/admin/invites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const IntrospectionResultSessionIdRoute =
   IntrospectionResultSessionIdRouteImport.update({
     id: '/result/$sessionId',
@@ -454,6 +475,12 @@ const ApiPublicVapidKeyRoute = ApiPublicVapidKeyRouteImport.update({
   path: '/api/public/vapid-key',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -577,6 +604,7 @@ export interface FileRoutesByFullPath {
   '/locations': typeof LocationsRoute
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
+  '/mcp': typeof McpRoute
   '/meals': typeof MealsRoute
   '/mode': typeof ModeRoute
   '/money-setup': typeof MoneySetupRoute
@@ -603,6 +631,8 @@ export interface FileRoutesByFullPath {
   '/timeline': typeof TimelineRoute
   '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
@@ -611,6 +641,7 @@ export interface FileRoutesByFullPath {
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/quick/': typeof QuickIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
   '/finance/cards/$cardId': typeof FinanceCardsCardIdRoute
   '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
@@ -664,6 +695,7 @@ export interface FileRoutesByTo {
   '/locations': typeof LocationsRoute
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
+  '/mcp': typeof McpRoute
   '/meals': typeof MealsRoute
   '/mode': typeof ModeRoute
   '/money-setup': typeof MoneySetupRoute
@@ -689,6 +721,8 @@ export interface FileRoutesByTo {
   '/timeline': typeof TimelineRoute
   '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
@@ -697,6 +731,7 @@ export interface FileRoutesByTo {
   '/introspection': typeof IntrospectionIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/quick': typeof QuickIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
   '/finance/cards/$cardId': typeof FinanceCardsCardIdRoute
   '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
@@ -752,6 +787,7 @@ export interface FileRoutesById {
   '/locations': typeof LocationsRoute
   '/log': typeof LogRoute
   '/maintenance': typeof MaintenanceRoute
+  '/mcp': typeof McpRoute
   '/meals': typeof MealsRoute
   '/mode': typeof ModeRoute
   '/money-setup': typeof MoneySetupRoute
@@ -778,6 +814,8 @@ export interface FileRoutesById {
   '/timeline': typeof TimelineRoute
   '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
@@ -786,6 +824,7 @@ export interface FileRoutesById {
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/quick/': typeof QuickIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
   '/finance_/cards/$cardId': typeof FinanceCardsCardIdRoute
   '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
@@ -842,6 +881,7 @@ export interface FileRouteTypes {
     | '/locations'
     | '/log'
     | '/maintenance'
+    | '/mcp'
     | '/meals'
     | '/mode'
     | '/money-setup'
@@ -868,6 +908,8 @@ export interface FileRouteTypes {
     | '/timeline'
     | '/vehicles'
     | '/wishlist'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
@@ -876,6 +918,7 @@ export interface FileRouteTypes {
     | '/introspection/'
     | '/projects/'
     | '/quick/'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/vapid-key'
     | '/finance/cards/$cardId'
     | '/introspection/category/$categoryKey'
@@ -929,6 +972,7 @@ export interface FileRouteTypes {
     | '/locations'
     | '/log'
     | '/maintenance'
+    | '/mcp'
     | '/meals'
     | '/mode'
     | '/money-setup'
@@ -954,6 +998,8 @@ export interface FileRouteTypes {
     | '/timeline'
     | '/vehicles'
     | '/wishlist'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
@@ -962,6 +1008,7 @@ export interface FileRouteTypes {
     | '/introspection'
     | '/projects'
     | '/quick'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/vapid-key'
     | '/finance/cards/$cardId'
     | '/introspection/category/$categoryKey'
@@ -1016,6 +1063,7 @@ export interface FileRouteTypes {
     | '/locations'
     | '/log'
     | '/maintenance'
+    | '/mcp'
     | '/meals'
     | '/mode'
     | '/money-setup'
@@ -1042,6 +1090,8 @@ export interface FileRouteTypes {
     | '/timeline'
     | '/vehicles'
     | '/wishlist'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/invites'
     | '/admin/reset'
     | '/api/test-push'
@@ -1050,6 +1100,7 @@ export interface FileRouteTypes {
     | '/introspection/'
     | '/projects/'
     | '/quick/'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/vapid-key'
     | '/finance_/cards/$cardId'
     | '/introspection/category/$categoryKey'
@@ -1105,6 +1156,7 @@ export interface RootRouteChildren {
   LocationsRoute: typeof LocationsRoute
   LogRoute: typeof LogRoute
   MaintenanceRoute: typeof MaintenanceRoute
+  McpRoute: typeof McpRoute
   MealsRoute: typeof MealsRoute
   ModeRoute: typeof ModeRoute
   MoneySetupRoute: typeof MoneySetupRoute
@@ -1131,11 +1183,14 @@ export interface RootRouteChildren {
   TimelineRoute: typeof TimelineRoute
   VehiclesRoute: typeof VehiclesRoute
   WishlistRoute: typeof WishlistRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminResetRoute: typeof AdminResetRoute
   ApiTestPushRoute: typeof ApiTestPushRoute
   QuickActionRoute: typeof QuickActionRoute
   QuickIndexRoute: typeof QuickIndexRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicVapidKeyRoute: typeof ApiPublicVapidKeyRoute
   FinanceCardsCardIdRoute: typeof FinanceCardsCardIdRoute
   ApiPublicHooksEmailToTaskRoute: typeof ApiPublicHooksEmailToTaskRoute
@@ -1337,6 +1392,13 @@ declare module '@tanstack/react-router' {
       path: '/meals'
       fullPath: '/meals'
       preLoaderRoute: typeof MealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/maintenance': {
@@ -1619,6 +1681,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInvitesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/introspection/result/$sessionId': {
       id: '/introspection/result/$sessionId'
       path: '/result/$sessionId'
@@ -1652,6 +1728,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/vapid-key'
       fullPath: '/api/public/vapid-key'
       preLoaderRoute: typeof ApiPublicVapidKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
@@ -1827,6 +1910,7 @@ const rootRouteChildren: RootRouteChildren = {
   LocationsRoute: LocationsRoute,
   LogRoute: LogRoute,
   MaintenanceRoute: MaintenanceRoute,
+  McpRoute: McpRoute,
   MealsRoute: MealsRoute,
   ModeRoute: ModeRoute,
   MoneySetupRoute: MoneySetupRoute,
@@ -1853,11 +1937,15 @@ const rootRouteChildren: RootRouteChildren = {
   TimelineRoute: TimelineRoute,
   VehiclesRoute: VehiclesRoute,
   WishlistRoute: WishlistRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminResetRoute: AdminResetRoute,
   ApiTestPushRoute: ApiTestPushRoute,
   QuickActionRoute: QuickActionRoute,
   QuickIndexRoute: QuickIndexRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicVapidKeyRoute: ApiPublicVapidKeyRoute,
   FinanceCardsCardIdRoute: FinanceCardsCardIdRoute,
   ApiPublicHooksEmailToTaskRoute: ApiPublicHooksEmailToTaskRoute,
