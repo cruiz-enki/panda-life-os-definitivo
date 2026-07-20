@@ -22,6 +22,7 @@ import {
   type Recurrence,
   type RecurrenceFrequency,
   type RecurrenceMonthlyMode,
+  type ReminderChannel,
 } from "@/lib/storage";
 import {
   Plus,
@@ -612,6 +613,11 @@ function TaskRow({
             {reminders.length > 0 && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
                 <Bell className="w-3 h-3" /> {reminders.map(fmtOffset).join(" · ")}
+                {task.reminderChannels && task.reminderChannels.length > 0 && (
+                  <span className="opacity-70">
+                    · {task.reminderChannels.map((c) => c === "push" ? "🔔" : c === "telegram" ? "✈️" : c === "email" ? "✉️" : "📥").join("")}
+                  </span>
+                )}
               </span>
             )}
             {task.recurrence && (
@@ -714,6 +720,9 @@ function TaskComposer({
     ? task.reminders
     : (task?.reminder ? [task.reminder] : []);
   const [reminders, setReminders] = useState<number[]>(initialReminders);
+  const [reminderChannels, setReminderChannels] = useState<ReminderChannel[]>(
+    task?.reminderChannels && task.reminderChannels.length > 0 ? task.reminderChannels : ["push"],
+  );
   const [customReminder, setCustomReminder] = useState<string>("");
   const [subtasks, setSubtasks] = useState<Subtask[]>(task?.subtasks ?? []);
   const [newSub, setNewSub] = useState("");
@@ -779,6 +788,7 @@ function TaskComposer({
       tags: tagIds,
       reminder: reminders[0] ?? undefined,
       reminders: reminders.length > 0 ? reminders : undefined,
+      reminderChannels: reminders.length > 0 ? reminderChannels : undefined,
       subtasks,
       xpReward: Number.isFinite(xpNum as number) ? xpNum : undefined,
       recurrence,
@@ -914,6 +924,44 @@ function TaskComposer({
                 </button>
               )}
             </div>
+            {reminders.length > 0 && (
+              <div className="mt-3">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Canales de aviso
+                </label>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {([
+                    { key: "push", label: "🔔 Push" },
+                    { key: "telegram", label: "✈️ Telegram" },
+                    { key: "email", label: "✉️ Email" },
+                    { key: "inapp", label: "📥 En la app" },
+                  ] as { key: ReminderChannel; label: string }[]).map((c) => {
+                    const active = reminderChannels.includes(c.key);
+                    return (
+                      <button
+                        key={c.key}
+                        type="button"
+                        onClick={() =>
+                          setReminderChannels((cs) =>
+                            cs.includes(c.key) ? cs.filter((x) => x !== c.key) : [...cs, c.key],
+                          )
+                        }
+                        className={`px-2.5 py-1 rounded-md border text-xs transition-all ${
+                          active
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:border-primary/40"
+                        }`}
+                      >
+                        {c.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-1 text-[10px] text-muted-foreground">
+                  Se envía por cada canal seleccionado en cada aviso configurado.
+                </p>
+              </div>
+            )}
           </div>
 
           <div>

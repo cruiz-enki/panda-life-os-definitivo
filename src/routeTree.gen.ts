@@ -84,6 +84,7 @@ import { Route as ApiPublicHooksTelegramPollRouteImport } from './routes/api.pub
 import { Route as ApiPublicHooksSyncCronSecretRouteImport } from './routes/api.public.hooks.sync-cron-secret'
 import { Route as ApiPublicHooksStreakRiskSweepRouteImport } from './routes/api.public.hooks.streak-risk-sweep'
 import { Route as ApiPublicHooksSendPushRouteImport } from './routes/api.public.hooks.send-push'
+import { Route as ApiPublicHooksProcessTaskRemindersRouteImport } from './routes/api.public.hooks.process-task-reminders'
 import { Route as ApiPublicHooksProcessScheduledMessagesRouteImport } from './routes/api.public.hooks.process-scheduled-messages'
 import { Route as ApiPublicHooksProcessQuestNotificationsRouteImport } from './routes/api.public.hooks.process-quest-notifications'
 import { Route as ApiPublicHooksProcessNotificationsRouteImport } from './routes/api.public.hooks.process-notifications'
@@ -475,6 +476,12 @@ const ApiPublicHooksSendPushRoute = ApiPublicHooksSendPushRouteImport.update({
   path: '/api/public/hooks/send-push',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksProcessTaskRemindersRoute =
+  ApiPublicHooksProcessTaskRemindersRouteImport.update({
+    id: '/api/public/hooks/process-task-reminders',
+    path: '/api/public/hooks/process-task-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksProcessScheduledMessagesRoute =
   ApiPublicHooksProcessScheduledMessagesRouteImport.update({
     id: '/api/public/hooks/process-scheduled-messages',
@@ -579,6 +586,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
   '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
   '/api/public/hooks/process-scheduled-messages': typeof ApiPublicHooksProcessScheduledMessagesRoute
+  '/api/public/hooks/process-task-reminders': typeof ApiPublicHooksProcessTaskRemindersRoute
   '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
   '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
   '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
@@ -659,6 +667,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
   '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
   '/api/public/hooks/process-scheduled-messages': typeof ApiPublicHooksProcessScheduledMessagesRoute
+  '/api/public/hooks/process-task-reminders': typeof ApiPublicHooksProcessTaskRemindersRoute
   '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
   '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
   '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
@@ -742,6 +751,7 @@ export interface FileRoutesById {
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
   '/api/public/hooks/process-quest-notifications': typeof ApiPublicHooksProcessQuestNotificationsRoute
   '/api/public/hooks/process-scheduled-messages': typeof ApiPublicHooksProcessScheduledMessagesRoute
+  '/api/public/hooks/process-task-reminders': typeof ApiPublicHooksProcessTaskRemindersRoute
   '/api/public/hooks/send-push': typeof ApiPublicHooksSendPushRoute
   '/api/public/hooks/streak-risk-sweep': typeof ApiPublicHooksStreakRiskSweepRoute
   '/api/public/hooks/sync-cron-secret': typeof ApiPublicHooksSyncCronSecretRoute
@@ -826,6 +836,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/process-notifications'
     | '/api/public/hooks/process-quest-notifications'
     | '/api/public/hooks/process-scheduled-messages'
+    | '/api/public/hooks/process-task-reminders'
     | '/api/public/hooks/send-push'
     | '/api/public/hooks/streak-risk-sweep'
     | '/api/public/hooks/sync-cron-secret'
@@ -906,6 +917,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/process-notifications'
     | '/api/public/hooks/process-quest-notifications'
     | '/api/public/hooks/process-scheduled-messages'
+    | '/api/public/hooks/process-task-reminders'
     | '/api/public/hooks/send-push'
     | '/api/public/hooks/streak-risk-sweep'
     | '/api/public/hooks/sync-cron-secret'
@@ -988,6 +1000,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/process-notifications'
     | '/api/public/hooks/process-quest-notifications'
     | '/api/public/hooks/process-scheduled-messages'
+    | '/api/public/hooks/process-task-reminders'
     | '/api/public/hooks/send-push'
     | '/api/public/hooks/streak-risk-sweep'
     | '/api/public/hooks/sync-cron-secret'
@@ -1065,6 +1078,7 @@ export interface RootRouteChildren {
   ApiPublicHooksProcessNotificationsRoute: typeof ApiPublicHooksProcessNotificationsRoute
   ApiPublicHooksProcessQuestNotificationsRoute: typeof ApiPublicHooksProcessQuestNotificationsRoute
   ApiPublicHooksProcessScheduledMessagesRoute: typeof ApiPublicHooksProcessScheduledMessagesRoute
+  ApiPublicHooksProcessTaskRemindersRoute: typeof ApiPublicHooksProcessTaskRemindersRoute
   ApiPublicHooksSendPushRoute: typeof ApiPublicHooksSendPushRoute
   ApiPublicHooksStreakRiskSweepRoute: typeof ApiPublicHooksStreakRiskSweepRoute
   ApiPublicHooksSyncCronSecretRoute: typeof ApiPublicHooksSyncCronSecretRoute
@@ -1602,6 +1616,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSendPushRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/process-task-reminders': {
+      id: '/api/public/hooks/process-task-reminders'
+      path: '/api/public/hooks/process-task-reminders'
+      fullPath: '/api/public/hooks/process-task-reminders'
+      preLoaderRoute: typeof ApiPublicHooksProcessTaskRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/process-scheduled-messages': {
       id: '/api/public/hooks/process-scheduled-messages'
       path: '/api/public/hooks/process-scheduled-messages'
@@ -1743,6 +1764,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicHooksProcessQuestNotificationsRoute,
   ApiPublicHooksProcessScheduledMessagesRoute:
     ApiPublicHooksProcessScheduledMessagesRoute,
+  ApiPublicHooksProcessTaskRemindersRoute:
+    ApiPublicHooksProcessTaskRemindersRoute,
   ApiPublicHooksSendPushRoute: ApiPublicHooksSendPushRoute,
   ApiPublicHooksStreakRiskSweepRoute: ApiPublicHooksStreakRiskSweepRoute,
   ApiPublicHooksSyncCronSecretRoute: ApiPublicHooksSyncCronSecretRoute,

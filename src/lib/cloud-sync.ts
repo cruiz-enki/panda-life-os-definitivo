@@ -70,6 +70,10 @@ function mapTask(r: Record<string, unknown>): Task {
     subtasks: ((r.subtasks as DBSubtask[]) ?? []) as Subtask[],
     reminder: (r.reminder as ReminderOffset) ?? undefined,
     reminders: reminders.length > 0 ? reminders : undefined,
+    reminderChannels: Array.isArray(r.reminder_channels)
+      ? (r.reminder_channels as string[]).filter((c): c is "push" | "telegram" | "email" | "inapp" =>
+          c === "push" || c === "telegram" || c === "email" || c === "inapp")
+      : undefined,
     recurrence: (r.recurrence as Recurrence) ?? undefined,
     snoozedUntil: (r.snoozed_until as string) ?? undefined,
     xpReward: (r.xp_reward as number) ?? undefined,
@@ -241,6 +245,7 @@ export async function pushTask(userId: string, t: Task) {
     subtasks: t.subtasks,
     reminder: t.reminder ?? null,
     reminders: t.reminders ?? [],
+    reminder_channels: t.reminderChannels ?? ["push"],
     recurrence: t.recurrence ?? null,
     snoozed_until: t.snoozedUntil ?? null,
     xp_reward: t.xpReward ?? null,
