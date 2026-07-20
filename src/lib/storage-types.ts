@@ -59,6 +59,7 @@ export type Recurrence = {
 };
 
 export type Subtask = { id: string; title: string; done: boolean };
+export type ReminderChannel = "push" | "telegram" | "email" | "inapp";
 
 export type TaskList = { id: string; name: string; emoji: string; color: string };
 export type Tag = { id: string; name: string; color: string };
