@@ -9,7 +9,7 @@ import {
   Calendar as CalendarIcon, LogOut, Trophy, BarChart3, Settings, Wallet, Heart,
   Library, Star, Target, MessageCircle, Brain, ChevronDown, Scale, Utensils, Pill,
   AlertCircle, Stethoscope, Home as HomeIcon, FolderKanban, Dumbbell, Download,
-  Workflow, LayoutGrid, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin, Car, Send,
+  Workflow, LayoutGrid, Users, Beaker, Eye, Bell, Moon, Smile, Clock, MapPin, Car, Send, Zap,
 } from "lucide-react";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
@@ -103,6 +103,7 @@ const productivityItems: NavItem[] = [
 
 const setupItems: NavItem[] = [
   { to: "/notifications", label: "Notificaciones", icon: Bell },
+  { to: "/shortcuts", label: "Atajos & Deep links", icon: Zap },
   { to: "/settings", label: "Ajustes", icon: Settings },
   { to: "/import", label: "Importar", icon: Download },
 ];
