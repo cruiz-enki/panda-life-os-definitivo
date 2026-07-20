@@ -63,6 +63,7 @@ import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
 import { TasksKanban } from "./kanban";
 import { TasksCalendar } from "./calendar-view";
+import { NestedListsTree } from "./nested-lists-tree";
 
 type ViewKey = "today" | "upcoming" | "overdue" | "all" | "completed" | "high" | string;
 type LayoutKey = "list" | "kanban" | "calendar";
