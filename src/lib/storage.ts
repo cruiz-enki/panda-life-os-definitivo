@@ -631,12 +631,20 @@ export function useAppState() {
 
 
   const toggleSubtask = useCallback((taskId: string, subId: string) => {
+    const toggle = (arr: Subtask[]): Subtask[] =>
+      arr.map((st) =>
+        st.id === subId
+          ? { ...st, done: !st.done }
+          : st.children && st.children.length > 0
+            ? { ...st, children: toggle(st.children) }
+            : st,
+      );
     let updated: Task | undefined;
     setState((s) => ({
       ...s,
       tasks: s.tasks.map((t) => {
         if (t.id !== taskId) return t;
-        updated = { ...t, subtasks: t.subtasks.map((st) => (st.id === subId ? { ...st, done: !st.done } : st)) };
+        updated = { ...t, subtasks: toggle(t.subtasks) };
         return updated;
       }),
     }));
