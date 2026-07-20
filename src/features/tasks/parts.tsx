@@ -574,12 +574,24 @@ export function TasksPage() {
                   onEdit={() => setEditingTask(task)}
                   onDuplicate={() => duplicateTask(task.id)}
                   onDelete={() => deleteTask(task.id)}
+                  onTogglePin={() => togglePin(task.id)}
                   onReschedule={() => {
                     const next = new Date(Date.now() + 86400000);
                     next.setHours(9, 0, 0, 0);
                     updateTask(task.id, { due: next.toISOString() });
                   }}
                   onSnooze={(until) => snoozeTask(task.id, until)}
+                  onDragStart={() => { dragTaskRef.current = task.id; }}
+                  onDropOn={(overId) => {
+                    const from = dragTaskRef.current;
+                    dragTaskRef.current = null;
+                    if (!from || from === overId) return;
+                    const ids = filtered.map((t) => t.id).filter((id) => id !== from);
+                    const idx = ids.indexOf(overId);
+                    if (idx === -1) return;
+                    ids.splice(idx, 0, from);
+                    reorderTasks(ids);
+                  }}
                 />
               ))}
             </ul>
@@ -607,8 +619,11 @@ export function TasksPage() {
 
       {listModal && (
         <ListComposer
-          onClose={() => setListModal(false)}
-          onCreate={(name, emoji, color) => { addList(name, emoji, color); setListModal(false); }}
+          lists={state.taskLists}
+          editingId={editingList?.id ?? null}
+          onClose={() => { setListModal(false); setEditingList(null); }}
+          onCreate={(name, emoji, color, parentId) => { addList(name, emoji, color, parentId); setListModal(false); setEditingList(null); }}
+          onUpdate={(id, patch) => { updateList(id, patch); setListModal(false); setEditingList(null); }}
         />
       )}
       {tagModal && (
