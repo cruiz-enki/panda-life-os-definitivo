@@ -55,6 +55,39 @@ export function QuickCapture() {
     }
   };
 
+  const parsed = useMemo(() => (text.trim() ? parseTaskInput(text) : null), [text]);
+  const parsedHasSignal = !!parsed && (!!parsed.due || !!parsed.priority || parsed.tags.length > 0 || !!parsed.listHint);
+
+  const createTaskFromNLP = () => {
+    if (!text.trim()) return;
+    const p = parseTaskInput(text);
+    // Resolver lista: intenta match por nombre; si no, Inbox.
+    let listId = state.taskLists.find((l) => p.listHint && l.name.toLowerCase() === p.listHint.toLowerCase())?.id;
+    if (!listId) listId = ensureInboxList();
+
+    // Resolver tags: crea las que no existan
+    const tagIds: string[] = [];
+    const existing = new Map(state.tags.map((t) => [t.name.toLowerCase(), t.id]));
+    for (const name of p.tags) {
+      const id = existing.get(name.toLowerCase());
+      if (id) tagIds.push(id);
+    }
+
+    addTask({
+      title: p.title,
+      description: "",
+      priority: p.priority ?? "medium",
+      tags: tagIds,
+      listId,
+      due: p.due,
+    });
+    toast.success(`✅ Tarea creada${p.due ? ` · ${new Date(p.due).toLocaleDateString("es-MX")}` : ""}`);
+    setText("");
+    setSuggestion(null);
+    setOpen(false);
+  };
+
+
   const askAI = async () => {
     if (!text.trim()) return;
     setClassifying(true);
