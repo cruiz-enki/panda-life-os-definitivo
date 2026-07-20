@@ -141,6 +141,31 @@ function QuickActionPage() {
           setDetail(`${med.emoji} ${med.name} ${med.dose}${med.unit}`);
           break;
         }
+        case "meds": {
+          const list = (search.names || search.name).split(",").map((n) => n.trim().toLowerCase()).filter(Boolean);
+          if (!list.length) throw new Error("Falta names=med1,med2,...");
+          const now = new Date();
+          const scheduled = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          const ok: string[] = [];
+          const miss: string[] = [];
+          for (const q of list) {
+            const med = health.medications.find((m) => m.name.toLowerCase().includes(q));
+            if (!med) { miss.push(q); continue; }
+            const err = await health.logMedication({
+              medication_id: med.id,
+              date: todayCDMX(),
+              scheduled_time: scheduled,
+              taken: true,
+              taken_at: now.toISOString(),
+              notes: search.note || "",
+            });
+            if (err) miss.push(q); else ok.push(med.emoji ? `${med.emoji} ${med.name}` : med.name);
+          }
+          if (!ok.length) throw new Error(`No encontré: ${miss.join(", ")}`);
+          setMessage(`${ok.length} medicamento${ok.length > 1 ? "s" : ""} registrado${ok.length > 1 ? "s" : ""}`);
+          setDetail(ok.join(" · ") + (miss.length ? ` — sin match: ${miss.join(", ")}` : ""));
+          break;
+        }
         case "location":
         case "checkin": {
           const name = search.name;
