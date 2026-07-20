@@ -268,6 +268,48 @@ function GlobalSearchDialog({ open, setOpen }: { open: boolean; setOpen: (v: boo
       .slice(0, MAX_PER_GROUP);
   }, [q, expenses, tagMode]);
 
+  const filteredContacts = useMemo(() => {
+    if (tagMode || !q) return [];
+    return contacts
+      .filter((c) => norm(`${c.name} ${c.relationship ?? ""} ${c.notes ?? ""} ${(c.tags ?? []).join(" ")} ${c.email ?? ""} ${c.phone ?? ""}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, contacts, tagMode]);
+
+  const filteredMeds = useMemo(() => {
+    if (tagMode || !q) return [];
+    return medications
+      .filter((m) => norm(`${m.name} ${m.dose} ${m.unit} ${m.notes}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, medications, tagMode]);
+
+  const filteredDishes = useMemo(() => {
+    if (tagMode || !q) return [];
+    return dishes
+      .filter((d) => norm(`${d.name} ${d.notes} ${(d.ingredients ?? []).map((i) => i.name).join(" ")}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, dishes, tagMode]);
+
+  const filteredLocations = useMemo(() => {
+    if (tagMode || !q) return [];
+    return checkins
+      .filter((l) => norm(`${l.name} ${l.address ?? ""} ${l.note ?? ""} ${l.category}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, checkins, tagMode]);
+
+  const filteredMood = useMemo(() => {
+    if (tagMode || !q) return [];
+    return moodLogs
+      .filter((m) => norm(`${m.mood} ${m.note ?? ""} ${m.trigger ?? ""} ${m.dominant_thought ?? ""} ${(m.tags ?? []).join(" ")}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, moodLogs, tagMode]);
+
+  const filteredSleep = useMemo(() => {
+    if (tagMode || !q) return [];
+    return sleepLogs
+      .filter((s) => norm(`${s.date} ${s.notes ?? ""}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, sleepLogs, tagMode]);
+
   const openQuickCapture = () => {
     const w = window as unknown as { __openQuickCapture?: () => void };
     if (w.__openQuickCapture) w.__openQuickCapture();
