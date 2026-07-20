@@ -862,6 +862,7 @@ export function useAppState() {
     toggleTaskComplete,
     toggleSubtask,
     addList,
+    ensureInboxList,
     deleteList,
     addTag,
     deleteTag,
