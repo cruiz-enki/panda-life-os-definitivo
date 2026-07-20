@@ -1750,6 +1750,7 @@ function TaskComposer({
               </button>
             </div>
           </div>
+          <button
 
             disabled={!title.trim()}
             onClick={submit}
