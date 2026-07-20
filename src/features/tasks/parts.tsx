@@ -204,20 +204,28 @@ export function TasksPage() {
     } else if (view !== "all") {
       list = list.filter((t) => t.listId === view);
     }
-    if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
+    if (activeTagFilters.length > 0) list = list.filter((t) => activeTagFilters.every((tid) => t.tags.includes(tid)));
     if (priorityFilter) list = list.filter((t) => t.priority === priorityFilter);
     if (hideWork && !(typeof view === "string" && workListIds.has(view))) {
       list = list.filter((t) => !t.listId || !workListIds.has(t.listId));
     }
     return list.sort((a, b) => {
       if (a.status !== b.status) return a.status === "completed" ? 1 : -1;
+      // Favoritas primero
+      const ap = a.pinned ? 0 : 1;
+      const bp = b.pinned ? 0 : 1;
+      if (ap !== bp) return ap - bp;
+      // Orden manual: sortOrder asc (nulls al final)
+      const aso = a.sortOrder ?? Number.POSITIVE_INFINITY;
+      const bso = b.sortOrder ?? Number.POSITIVE_INFINITY;
+      if (aso !== bso) return aso - bso;
       const pr = priorityRank(a.priority) - priorityRank(b.priority);
       if (pr !== 0) return pr;
       const ad = a.due ? new Date(a.due).getTime() : Infinity;
       const bd = b.due ? new Date(b.due).getTime() : Infinity;
       return ad - bd;
     });
-  }, [state.tasks, view, activeTagFilter, priorityFilter, today, hideWork, workListIds]);
+  }, [state.tasks, view, activeTagFilters, priorityFilter, today, hideWork, workListIds]);
 
   const counts = useMemo(() => {
     const isWork = (t: Task) => !!t.listId && workListIds.has(t.listId);
@@ -240,7 +248,7 @@ export function TasksPage() {
 
   const applyFilter = (f: SavedFilter) => {
     setView(f.view);
-    setActiveTagFilter(f.tag);
+    setActiveTagFilters(f.tagIds);
     setPriorityFilter(f.priority);
     setHideWork(f.hideWork);
   };
@@ -251,12 +259,14 @@ export function TasksPage() {
       id: `f_${Date.now().toString(36)}`,
       name: name.trim(),
       view,
-      tag: activeTagFilter,
+      tagIds: activeTagFilters,
       hideWork,
       priority: priorityFilter,
     };
     setSavedFilters((xs) => [...xs, f]);
   };
+  const toggleTag = (id: string) =>
+    setActiveTagFilters((xs) => (xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id]));
   const removeFilter = (id: string) => setSavedFilters((xs) => xs.filter((f) => f.id !== id));
 
   return (
