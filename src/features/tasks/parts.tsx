@@ -116,8 +116,25 @@ export function TasksPage() {
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<"" | "high" | "medium" | "low">("");
   const [listModal, setListModal] = useState(false);
   const [tagModal, setTagModal] = useState(false);
+  const [layout, setLayout] = useState<LayoutKey>(() => {
+    if (typeof window === "undefined") return "list";
+    const v = window.localStorage.getItem(LAYOUT_KEY);
+    return v === "kanban" || v === "calendar" ? v : "list";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") window.localStorage.setItem(LAYOUT_KEY, layout);
+  }, [layout]);
+
+  const [savedFilters, setSavedFilters] = useState<SavedFilter[]>(() => loadSavedFilters());
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(savedFilters));
+    }
+  }, [savedFilters]);
+
   const [hideWork, setHideWork] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem("enki:tasks:hide-work") === "1";
@@ -159,6 +176,8 @@ export function TasksPage() {
           new Date(t.due) >= now &&
           new Date(t.due) <= in7,
       );
+    } else if (view === "overdue") {
+      list = list.filter((t) => t.status !== "completed" && !isSnoozed(t) && isOverdue(t, now));
     } else if (view === "completed") {
       list = list.filter((t) => t.status === "completed");
     } else if (view === "high") {
@@ -167,6 +186,7 @@ export function TasksPage() {
       list = list.filter((t) => t.listId === view);
     }
     if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
+    if (priorityFilter) list = list.filter((t) => t.priority === priorityFilter);
     if (hideWork && !(typeof view === "string" && workListIds.has(view))) {
       list = list.filter((t) => !t.listId || !workListIds.has(t.listId));
     }
@@ -178,24 +198,47 @@ export function TasksPage() {
       const bd = b.due ? new Date(b.due).getTime() : Infinity;
       return ad - bd;
     });
-  }, [state.tasks, view, activeTagFilter, today, hideWork, workListIds]);
+  }, [state.tasks, view, activeTagFilter, priorityFilter, today, hideWork, workListIds]);
 
   const counts = useMemo(() => {
     const isWork = (t: Task) => !!t.listId && workListIds.has(t.listId);
     const base = hideWork ? state.tasks.filter((t) => !isWork(t)) : state.tasks;
     const pending = base.filter((t) => t.status !== "completed");
+    const now = Date.now();
     return {
       today: pending.filter((t) => isDueToday(t, today) || isOverdue(t)).length,
       upcoming: pending.filter((t) => {
         if (!t.due) return false;
         const d = new Date(t.due).getTime();
-        return d > Date.now() && d <= Date.now() + 7 * 86400000;
+        return d > now && d <= now + 7 * 86400000;
       }).length,
+      overdue: pending.filter((t) => isOverdue(t)).length,
       all: pending.length,
       completed: base.filter((t) => t.status === "completed").length,
       high: pending.filter((t) => t.priority === "high").length,
     };
   }, [state.tasks, today, hideWork, workListIds]);
+
+  const applyFilter = (f: SavedFilter) => {
+    setView(f.view);
+    setActiveTagFilter(f.tag);
+    setPriorityFilter(f.priority);
+    setHideWork(f.hideWork);
+  };
+  const saveCurrentFilter = () => {
+    const name = window.prompt("Nombre del filtro (ej: 'Trabajo esta semana alta')");
+    if (!name || !name.trim()) return;
+    const f: SavedFilter = {
+      id: `f_${Date.now().toString(36)}`,
+      name: name.trim(),
+      view,
+      tag: activeTagFilter,
+      hideWork,
+      priority: priorityFilter,
+    };
+    setSavedFilters((xs) => [...xs, f]);
+  };
+  const removeFilter = (id: string) => setSavedFilters((xs) => xs.filter((f) => f.id !== id));
 
   return (
     <div className="px-4 md:px-10 py-6 md:py-8 max-w-7xl mx-auto">
