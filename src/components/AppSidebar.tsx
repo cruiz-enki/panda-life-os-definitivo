@@ -103,6 +103,7 @@ const productivityItems: NavItem[] = [
 
 const setupItems: NavItem[] = [
   { to: "/notifications", label: "Notificaciones", icon: Bell },
+  { to: "/shortcuts", label: "Atajos & Deep links", icon: Zap },
   { to: "/settings", label: "Ajustes", icon: Settings },
   { to: "/import", label: "Importar", icon: Download },
 ];
