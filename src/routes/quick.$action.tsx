@@ -142,7 +142,7 @@ function QuickActionPage() {
           break;
         }
         case "meds": {
-          const list = (search.names || search.name).split(",").map((n) => n.trim().toLowerCase()).filter(Boolean);
+          const list = (search.names || search.name).split(",").map((n: string) => n.trim().toLowerCase()).filter(Boolean);
           if (!list.length) throw new Error("Falta names=med1,med2,...");
           const now = new Date();
           const scheduled = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
