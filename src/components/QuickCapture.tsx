@@ -154,11 +154,44 @@ export function QuickCapture() {
               value={text}
               onChange={(e) => { setText(e.target.value); setSuggestion(null); }}
               onKeyDown={(e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit(false);
+                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                  if (e.shiftKey) { createTaskFromNLP(); }
+                  else submit(false);
+                }
               }}
-              placeholder="Escribe tu idea…  (⌘/Ctrl + Enter para guardar)"
+              placeholder={`Escribe tu idea…\n⌘Enter guarda como nota · ⇧⌘Enter crea tarea\nTip tarea: "Llamar a Juan mañana 3pm #trabajo !alta"`}
               className="w-full bg-transparent px-5 py-4 text-base outline-none resize-none min-h-[120px]"
             />
+
+            {parsed && parsedHasSignal && (
+              <div className="mx-5 mb-3 rounded-xl border border-primary/20 bg-primary/5 p-3">
+                <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-primary mb-2">
+                  <CheckSquare className="w-3 h-3" /> Vista previa tarea
+                </div>
+                <div className="text-sm font-medium mb-2">{parsed.title || "(sin título)"}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary inline-flex items-center gap-1">
+                    <Inbox className="w-3 h-3" /> {parsed.listHint || "Inbox"}
+                  </span>
+                  {parsed.due && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary inline-flex items-center gap-1">
+                      <CalIcon className="w-3 h-3" />
+                      {new Date(parsed.due).toLocaleString("es-MX", { weekday: "short", day: "numeric", month: "short", hour: parsed.matched.time ? "2-digit" : undefined, minute: parsed.matched.time ? "2-digit" : undefined })}
+                    </span>
+                  )}
+                  {parsed.priority && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary inline-flex items-center gap-1">
+                      <Flag className="w-3 h-3" /> {parsed.priority}
+                    </span>
+                  )}
+                  {parsed.tags.map((t) => (
+                    <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary inline-flex items-center gap-0.5">
+                      <Hash className="w-2.5 h-2.5" />{t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {suggestion && (
               <div className="mx-5 mb-3 rounded-xl border border-primary/30 bg-primary/5 p-3">
@@ -188,7 +221,7 @@ export function QuickCapture() {
 
             <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-secondary/20">
               <span className="text-xs text-muted-foreground">
-                {saved ? "✓ Guardado +3 XP" : suggestion ? "Aplica o guarda como nota" : "Se guarda como 💡 Idea"}
+                {saved ? "✓ Guardado" : suggestion ? "Aplica o guarda como nota" : parsedHasSignal ? "Crea como tarea o guarda como nota" : "Se guarda como 💡 Idea"}
               </span>
               <div className="flex items-center gap-2">
                 <button
@@ -197,24 +230,26 @@ export function QuickCapture() {
                   className="px-3 py-1.5 rounded-lg text-xs border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-40 inline-flex items-center gap-1"
                 >
                   {classifying ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
-                  {classifying ? "Pensando…" : "Organizar con IA"}
+                  {classifying ? "Pensando…" : "Organizar IA"}
                 </button>
                 <button
-                  onClick={() => submit(true)}
+                  onClick={createTaskFromNLP}
                   disabled={!text.trim()}
-                  className="px-3 py-1.5 rounded-lg text-xs border border-border hover:bg-secondary disabled:opacity-40"
+                  title="⇧⌘Enter"
+                  className="px-3 py-1.5 rounded-lg text-xs border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-40 inline-flex items-center gap-1"
                 >
-                  Guardar y abrir
+                  <CheckSquare className="w-3 h-3" /> Tarea
                 </button>
                 <button
                   onClick={() => submit(false)}
                   disabled={!text.trim()}
                   className="px-3 py-1.5 rounded-lg text-xs bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-40 inline-flex items-center gap-1"
                 >
-                  <Plus className="w-3 h-3" /> Guardar
+                  <Plus className="w-3 h-3" /> Nota
                 </button>
               </div>
             </div>
+
           </div>
         </div>
       )}
