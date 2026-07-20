@@ -61,7 +61,7 @@ export type Recurrence = {
 export type Subtask = { id: string; title: string; done: boolean };
 export type ReminderChannel = "push" | "telegram" | "email" | "inapp";
 
-export type TaskList = { id: string; name: string; emoji: string; color: string };
+export type TaskList = { id: string; name: string; emoji: string; color: string; parentId?: string | null; sortOrder?: number };
 export type Tag = { id: string; name: string; color: string };
 
 export type Task = {
@@ -88,6 +88,10 @@ export type Task = {
   recurrence?: Recurrence;
   /** Si tiene valor futuro, la tarea está pospuesta hasta esa fecha. */
   snoozedUntil?: string;
+  /** Favorita: se muestra arriba de todas las vistas. */
+  pinned?: boolean;
+  /** Orden manual persistente dentro de la vista. Menor va primero. */
+  sortOrder?: number;
   xpReward?: number;
   createdAt: string;
   completedAt?: string;

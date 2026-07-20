@@ -39,6 +39,7 @@ import {
   CheckCircle2,
   Flag,
   ChevronRight,
+  ChevronDown,
   Clock,
   ListChecks,
   Repeat,
@@ -53,11 +54,16 @@ import {
   CalendarDays,
   Bookmark,
   Save,
+  Star,
+  GripVertical,
+  FolderTree,
+  MoreHorizontal,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
 import { TasksKanban } from "./kanban";
 import { TasksCalendar } from "./calendar-view";
+import { NestedListsTree } from "./nested-lists-tree";
 
 type ViewKey = "today" | "upcoming" | "overdue" | "all" | "completed" | "high" | string;
 type LayoutKey = "list" | "kanban" | "calendar";
@@ -75,7 +81,7 @@ type SavedFilter = {
   id: string;
   name: string;
   view: ViewKey;
-  tag: string | null;
+  tagIds: string[];
   hideWork: boolean;
   priority: "" | "high" | "medium" | "low";
 };
@@ -89,7 +95,16 @@ function loadSavedFilters(): SavedFilter[] {
     const raw = window.localStorage.getItem(SAVED_FILTERS_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    // Migra formato antiguo (tag: string | null) → tagIds: string[]
+    return parsed.map((f: any) => ({
+      id: f.id,
+      name: f.name,
+      view: f.view,
+      tagIds: Array.isArray(f.tagIds) ? f.tagIds : (f.tag ? [f.tag] : []),
+      hideWork: !!f.hideWork,
+      priority: f.priority ?? "",
+    })) as SavedFilter[];
   } catch {
     return [];
   }
@@ -105,8 +120,12 @@ export function TasksPage() {
     duplicateTask,
     toggleTaskComplete,
     toggleSubtask,
+    togglePin,
+    reorderTasks,
     snoozeTask,
     addList,
+    updateList,
+    reorderLists,
     addTag,
     deleteList,
     deleteTag,
@@ -115,9 +134,10 @@ export function TasksPage() {
   const [view, setView] = useState<ViewKey>("today");
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
+  const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<"" | "high" | "medium" | "low">("");
   const [listModal, setListModal] = useState(false);
+  const [editingList, setEditingList] = useState<{ id: string } | null>(null);
   const [tagModal, setTagModal] = useState(false);
   const [layout, setLayout] = useState<LayoutKey>(() => {
     if (typeof window === "undefined") return "list";
@@ -129,6 +149,7 @@ export function TasksPage() {
   }, [layout]);
 
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>(() => loadSavedFilters());
+  const dragTaskRef = useRef<string | null>(null);
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(savedFilters));
@@ -185,20 +206,28 @@ export function TasksPage() {
     } else if (view !== "all") {
       list = list.filter((t) => t.listId === view);
     }
-    if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
+    if (activeTagFilters.length > 0) list = list.filter((t) => activeTagFilters.every((tid) => t.tags.includes(tid)));
     if (priorityFilter) list = list.filter((t) => t.priority === priorityFilter);
     if (hideWork && !(typeof view === "string" && workListIds.has(view))) {
       list = list.filter((t) => !t.listId || !workListIds.has(t.listId));
     }
     return list.sort((a, b) => {
       if (a.status !== b.status) return a.status === "completed" ? 1 : -1;
+      // Favoritas primero
+      const ap = a.pinned ? 0 : 1;
+      const bp = b.pinned ? 0 : 1;
+      if (ap !== bp) return ap - bp;
+      // Orden manual: sortOrder asc (nulls al final)
+      const aso = a.sortOrder ?? Number.POSITIVE_INFINITY;
+      const bso = b.sortOrder ?? Number.POSITIVE_INFINITY;
+      if (aso !== bso) return aso - bso;
       const pr = priorityRank(a.priority) - priorityRank(b.priority);
       if (pr !== 0) return pr;
       const ad = a.due ? new Date(a.due).getTime() : Infinity;
       const bd = b.due ? new Date(b.due).getTime() : Infinity;
       return ad - bd;
     });
-  }, [state.tasks, view, activeTagFilter, priorityFilter, today, hideWork, workListIds]);
+  }, [state.tasks, view, activeTagFilters, priorityFilter, today, hideWork, workListIds]);
 
   const counts = useMemo(() => {
     const isWork = (t: Task) => !!t.listId && workListIds.has(t.listId);
@@ -221,7 +250,7 @@ export function TasksPage() {
 
   const applyFilter = (f: SavedFilter) => {
     setView(f.view);
-    setActiveTagFilter(f.tag);
+    setActiveTagFilters(f.tagIds);
     setPriorityFilter(f.priority);
     setHideWork(f.hideWork);
   };
@@ -232,12 +261,14 @@ export function TasksPage() {
       id: `f_${Date.now().toString(36)}`,
       name: name.trim(),
       view,
-      tag: activeTagFilter,
+      tagIds: activeTagFilters,
       hideWork,
       priority: priorityFilter,
     };
     setSavedFilters((xs) => [...xs, f]);
   };
+  const toggleTag = (id: string) =>
+    setActiveTagFilters((xs) => (xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id]));
   const removeFilter = (id: string) => setSavedFilters((xs) => xs.filter((f) => f.id !== id));
 
   return (
@@ -323,7 +354,7 @@ export function TasksPage() {
                 return (
                   <button
                     key={k}
-                    onClick={() => { setView(k); setActiveTagFilter(null); }}
+                    onClick={() => { setView(k); setActiveTagFilters([]); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all ${
                       active ? "bg-primary/15 text-primary font-medium" : "hover:bg-secondary/50 text-foreground/80"
                     }`}
@@ -343,40 +374,23 @@ export function TasksPage() {
 
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
-              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Listas</h3>
-              <button onClick={() => setListModal(true)} className="text-muted-foreground hover:text-primary">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <FolderTree className="w-3 h-3" /> Listas
+              </h3>
+              <button onClick={() => { setEditingList(null); setListModal(true); }} className="text-muted-foreground hover:text-primary">
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="space-y-1">
-              {state.taskLists.map((l) => {
-                const active = view === l.id;
-                const count = state.tasks.filter((t) => t.listId === l.id && t.status !== "completed").length;
-                return (
-                  <div key={l.id} className="group relative">
-                    <button
-                      onClick={() => { setView(l.id); setActiveTagFilter(null); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all ${
-                        active ? "bg-primary/15 text-primary font-medium" : "hover:bg-secondary/50 text-foreground/80"
-                      }`}
-                    >
-                      <span>{l.emoji}</span>
-                      <span className="flex-1 text-left truncate">{l.name}</span>
-                      {count > 0 && (
-                        <span className="text-xs text-muted-foreground">{count}</span>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => { if (confirm(`¿Eliminar lista "${l.name}" y todas sus tareas?`)) deleteList(l.id); }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1"
-                      aria-label="Eliminar lista"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+            <NestedListsTree
+              lists={state.taskLists}
+              tasks={state.tasks}
+              activeView={view}
+              onSelect={(id) => { setView(id); setActiveTagFilters([]); }}
+              onDelete={(l) => { if (confirm(`¿Eliminar lista "${l.name}" y todas sus tareas?`)) deleteList(l.id); }}
+              onEdit={(id) => { setEditingList({ id }); setListModal(true); }}
+              onReorder={(orderedIds, parentId) => reorderLists(orderedIds, parentId)}
+              onSetParent={(childId, parentId) => updateList(childId, { parentId })}
+            />
           </div>
 
           <div>
@@ -388,11 +402,11 @@ export function TasksPage() {
             </div>
             <div className="flex flex-wrap gap-1.5 px-2">
               {state.tags.map((tag) => {
-                const active = activeTagFilter === tag.id;
+                const active = activeTagFilters.includes(tag.id);
                 return (
                   <button
                     key={tag.id}
-                    onClick={() => setActiveTagFilter(active ? null : tag.id)}
+                    onClick={() => toggleTag(tag.id)}
                     className={`text-xs px-2 py-1 rounded-md border transition-all ${
                       active ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
                     }`}
@@ -406,7 +420,13 @@ export function TasksPage() {
                 <span className="text-xs text-muted-foreground">Sin etiquetas</span>
               )}
             </div>
+            {activeTagFilters.length > 1 && (
+              <p className="text-[10px] text-muted-foreground px-2 mt-1">
+                Filtro AND: {activeTagFilters.length} etiquetas
+              </p>
+            )}
           </div>
+
 
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
@@ -499,14 +519,15 @@ export function TasksPage() {
                 {p === "" ? "Todas" : p === "high" ? "Alta" : p === "medium" ? "Media" : "Baja"}
               </button>
             ))}
-            {activeTagFilter && (
+            {activeTagFilters.length > 0 && activeTagFilters.map((tid) => (
               <button
-                onClick={() => setActiveTagFilter(null)}
+                key={tid}
+                onClick={() => setActiveTagFilters((xs) => xs.filter((x) => x !== tid))}
                 className="text-xs px-2 py-1 rounded-md bg-primary/10 text-primary inline-flex items-center gap-1"
               >
-                #{state.tags.find((t) => t.id === activeTagFilter)?.name} <X className="w-3 h-3" />
+                #{state.tags.find((t) => t.id === tid)?.name} <X className="w-3 h-3" />
               </button>
-            )}
+            ))}
             <span className="ml-auto text-sm text-muted-foreground">{filtered.length}</span>
           </div>
 
@@ -554,12 +575,24 @@ export function TasksPage() {
                   onEdit={() => setEditingTask(task)}
                   onDuplicate={() => duplicateTask(task.id)}
                   onDelete={() => deleteTask(task.id)}
+                  onTogglePin={() => togglePin(task.id)}
                   onReschedule={() => {
                     const next = new Date(Date.now() + 86400000);
                     next.setHours(9, 0, 0, 0);
                     updateTask(task.id, { due: next.toISOString() });
                   }}
                   onSnooze={(until) => snoozeTask(task.id, until)}
+                  onDragStart={() => { dragTaskRef.current = task.id; }}
+                  onDropOn={(overId) => {
+                    const from = dragTaskRef.current;
+                    dragTaskRef.current = null;
+                    if (!from || from === overId) return;
+                    const ids = filtered.map((t) => t.id).filter((id) => id !== from);
+                    const idx = ids.indexOf(overId);
+                    if (idx === -1) return;
+                    ids.splice(idx, 0, from);
+                    reorderTasks(ids);
+                  }}
                 />
               ))}
             </ul>
@@ -587,8 +620,11 @@ export function TasksPage() {
 
       {listModal && (
         <ListComposer
-          onClose={() => setListModal(false)}
-          onCreate={(name, emoji, color) => { addList(name, emoji, color); setListModal(false); }}
+          lists={state.taskLists}
+          editingId={editingList?.id ?? null}
+          onClose={() => { setListModal(false); setEditingList(null); }}
+          onCreate={(name, emoji, color, parentId) => { addList(name, emoji, color, parentId); setListModal(false); setEditingList(null); }}
+          onUpdate={(id, patch) => { updateList(id, patch); setListModal(false); setEditingList(null); }}
         />
       )}
       {tagModal && (
@@ -702,6 +738,9 @@ function TaskRow({
   onDelete,
   onReschedule,
   onSnooze,
+  onTogglePin,
+  onDragStart,
+  onDropOn,
 }: {
   task: Task;
   state: ReturnType<typeof useAppState>["state"];
@@ -713,8 +752,12 @@ function TaskRow({
   onDelete: () => void;
   onReschedule: () => void;
   onSnooze: (until: Date | null) => void;
+  onTogglePin?: () => void;
+  onDragStart?: () => void;
+  onDropOn?: (overId: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
   const done = task.status === "completed";
   const overdue = isOverdue(task);
   const list = state.taskLists.find((l) => l.id === task.listId);
@@ -728,7 +771,28 @@ function TaskRow({
 
   return (
     <li
+      draggable={!!onDragStart}
+      onDragStart={(e) => {
+        if (!onDragStart) return;
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", task.id);
+        onDragStart();
+      }}
+      onDragOver={(e) => {
+        if (!onDropOn) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        setIsDragOver(true);
+      }}
+      onDragLeave={() => setIsDragOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setIsDragOver(false);
+        if (onDropOn) onDropOn(task.id);
+      }}
       className={`group rounded-2xl border p-3 sm:p-4 shadow-card transition-all ${
+        isDragOver ? "ring-2 ring-primary/60" : ""
+      } ${
         done
           ? "border-border bg-card/50 opacity-60"
           : snoozed
@@ -848,6 +912,15 @@ function TaskRow({
 
         <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <SnoozeMenu onPick={onSnooze} />
+          {onTogglePin && (
+            <button
+              onClick={onTogglePin}
+              title={task.pinned ? "Quitar destacado" : "Destacar"}
+              className={`p-1.5 rounded-lg hover:bg-secondary ${task.pinned ? "text-[var(--energy,#f59e0b)]" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <Star className={`w-3.5 h-3.5 ${task.pinned ? "fill-current" : ""}`} />
+            </button>
+          )}
           <button onClick={onReschedule} title="Reprogramar a mañana" className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground">
             <CalendarIcon className="w-3.5 h-3.5" />
           </button>
@@ -1389,20 +1462,54 @@ function TaskComposer({
   );
 }
 
-function ListComposer({ onClose, onCreate }: { onClose: () => void; onCreate: (name: string, emoji: string, color: string) => void }) {
-  const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState("📁");
+function ListComposer({
+  onClose,
+  onCreate,
+  onUpdate,
+  lists,
+  editingId,
+}: {
+  onClose: () => void;
+  onCreate: (name: string, emoji: string, color: string, parentId: string | null) => void;
+  onUpdate?: (id: string, patch: { name?: string; emoji?: string; color?: string; parentId?: string | null }) => void;
+  lists: Array<{ id: string; name: string; emoji: string; color: string; parentId?: string | null }>;
+  editingId?: string | null;
+}) {
+  const editing = editingId ? lists.find((l) => l.id === editingId) ?? null : null;
+  const [name, setName] = useState(editing?.name ?? "");
+  const [emoji, setEmoji] = useState(editing?.emoji ?? "📁");
   const colors = [
     "oklch(0.78 0.18 150)", "oklch(0.75 0.2 50)", "oklch(0.7 0.18 220)",
     "oklch(0.7 0.22 295)", "oklch(0.82 0.17 90)", "oklch(0.65 0.22 25)",
   ];
-  const [color, setColor] = useState(colors[0]);
+  const [color, setColor] = useState(editing?.color ?? colors[0]);
+  const [parentId, setParentId] = useState<string | null>(editing?.parentId ?? null);
+
+  // Padres válidos: cualquier lista distinta a la editada y que no sea su descendiente.
+  const descendants = new Set<string>();
+  if (editing) {
+    const walk = (id: string) => {
+      descendants.add(id);
+      for (const l of lists) if (l.parentId === id) walk(l.id);
+    };
+    walk(editing.id);
+  }
+  const parentOptions = lists.filter((l) => !descendants.has(l.id));
+
+  const submit = () => {
+    if (!name.trim()) return;
+    if (editing && onUpdate) {
+      onUpdate(editing.id, { name: name.trim(), emoji, color, parentId });
+    } else {
+      onCreate(name.trim(), emoji, color, parentId);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div className="w-full max-w-sm rounded-2xl bg-card border border-border p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-bold">Nueva lista</h2>
+          <h2 className="font-display text-lg font-bold">{editing ? "Editar lista" : "Nueva lista"}</h2>
           <button onClick={onClose}><X className="w-5 h-5 text-muted-foreground" /></button>
         </div>
         <div className="space-y-3">
@@ -1420,6 +1527,21 @@ function ListComposer({ onClose, onCreate }: { onClose: () => void; onCreate: (n
               className="flex-1 px-3 py-2.5 rounded-xl bg-secondary border border-border outline-none focus:border-primary"
             />
           </div>
+          <div>
+            <label className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+              Carpeta padre
+            </label>
+            <select
+              value={parentId ?? ""}
+              onChange={(e) => setParentId(e.target.value || null)}
+              className="w-full px-3 py-2 rounded-xl bg-secondary border border-border text-sm outline-none focus:border-primary"
+            >
+              <option value="">— Sin padre (raíz) —</option>
+              {parentOptions.map((l) => (
+                <option key={l.id} value={l.id}>{l.emoji} {l.name}</option>
+              ))}
+            </select>
+          </div>
           <div className="flex gap-2">
             {colors.map((c) => (
               <button
@@ -1432,10 +1554,10 @@ function ListComposer({ onClose, onCreate }: { onClose: () => void; onCreate: (n
           </div>
           <button
             disabled={!name.trim()}
-            onClick={() => onCreate(name.trim(), emoji, color)}
+            onClick={submit}
             className="w-full py-2.5 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50"
           >
-            Crear lista
+            {editing ? "Guardar" : "Crear lista"}
           </button>
         </div>
       </div>

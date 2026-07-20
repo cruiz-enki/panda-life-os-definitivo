@@ -641,17 +641,47 @@ export function useAppState() {
   }, [userId]);
 
   // ----- Lists / Tags -----
-  const addList = useCallback((name: string, emoji: string, color: string) => {
-    const l: TaskList = { id: crypto.randomUUID(), name, emoji, color };
+  const addList = useCallback((name: string, emoji: string, color: string, parentId?: string | null) => {
+    const sortOrder = (memoryState.taskLists.filter((x) => (x.parentId ?? null) === (parentId ?? null)).length + 1) * 100;
+    const l: TaskList = { id: crypto.randomUUID(), name, emoji, color, parentId: parentId ?? null, sortOrder };
     setState((s) => ({ ...s, taskLists: [...s.taskLists, l] }));
     if (userId) pushList(userId, l);
+  }, [userId]);
+
+  const updateList = useCallback((id: string, patch: Partial<Omit<TaskList, "id">>) => {
+    let updated: TaskList | undefined;
+    setState((s) => ({
+      ...s,
+      taskLists: s.taskLists.map((l) => {
+        if (l.id !== id) return l;
+        updated = { ...l, ...patch };
+        return updated;
+      }),
+    }));
+    if (userId && updated) pushList(userId, updated);
+  }, [userId]);
+
+  /** Reordena listas dentro de un mismo padre; asigna sort_order = idx*100. */
+  const reorderLists = useCallback((orderedIds: string[], parentId: string | null) => {
+    const updates: TaskList[] = [];
+    setState((s) => ({
+      ...s,
+      taskLists: s.taskLists.map((l) => {
+        const idx = orderedIds.indexOf(l.id);
+        if (idx === -1) return l;
+        const next: TaskList = { ...l, parentId: parentId, sortOrder: (idx + 1) * 100 };
+        updates.push(next);
+        return next;
+      }),
+    }));
+    if (userId) updates.forEach((u) => pushList(userId, u));
   }, [userId]);
 
   /** Devuelve el id de la lista "Inbox" (la crea si no existe). */
   const ensureInboxList = useCallback((): string => {
     const existing = memoryState.taskLists.find((l) => /^inbox|bandeja/i.test(l.name));
     if (existing) return existing.id;
-    const l: TaskList = { id: crypto.randomUUID(), name: "Inbox", emoji: "📥", color: "oklch(0.78 0.05 250)" };
+    const l: TaskList = { id: crypto.randomUUID(), name: "Inbox", emoji: "📥", color: "oklch(0.78 0.05 250)", parentId: null, sortOrder: 0 };
     setState((s) => ({ ...s, taskLists: [l, ...s.taskLists] }));
     if (userId) pushList(userId, l);
     return l.id;
@@ -661,11 +691,40 @@ export function useAppState() {
   const deleteList = useCallback((id: string) => {
     setState((s) => ({
       ...s,
-      taskLists: s.taskLists.filter((l) => l.id !== id),
+      // Los hijos suben al padre superior (parent_id se pone al del eliminado o null).
+      taskLists: s.taskLists
+        .filter((l) => l.id !== id)
+        .map((l) => (l.parentId === id ? { ...l, parentId: null } : l)),
       tasks: s.tasks.filter((t) => t.listId !== id),
     }));
     deleteListCloud(id);
   }, []);
+
+  /** Marca/desmarca una tarea como favorita. */
+  const togglePin = useCallback((id: string) => {
+    const t = memoryState.tasks.find((x) => x.id === id);
+    if (!t) return;
+    const updated: Task = { ...t, pinned: !t.pinned };
+    setState((s) => ({ ...s, tasks: s.tasks.map((x) => (x.id === id ? updated : x)) }));
+    if (userId) pushTask(userId, updated);
+  }, [userId]);
+
+  /** Reordena una lista de tareas asignando sort_order espaciado. */
+  const reorderTasks = useCallback((orderedIds: string[]) => {
+    const updates: Task[] = [];
+    setState((s) => ({
+      ...s,
+      tasks: s.tasks.map((t) => {
+        const idx = orderedIds.indexOf(t.id);
+        if (idx === -1) return t;
+        const next: Task = { ...t, sortOrder: (idx + 1) * 100 };
+        updates.push(next);
+        return next;
+      }),
+    }));
+    if (userId) updates.forEach((u) => pushTask(userId, u));
+  }, [userId]);
+
 
   const addTag = useCallback((name: string, color: string) => {
     const tag: Tag = { id: crypto.randomUUID(), name, color };
@@ -886,7 +945,11 @@ export function useAppState() {
     toggleTaskComplete,
     snoozeTask,
     toggleSubtask,
+    togglePin,
+    reorderTasks,
     addList,
+    updateList,
+    reorderLists,
     ensureInboxList,
     deleteList,
     addTag,
