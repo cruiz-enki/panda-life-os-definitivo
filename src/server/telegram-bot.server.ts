@@ -321,6 +321,9 @@ export async function processTelegramUpdate(ctx: ProcessCtx, upd: TgUpdate): Pro
     response = await handleAyuda();
   } else if (cmd === "/tareas" || cmd === "/tasks") {
     response = await handleTareas(ctx);
+  } else if (cmd === "/t" || cmd === "/tarea" || cmd === "/todo") {
+    const rest = text.slice(cmd.length).trim();
+    response = await createTaskFromText(ctx, rest);
   } else if (text) {
     response = await handleFreeText(ctx, text);
   } else {
