@@ -150,6 +150,7 @@ export function TasksPage() {
   const [listModal, setListModal] = useState(false);
   const [editingList, setEditingList] = useState<{ id: string } | null>(null);
   const [tagModal, setTagModal] = useState(false);
+  const [weeklyOpen, setWeeklyOpen] = useState(false);
   const [layout, setLayout] = useState<LayoutKey>(() => {
     if (typeof window === "undefined") return "list";
     const v = window.localStorage.getItem(LAYOUT_KEY);
@@ -306,6 +307,12 @@ export function TasksPage() {
           >
             <Briefcase className="w-4 h-4" />
             {hideWork ? "Modo Enki: OFF trabajo" : "Modo Enki"}
+          </button>
+          <button
+            onClick={() => setWeeklyOpen(true)}
+            className="inline-flex items-center gap-2 px-3 py-2.5 rounded-xl border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 text-sm font-medium"
+          >
+            <Sparkles className="w-4 h-4" /> Semanal
           </button>
           <button
             onClick={() => { setEditingTask(null); setComposerOpen(true); }}
