@@ -506,6 +506,109 @@ function GlobalSearchDialog({ open, setOpen }: { open: boolean; setOpen: (v: boo
           </>
         )}
 
+        {filteredContacts.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Contactos">
+              {filteredContacts.map((c) => (
+                <CommandItem key={`contact-${c.id}`} value={`contact-${c.id}-${c.name}`} onSelect={() => go("/contacts")}>
+                  <Users />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{c.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{c.relationship ?? ""}{c.email ? ` · ${c.email}` : ""}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredMeds.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Medicamentos">
+              {filteredMeds.map((m) => (
+                <CommandItem key={`med-${m.id}`} value={`med-${m.id}-${m.name}`} onSelect={() => go("/health", "meds")}>
+                  <Pill />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{m.emoji} {m.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{m.dose} {m.unit}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredDishes.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Platillos">
+              {filteredDishes.map((d) => (
+                <CommandItem key={`dish-${d.id}`} value={`dish-${d.id}-${d.name}`} onSelect={() => go("/meals")}>
+                  <Utensils />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{d.emoji} {d.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{d.dish_type} · {d.classification}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredLocations.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Ubicaciones">
+              {filteredLocations.map((l) => (
+                <CommandItem key={`loc-${l.id}`} value={`loc-${l.id}-${l.name}`} onSelect={() => go("/locations")}>
+                  <MapPin />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{l.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{l.category}{l.address ? ` · ${l.address}` : ""}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredMood.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Mood / Psicología">
+              {filteredMood.map((m) => (
+                <CommandItem key={`mood-${m.id}`} value={`mood-${m.id}`} onSelect={() => go("/mood")}>
+                  <Activity />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{m.mood} · {m.intensity}/5</div>
+                    <div className="text-xs text-muted-foreground truncate">{m.note ?? m.trigger ?? m.dominant_thought ?? m.logged_at.slice(0, 10)}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredSleep.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Sueño">
+              {filteredSleep.map((s) => (
+                <CommandItem key={`sleep-${s.id}`} value={`sleep-${s.id}-${s.date}`} onSelect={() => go("/sleep")}>
+                  <Moon />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{s.date}{s.duration_minutes ? ` · ${(s.duration_minutes / 60).toFixed(1)}h` : ""}</div>
+                    <div className="text-xs text-muted-foreground truncate">{s.notes ?? ""}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+
         {!q && (
           <>
             <CommandSeparator />
