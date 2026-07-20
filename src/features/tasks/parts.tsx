@@ -451,17 +451,54 @@ export function TasksPage() {
 
         {/* Tasks list */}
         <main className="min-w-0">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
             <h2 className="font-display text-xl font-bold">
               {VIEW_LABELS[view]?.label ?? state.taskLists.find((l) => l.id === view)?.name ?? "Tareas"}
             </h2>
-            <div className="flex items-center gap-1.5 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20 shadow-sm animate-in fade-in slide-in-from-right-2 duration-500">
-              <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500/20" />
-              <span className="text-xs font-bold text-orange-600 uppercase tracking-tight">Racha: {state.productivity.streak || 0}</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="inline-flex rounded-xl border border-border bg-card overflow-hidden">
+                {([
+                  { k: "list", Icon: ListIcon, label: "Lista" },
+                  { k: "kanban", Icon: LayoutGrid, label: "Kanban" },
+                  { k: "calendar", Icon: CalendarDays, label: "Calendario" },
+                ] as { k: LayoutKey; Icon: typeof ListIcon; label: string }[]).map(({ k, Icon, label }) => (
+                  <button
+                    key={k}
+                    onClick={() => setLayout(k)}
+                    title={label}
+                    className={`px-2.5 py-1.5 text-xs inline-flex items-center gap-1 transition-all ${
+                      layout === k ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">{label}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-1.5 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20 shadow-sm">
+                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500/20" />
+                <span className="text-xs font-bold text-orange-600 uppercase tracking-tight">Racha: {state.productivity.streak || 0}</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 mb-4">
 
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <div className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+              Prioridad
+            </div>
+            {(["", "high", "medium", "low"] as const).map((p) => (
+              <button
+                key={p || "all"}
+                onClick={() => setPriorityFilter(p)}
+                className={`text-xs px-2 py-1 rounded-md border transition-all ${
+                  priorityFilter === p
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {p === "" ? "Todas" : p === "high" ? "Alta" : p === "medium" ? "Media" : "Baja"}
+              </button>
+            ))}
             {activeTagFilter && (
               <button
                 onClick={() => setActiveTagFilter(null)}
@@ -473,7 +510,33 @@ export function TasksPage() {
             <span className="ml-auto text-sm text-muted-foreground">{filtered.length}</span>
           </div>
 
-          {filtered.length === 0 ? (
+          {layout === "calendar" ? (
+            <TasksCalendar
+              tasks={filtered}
+              onOpenTask={(t) => setEditingTask(t)}
+              onReschedule={(id, d) => updateTask(id, { due: d.toISOString() })}
+              onNewOnDate={(d) => {
+                setEditingTask(null);
+                setComposerOpen(true);
+                // Nota: el composer no acepta pre-fecha directamente; el usuario la elige.
+                void d;
+              }}
+            />
+          ) : layout === "kanban" ? (
+            <TasksKanban
+              tasks={filtered}
+              lists={state.taskLists}
+              onOpenTask={(t) => setEditingTask(t)}
+              onMove={(id, listId) =>
+                updateTask(id, { listId: listId === "__none__" ? "" : listId })
+              }
+              onNewInList={(listId) => {
+                setView(listId);
+                setEditingTask(null);
+                setComposerOpen(true);
+              }}
+            />
+          ) : filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-12 text-center">
               <Inbox className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
               <p className="text-muted-foreground">Nada por aquí. Disfruta el momento 🐼</p>
