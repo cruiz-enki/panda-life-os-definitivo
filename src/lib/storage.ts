@@ -74,6 +74,7 @@ export type {
   NoteImportance,
   NoteChecklistItem,
   ReminderOffset,
+  ReminderChannel,
   ProductivityStats,
   LearningCategory,
   RecurrenceFrequency,
