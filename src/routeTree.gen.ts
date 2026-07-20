@@ -68,6 +68,7 @@ import { Route as AffordRouteImport } from './routes/afford'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as IntrospectionIndexRouteImport } from './routes/introspection.index'
+import { Route as QuickActionRouteImport } from './routes/quick.$action'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ApiTestPushRouteImport } from './routes/api.test-push'
 import { Route as AdminResetRouteImport } from './routes/admin.reset'
@@ -388,6 +389,11 @@ const IntrospectionIndexRoute = IntrospectionIndexRouteImport.update({
   path: '/',
   getParentRoute: () => IntrospectionRoute,
 } as any)
+const QuickActionRoute = QuickActionRouteImport.update({
+  id: '/quick/$action',
+  path: '/quick/$action',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/$projectId',
   path: '/$projectId',
@@ -588,6 +594,7 @@ export interface FileRoutesByFullPath {
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/quick/$action': typeof QuickActionRoute
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
@@ -671,6 +678,7 @@ export interface FileRoutesByTo {
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/quick/$action': typeof QuickActionRoute
   '/introspection': typeof IntrospectionIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
@@ -757,6 +765,7 @@ export interface FileRoutesById {
   '/admin/reset': typeof AdminResetRoute
   '/api/test-push': typeof ApiTestPushRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/quick/$action': typeof QuickActionRoute
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
@@ -844,6 +853,7 @@ export interface FileRouteTypes {
     | '/admin/reset'
     | '/api/test-push'
     | '/projects/$projectId'
+    | '/quick/$action'
     | '/introspection/'
     | '/projects/'
     | '/api/public/vapid-key'
@@ -927,6 +937,7 @@ export interface FileRouteTypes {
     | '/admin/reset'
     | '/api/test-push'
     | '/projects/$projectId'
+    | '/quick/$action'
     | '/introspection'
     | '/projects'
     | '/api/public/vapid-key'
@@ -1012,6 +1023,7 @@ export interface FileRouteTypes {
     | '/admin/reset'
     | '/api/test-push'
     | '/projects/$projectId'
+    | '/quick/$action'
     | '/introspection/'
     | '/projects/'
     | '/api/public/vapid-key'
@@ -1097,6 +1109,7 @@ export interface RootRouteChildren {
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminResetRoute: typeof AdminResetRoute
   ApiTestPushRoute: typeof ApiTestPushRoute
+  QuickActionRoute: typeof QuickActionRoute
   ApiPublicVapidKeyRoute: typeof ApiPublicVapidKeyRoute
   FinanceCardsCardIdRoute: typeof FinanceCardsCardIdRoute
   ApiPublicHooksEmailToTaskRoute: typeof ApiPublicHooksEmailToTaskRoute
@@ -1531,6 +1544,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IntrospectionIndexRouteImport
       parentRoute: typeof IntrospectionRoute
     }
+    '/quick/$action': {
+      id: '/quick/$action'
+      path: '/quick/$action'
+      fullPath: '/quick/$action'
+      preLoaderRoute: typeof QuickActionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId': {
       id: '/projects/$projectId'
       path: '/$projectId'
@@ -1795,6 +1815,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminInvitesRoute: AdminInvitesRoute,
   AdminResetRoute: AdminResetRoute,
   ApiTestPushRoute: ApiTestPushRoute,
+  QuickActionRoute: QuickActionRoute,
   ApiPublicVapidKeyRoute: ApiPublicVapidKeyRoute,
   FinanceCardsCardIdRoute: FinanceCardsCardIdRoute,
   ApiPublicHooksEmailToTaskRoute: ApiPublicHooksEmailToTaskRoute,
