@@ -1610,7 +1610,147 @@ function TaskComposer({
             </div>
           </div>
 
-          <button
+          {/* ===== Time tracking ===== */}
+          <div className="rounded-xl border border-border bg-secondary/40 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Timer className="w-4 h-4" /> Tiempo
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Real <span className={durationMinutes && actualMinutes > Number(durationMinutes) ? "text-destructive font-semibold" : "text-foreground"}>{actualMinutes}m</span>
+                {durationMinutes && <> · Estimado {durationMinutes}m</>}
+              </div>
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              {running ? (
+                <button
+                  onClick={stopTimer}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-destructive/20 text-destructive hover:bg-destructive/30 text-sm font-medium"
+                >
+                  <StopCircle className="w-4 h-4" /> Parar sesión
+                </button>
+              ) : (
+                <button
+                  onClick={startTimer}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 text-sm font-medium"
+                >
+                  <Play className="w-4 h-4" /> Iniciar sesión
+                </button>
+              )}
+              {timeEntries.length > 0 && (
+                <button
+                  onClick={() => setTimeEntries([])}
+                  className="px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-destructive"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+            {timeEntries.length > 0 && (
+              <p className="mt-1 text-[10px] text-muted-foreground">{timeEntries.length} sesión{timeEntries.length === 1 ? "" : "es"}</p>
+            )}
+          </div>
+
+          {/* ===== Adjuntos ===== */}
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Paperclip className="w-3 h-3" /> Adjuntos
+            </label>
+            <ul className="mt-1 space-y-1.5">
+              {attachments.map((a) => (
+                <li key={a.id} className="flex items-center gap-2 text-sm bg-secondary/50 rounded-lg px-2 py-1.5">
+                  {a.type === "image" ? <ImageIcon className="w-4 h-4 text-primary shrink-0" /> : a.type === "pdf" ? <FileText className="w-4 h-4 text-destructive shrink-0" /> : <Link2 className="w-4 h-4 text-muted-foreground shrink-0" />}
+                  <a href={a.url} target="_blank" rel="noreferrer" className="flex-1 truncate hover:underline">
+                    {a.name || a.url}
+                  </a>
+                  <button onClick={() => setAttachments((prev) => prev.filter((x) => x.id !== a.id))} className="text-muted-foreground hover:text-destructive">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 flex flex-col sm:flex-row gap-2">
+              <input
+                value={attUrl}
+                onChange={(e) => setAttUrl(e.target.value)}
+                placeholder="Pega URL (foto, PDF, link)"
+                className="flex-1 px-3 py-2 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-sm"
+              />
+              <input
+                value={attName}
+                onChange={(e) => setAttName(e.target.value)}
+                placeholder="Nombre (opcional)"
+                className="sm:w-40 px-3 py-2 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-sm"
+              />
+              <button
+                onClick={() => addAttachment()}
+                disabled={!attUrl.trim()}
+                className="px-3 py-2 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 text-sm disabled:opacity-50"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            <label className="mt-2 flex items-center gap-2 text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span>o sube archivo (foto/PDF, máx 2.5MB)</span>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onPickFile(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          </div>
+
+          {/* ===== Comentarios con checklist ===== */}
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <MessageSquare className="w-3 h-3" /> Comentarios
+            </label>
+            <ul className="mt-1 space-y-2">
+              {comments.map((c) => (
+                <li key={c.id} className="rounded-lg bg-secondary/50 p-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm whitespace-pre-wrap flex-1">{c.body}</p>
+                    <button onClick={() => setComments((prev) => prev.filter((x) => x.id !== c.id))} className="text-muted-foreground hover:text-destructive">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {c.checklist && c.checklist.length > 0 && (
+                    <ul className="mt-2 space-y-1">
+                      {c.checklist.map((it) => (
+                        <li key={it.id}>
+                          <SubtaskRow subtask={it} onToggle={(sid) => toggleCommentChecklist(c.id, sid)} depth={0} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <CommentChecklistAdder onAdd={(t) => addCommentChecklistItem(c.id, t)} />
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 flex gap-2">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Nuevo comentario…"
+                rows={2}
+                className="flex-1 px-3 py-2 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-sm resize-none"
+              />
+              <button
+                onClick={addComment}
+                disabled={!newComment.trim()}
+                className="px-3 py-2 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 disabled:opacity-50"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
             disabled={!title.trim()}
             onClick={submit}
             className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50 disabled:shadow-none"
