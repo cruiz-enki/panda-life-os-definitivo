@@ -1201,6 +1201,10 @@ function TaskComposer({
       subtasks,
       xpReward: Number.isFinite(xpNum as number) ? xpNum : undefined,
       recurrence,
+      attachments: attachments.length > 0 ? attachments : undefined,
+      comments: comments.length > 0 ? comments : undefined,
+      timeEntries: timeEntries.length > 0 ? timeEntries : undefined,
+      actualMinutes: actualMinutes > 0 ? actualMinutes : undefined,
     });
   };
 
