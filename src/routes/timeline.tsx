@@ -222,7 +222,7 @@ function TimelinePage() {
         ts: t.completedAt,
         category: "task",
         title: `✓ ${t.title}`,
-        detail: t.priority !== "none" ? `Prioridad ${t.priority}` : undefined,
+        detail: t.priority ? `Prioridad ${t.priority}` : undefined,
         href: "/tasks",
       });
     }

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as VehiclesRouteImport } from './routes/vehicles'
+import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as TimeRouteImport } from './routes/time'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
@@ -100,6 +101,11 @@ const WishlistRoute = WishlistRouteImport.update({
 const VehiclesRoute = VehiclesRouteImport.update({
   id: '/vehicles',
   path: '/vehicles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimelineRoute = TimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TimeRoute = TimeRouteImport.update({
@@ -575,6 +581,7 @@ export interface FileRoutesByFullPath {
   '/subscriptions': typeof SubscriptionsRoute
   '/tasks': typeof TasksRoute
   '/time': typeof TimeRoute
+  '/timeline': typeof TimelineRoute
   '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
@@ -657,6 +664,7 @@ export interface FileRoutesByTo {
   '/subscriptions': typeof SubscriptionsRoute
   '/tasks': typeof TasksRoute
   '/time': typeof TimeRoute
+  '/timeline': typeof TimelineRoute
   '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
@@ -742,6 +750,7 @@ export interface FileRoutesById {
   '/subscriptions': typeof SubscriptionsRoute
   '/tasks': typeof TasksRoute
   '/time': typeof TimeRoute
+  '/timeline': typeof TimelineRoute
   '/vehicles': typeof VehiclesRoute
   '/wishlist': typeof WishlistRoute
   '/admin/invites': typeof AdminInvitesRoute
@@ -828,6 +837,7 @@ export interface FileRouteTypes {
     | '/subscriptions'
     | '/tasks'
     | '/time'
+    | '/timeline'
     | '/vehicles'
     | '/wishlist'
     | '/admin/invites'
@@ -910,6 +920,7 @@ export interface FileRouteTypes {
     | '/subscriptions'
     | '/tasks'
     | '/time'
+    | '/timeline'
     | '/vehicles'
     | '/wishlist'
     | '/admin/invites'
@@ -994,6 +1005,7 @@ export interface FileRouteTypes {
     | '/subscriptions'
     | '/tasks'
     | '/time'
+    | '/timeline'
     | '/vehicles'
     | '/wishlist'
     | '/admin/invites'
@@ -1079,6 +1091,7 @@ export interface RootRouteChildren {
   SubscriptionsRoute: typeof SubscriptionsRoute
   TasksRoute: typeof TasksRoute
   TimeRoute: typeof TimeRoute
+  TimelineRoute: typeof TimelineRoute
   VehiclesRoute: typeof VehiclesRoute
   WishlistRoute: typeof WishlistRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
@@ -1117,6 +1130,13 @@ declare module '@tanstack/react-router' {
       path: '/vehicles'
       fullPath: '/vehicles'
       preLoaderRoute: typeof VehiclesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/timeline': {
+      id: '/timeline'
+      path: '/timeline'
+      fullPath: '/timeline'
+      preLoaderRoute: typeof TimelineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/time': {
@@ -1769,6 +1789,7 @@ const rootRouteChildren: RootRouteChildren = {
   SubscriptionsRoute: SubscriptionsRoute,
   TasksRoute: TasksRoute,
   TimeRoute: TimeRoute,
+  TimelineRoute: TimelineRoute,
   VehiclesRoute: VehiclesRoute,
   WishlistRoute: WishlistRoute,
   AdminInvitesRoute: AdminInvitesRoute,
