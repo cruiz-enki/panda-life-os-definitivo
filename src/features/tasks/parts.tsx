@@ -896,12 +896,41 @@ function TaskRow({
                 <ChevronRight className={`w-3 h-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
               </button>
             )}
+            {task.attachments && task.attachments.length > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <Paperclip className="w-3 h-3" /> {task.attachments.length}
+              </span>
+            )}
+            {task.comments && task.comments.length > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <MessageSquare className="w-3 h-3" /> {task.comments.length}
+              </span>
+            )}
+            {(task.actualMinutes || task.durationMinutes) && (
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 ${
+                  task.durationMinutes && task.actualMinutes && task.actualMinutes > task.durationMinutes
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }`}
+                title="Real / estimado"
+              >
+                <Timer className="w-3 h-3" />
+                {task.actualMinutes ? `${task.actualMinutes}m` : "0m"}
+                {task.durationMinutes ? ` / ${task.durationMinutes}m` : ""}
+              </span>
+            )}
           </div>
 
           {expanded && task.subtasks.length > 0 && (
             <ul className="mt-3 space-y-1.5 pl-1">
               {task.subtasks.map((s) => (
                 <li key={s.id}>
+                  <SubtaskRow subtask={s} onToggle={onSubtaskToggle} depth={0} />
+                </li>
+              ))}
+            </ul>
+          )}
                   <button
                     onClick={() => onSubtaskToggle(s.id)}
                     className="flex items-center gap-2 text-sm w-full text-left hover:text-primary transition-colors"
