@@ -17,6 +17,7 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
 import { Route as SleepRouteImport } from './routes/sleep'
 import { Route as SkillTreeRouteImport } from './routes/skill-tree'
+import { Route as ShortcutsRouteImport } from './routes/shortcuts'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ScheduledRouteImport } from './routes/scheduled'
@@ -133,6 +134,11 @@ const SleepRoute = SleepRouteImport.update({
 const SkillTreeRoute = SkillTreeRouteImport.update({
   id: '/skill-tree',
   path: '/skill-tree',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShortcutsRoute = ShortcutsRouteImport.update({
+  id: '/shortcuts',
+  path: '/shortcuts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -588,6 +594,7 @@ export interface FileRoutesByFullPath {
   '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
+  '/shortcuts': typeof ShortcutsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/sleep': typeof SleepRoute
   '/subscriptions': typeof SubscriptionsRoute
@@ -673,6 +680,7 @@ export interface FileRoutesByTo {
   '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
+  '/shortcuts': typeof ShortcutsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/sleep': typeof SleepRoute
   '/subscriptions': typeof SubscriptionsRoute
@@ -761,6 +769,7 @@ export interface FileRoutesById {
   '/scheduled': typeof ScheduledRoute
   '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
+  '/shortcuts': typeof ShortcutsRoute
   '/skill-tree': typeof SkillTreeRoute
   '/sleep': typeof SleepRoute
   '/subscriptions': typeof SubscriptionsRoute
@@ -850,6 +859,7 @@ export interface FileRouteTypes {
     | '/scheduled'
     | '/services'
     | '/settings'
+    | '/shortcuts'
     | '/skill-tree'
     | '/sleep'
     | '/subscriptions'
@@ -935,6 +945,7 @@ export interface FileRouteTypes {
     | '/scheduled'
     | '/services'
     | '/settings'
+    | '/shortcuts'
     | '/skill-tree'
     | '/sleep'
     | '/subscriptions'
@@ -1022,6 +1033,7 @@ export interface FileRouteTypes {
     | '/scheduled'
     | '/services'
     | '/settings'
+    | '/shortcuts'
     | '/skill-tree'
     | '/sleep'
     | '/subscriptions'
@@ -1110,6 +1122,7 @@ export interface RootRouteChildren {
   ScheduledRoute: typeof ScheduledRoute
   ServicesRoute: typeof ServicesRoute
   SettingsRoute: typeof SettingsRoute
+  ShortcutsRoute: typeof ShortcutsRoute
   SkillTreeRoute: typeof SkillTreeRoute
   SleepRoute: typeof SleepRoute
   SubscriptionsRoute: typeof SubscriptionsRoute
@@ -1198,6 +1211,13 @@ declare module '@tanstack/react-router' {
       path: '/skill-tree'
       fullPath: '/skill-tree'
       preLoaderRoute: typeof SkillTreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shortcuts': {
+      id: '/shortcuts'
+      path: '/shortcuts'
+      fullPath: '/shortcuts'
+      preLoaderRoute: typeof ShortcutsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -1824,6 +1844,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScheduledRoute: ScheduledRoute,
   ServicesRoute: ServicesRoute,
   SettingsRoute: SettingsRoute,
+  ShortcutsRoute: ShortcutsRoute,
   SkillTreeRoute: SkillTreeRoute,
   SleepRoute: SleepRoute,
   SubscriptionsRoute: SubscriptionsRoute,
