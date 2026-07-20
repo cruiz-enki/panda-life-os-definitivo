@@ -702,19 +702,30 @@ function TaskComposer({
 }) {
   const [title, setTitle] = useState(task?.title ?? "");
   const [description, setDescription] = useState(task?.description ?? "");
+  const [startDate, setStartDate] = useState(task?.startDate ? task.startDate.slice(0, 16) : "");
   const [due, setDue] = useState(task?.due ? task.due.slice(0, 16) : "");
+  const [durationMinutes, setDurationMinutes] = useState<string>(
+    task?.durationMinutes !== undefined ? String(task.durationMinutes) : "",
+  );
   const [priority, setPriority] = useState<Priority>(task?.priority ?? "medium");
   const [listId, setListId] = useState(task?.listId ?? state.taskLists[0]?.id ?? "");
   const [tagIds, setTagIds] = useState<string[]>(task?.tags ?? []);
-  const [reminder, setReminder] = useState<ReminderOffset | "">(task?.reminder ?? "");
+  const initialReminders: number[] = task?.reminders && task.reminders.length > 0
+    ? task.reminders
+    : (task?.reminder ? [task.reminder] : []);
+  const [reminders, setReminders] = useState<number[]>(initialReminders);
+  const [customReminder, setCustomReminder] = useState<string>("");
   const [subtasks, setSubtasks] = useState<Subtask[]>(task?.subtasks ?? []);
   const [newSub, setNewSub] = useState("");
   const [xpReward, setXpReward] = useState<string>(
     task?.xpReward !== undefined ? String(task.xpReward) : "",
   );
   const [recurrenceEnabled, setRecurrenceEnabled] = useState<boolean>(!!task?.recurrence);
-  const [recFrequency, setRecFrequency] = useState<RecurrenceFrequency>(task?.recurrence?.frequency ?? "daily");
+  const [recFrequency, setRecFrequency] = useState<RecurrenceFrequency>(task?.recurrence?.frequency ?? "weekly");
   const [recInterval, setRecInterval] = useState<number>(task?.recurrence?.interval ?? 1);
+  const [byWeekday, setByWeekday] = useState<number[]>(task?.recurrence?.byWeekday ?? []);
+  const [monthlyMode, setMonthlyMode] = useState<RecurrenceMonthlyMode>(task?.recurrence?.monthlyMode ?? "day-of-month");
+  const [fromCompletion, setFromCompletion] = useState<boolean>(task?.recurrence?.fromCompletion ?? false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -722,20 +733,52 @@ function TaskComposer({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  const REMINDER_PRESETS: { label: string; minutes: number }[] = [
+    { label: "En el momento", minutes: 0 },
+    { label: "10 min", minutes: 10 },
+    { label: "30 min", minutes: 30 },
+    { label: "1 h", minutes: 60 },
+    { label: "1 día", minutes: 1440 },
+    { label: "1 semana", minutes: 10080 },
+  ];
+  const toggleReminder = (m: number) => {
+    setReminders((r) => r.includes(m) ? r.filter((x) => x !== m) : [...r, m].sort((a, b) => a - b));
+  };
+  const addCustomReminder = () => {
+    const n = Math.round(Number(customReminder));
+    if (!Number.isFinite(n) || n <= 0) return;
+    if (!reminders.includes(n)) setReminders([...reminders, n].sort((a, b) => a - b));
+    setCustomReminder("");
+  };
+  const DOW = ["D", "L", "M", "M", "J", "V", "S"];
+  const toggleDow = (d: number) => {
+    setByWeekday((prev) => prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort((a, b) => a - b));
+  };
+
   const submit = () => {
     if (!title.trim()) return;
     const xpNum = xpReward.trim() === "" ? undefined : Math.max(0, Math.round(Number(xpReward)));
+    const durMin = durationMinutes.trim() === "" ? undefined : Math.max(0, Math.round(Number(durationMinutes)));
     const recurrence: Recurrence | undefined = recurrenceEnabled
-      ? { frequency: recFrequency, interval: Math.max(1, Math.round(recInterval || 1)) }
+      ? {
+          frequency: recFrequency,
+          interval: Math.max(1, Math.round(recInterval || 1)),
+          ...(recFrequency === "weekly" && byWeekday.length > 0 ? { byWeekday } : {}),
+          ...(recFrequency === "monthly" ? { monthlyMode } : {}),
+          ...(fromCompletion ? { fromCompletion: true } : {}),
+        }
       : undefined;
     onSave({
       title: title.trim(),
       description: description.trim() || undefined,
+      startDate: startDate ? new Date(startDate).toISOString() : undefined,
       due: due ? new Date(due).toISOString() : undefined,
+      durationMinutes: Number.isFinite(durMin as number) ? durMin : undefined,
       priority,
       listId,
       tags: tagIds,
-      reminder: reminder === "" ? undefined : reminder,
+      reminder: reminders[0] ?? undefined,
+      reminders: reminders.length > 0 ? reminders : undefined,
       subtasks,
       xpReward: Number.isFinite(xpNum as number) ? xpNum : undefined,
       recurrence,
@@ -771,25 +814,105 @@ function TaskComposer({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Fecha límite</label>
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block flex items-center gap-1">
+                <Play className="w-3 h-3" /> Inicia
+              </label>
               <DateTimePicker
-                date={due ? parseISO(due) : undefined}
-                setDate={(date) => setDue(date ? date.toISOString().slice(0, 16) : "")}
-                placeholder="Sin fecha"
+                date={startDate ? parseISO(startDate) : undefined}
+                setDate={(date) => setStartDate(date ? date.toISOString().slice(0, 16) : "")}
+                placeholder="Sin fecha inicio"
               />
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Recordatorio</label>
-              <select
-                value={reminder}
-                onChange={(e) => setReminder(e.target.value === "" ? "" : (Number(e.target.value) as ReminderOffset))}
-                className="mt-1 w-full px-3 py-2 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm"
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block flex items-center gap-1">
+                <CalendarIcon className="w-3 h-3" /> Vence
+              </label>
+              <DateTimePicker
+                date={due ? parseISO(due) : undefined}
+                setDate={(date) => setDue(date ? date.toISOString().slice(0, 16) : "")}
+                placeholder="Sin fecha límite"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Timer className="w-3 h-3" /> Duración estimada (minutos)
+            </label>
+            <div className="mt-1 flex items-center gap-2">
+              <input
+                type="number"
+                min={0}
+                value={durationMinutes}
+                onChange={(e) => setDurationMinutes(e.target.value)}
+                placeholder="Sin duración"
+                className="w-32 px-3 py-2 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm"
+              />
+              <div className="flex flex-wrap gap-1">
+                {[15, 30, 60, 90, 120].map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setDurationMinutes(String(m))}
+                    className={`px-2 py-1 rounded-md border text-xs transition-all ${
+                      durationMinutes === String(m)
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:border-primary/40"
+                    }`}
+                  >
+                    {m < 60 ? `${m}m` : `${m / 60}h`}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Bell className="w-3 h-3" /> Recordatorios (antes del vencimiento)
+            </label>
+            <div className="mt-1 flex flex-wrap gap-1.5">
+              {REMINDER_PRESETS.map((p) => (
+                <button
+                  key={p.minutes}
+                  type="button"
+                  onClick={() => toggleReminder(p.minutes)}
+                  className={`px-2.5 py-1 rounded-md border text-xs transition-all ${
+                    reminders.includes(p.minutes)
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              <input
+                type="number"
+                min={1}
+                value={customReminder}
+                onChange={(e) => setCustomReminder(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustomReminder(); } }}
+                placeholder="Otro (min)"
+                className="w-28 px-2 py-1.5 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-xs"
+              />
+              <button
+                type="button"
+                onClick={addCustomReminder}
+                className="px-2 py-1.5 rounded-lg bg-secondary hover:bg-primary/20 text-muted-foreground hover:text-primary"
               >
-                <option value="">Sin recordatorio</option>
-                <option value="10">10 minutos antes</option>
-                <option value="60">1 hora antes</option>
-                <option value="1440">1 día antes</option>
-              </select>
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+              {reminders.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setReminders([])}
+                  className="ml-auto text-[10px] text-muted-foreground hover:text-destructive"
+                >
+                  Quitar todos
+                </button>
+              )}
             </div>
           </div>
 
@@ -854,52 +977,37 @@ function TaskComposer({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                <Zap className="w-3 h-3" /> XP al completar
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={xpReward}
-                onChange={(e) => setXpReward(e.target.value)}
-                placeholder={`Auto (${priorityPoints(priority)})`}
-                className="mt-1 w-full px-3 py-2 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm"
-              />
-              <p className="mt-1 text-[10px] text-muted-foreground">
-                Vacío = automático por prioridad
-              </p>
-            </div>
-            <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                <Repeat className="w-3 h-3" /> Repetir
-              </label>
-              <div className="mt-1 flex items-center gap-2">
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Repeat className="w-3 h-3" /> Repetir
+            </label>
+            <div className="mt-1 space-y-2 rounded-xl border border-border bg-secondary/30 p-3">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setRecurrenceEnabled((v) => !v)}
-                  className={`px-3 py-2 rounded-xl border text-sm transition-all ${
+                  className={`px-3 py-1.5 rounded-lg border text-sm transition-all ${
                     recurrenceEnabled
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border text-muted-foreground hover:border-primary/40"
                   }`}
                 >
-                  {recurrenceEnabled ? "Sí" : "No"}
+                  {recurrenceEnabled ? "Activada" : "Desactivada"}
                 </button>
                 {recurrenceEnabled && (
                   <>
+                    <span className="text-xs text-muted-foreground">Cada</span>
                     <input
                       type="number"
                       min={1}
                       value={recInterval}
                       onChange={(e) => setRecInterval(Math.max(1, Number(e.target.value) || 1))}
-                      className="w-14 px-2 py-2 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm"
+                      className="w-14 px-2 py-1.5 rounded-lg bg-card border border-border focus:border-primary outline-none text-sm"
                     />
                     <select
                       value={recFrequency}
                       onChange={(e) => setRecFrequency(e.target.value as RecurrenceFrequency)}
-                      className="flex-1 px-2 py-2 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm"
+                      className="flex-1 px-2 py-1.5 rounded-lg bg-card border border-border focus:border-primary outline-none text-sm"
                     >
                       <option value="daily">día(s)</option>
                       <option value="weekly">semana(s)</option>
@@ -909,12 +1017,90 @@ function TaskComposer({
                   </>
                 )}
               </div>
+
+              {recurrenceEnabled && recFrequency === "weekly" && (
+                <div>
+                  <div className="text-[10px] text-muted-foreground mb-1">Días de la semana</div>
+                  <div className="flex gap-1">
+                    {DOW.map((d, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => toggleDow(i)}
+                        className={`w-8 h-8 rounded-lg border text-xs font-medium transition-all ${
+                          byWeekday.includes(i)
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:border-primary/40"
+                        }`}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {recurrenceEnabled && recFrequency === "monthly" && (
+                <div>
+                  <div className="text-[10px] text-muted-foreground mb-1">Modo mensual</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {([
+                      { key: "day-of-month" as const, label: "Mismo día del mes" },
+                      { key: "nth-weekday" as const, label: "N-ésimo día de semana" },
+                      { key: "last-weekday" as const, label: "Último día de semana" },
+                    ]).map((m) => (
+                      <button
+                        key={m.key}
+                        type="button"
+                        onClick={() => setMonthlyMode(m.key)}
+                        className={`px-2.5 py-1 rounded-md border text-xs transition-all ${
+                          monthlyMode === m.key
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:border-primary/40"
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {recurrenceEnabled && (
+                <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={fromCompletion}
+                    onChange={(e) => setFromCompletion(e.target.checked)}
+                    className="rounded"
+                  />
+                  Programar la siguiente desde que la completo (no desde el vencimiento)
+                </label>
+              )}
+
               {recurrenceEnabled && !due && (
-                <p className="mt-1 text-[10px] text-[var(--energy)]">
-                  Añade fecha para anclar la repetición
+                <p className="text-[10px] text-[var(--energy)]">
+                  Añade fecha de vencimiento para anclar la repetición.
                 </p>
               )}
             </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Zap className="w-3 h-3" /> XP al completar
+            </label>
+            <input
+              type="number"
+              min={0}
+              value={xpReward}
+              onChange={(e) => setXpReward(e.target.value)}
+              placeholder={`Auto (${priorityPoints(priority)})`}
+              className="mt-1 w-full px-3 py-2 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm"
+            />
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              Vacío = automático por prioridad
+            </p>
           </div>
 
           <div>
