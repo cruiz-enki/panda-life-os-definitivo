@@ -15,6 +15,9 @@ import listTasks from "./tools/list-tasks";
 import completeTask from "./tools/complete-task";
 import dailySummary from "./tools/daily-summary";
 import listRecentExpenses from "./tools/list-recent-expenses";
+import listHabits from "./tools/list-habits";
+import addHabit from "./tools/add-habit";
+import completeHabit from "./tools/complete-habit";
 
 // El issuer debe ser el host directo de Supabase, no el proxy .lovable.cloud.
 // VITE_SUPABASE_PROJECT_ID se inlinea en build; fallback para el extract manifest.
@@ -48,5 +51,8 @@ export default defineMcp({
     listTasks,
     completeTask,
     dailySummary,
+    listHabits,
+    addHabit,
+    completeHabit,
   ],
 });

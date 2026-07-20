@@ -520,6 +520,109 @@
           }
         },
         "outputSchema": null
+      },
+      {
+        "name": "list_habits",
+        "title": "Listar hábitos",
+        "description": "Lista los hábitos con su racha actual y si ya están hechos hoy.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "pendingOnly": {
+              "default": false,
+              "description": "Solo los que no están hechos hoy",
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_habit",
+        "title": "Crear hábito",
+        "description": "Crea un nuevo hábito para trackear.",
+        "annotations": {
+          "readOnlyHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "emoji": {
+              "default": "✨",
+              "type": "string"
+            },
+            "points": {
+              "default": 10,
+              "description": "XP al completar",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "frequency": {
+              "default": "daily",
+              "type": "string",
+              "enum": [
+                "daily",
+                "weekly",
+                "monthly"
+              ]
+            },
+            "targetCount": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "category": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "complete_habit",
+        "title": "Marcar hábito hecho",
+        "description": "Marca (o desmarca) un hábito como hecho hoy y recalcula la racha.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "habitId": {
+              "description": "ID del hábito. Si no se da, usa `name`.",
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "name": {
+              "description": "Nombre exacto o parcial del hábito.",
+              "type": "string"
+            },
+            "undo": {
+              "default": false,
+              "description": "Si true, desmarca la fecha en vez de marcar.",
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
       }
     ]
   }
