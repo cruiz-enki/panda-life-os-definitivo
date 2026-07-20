@@ -548,15 +548,24 @@ export function useAppState() {
     if (!t) return;
     const wasDone = t.status === "completed";
     const points = taskXp(t);
+    const completedAt = wasDone ? undefined : new Date().toISOString();
     const updated: Task = {
       ...t,
       status: wasDone ? "pending" : "completed",
-      completedAt: wasDone ? undefined : new Date().toISOString(),
+      completedAt,
     };
     let nextRecurring: Task | undefined;
     if (!wasDone && t.recurrence) {
-      const baseDate = t.due ? new Date(t.due) : new Date();
-      const nextDue = advanceDate(baseDate, t.recurrence);
+      const anchor = t.due ? new Date(t.due) : new Date();
+      const nextDue = advanceDate(anchor, t.recurrence, {
+        completedAt: completedAt ? new Date(completedAt) : undefined,
+      });
+      // Preserva start_date con el mismo delta al due si estaba fijado
+      let nextStart: string | undefined;
+      if (t.startDate && t.due) {
+        const delta = new Date(t.due).getTime() - new Date(t.startDate).getTime();
+        nextStart = new Date(nextDue.getTime() - delta).toISOString();
+      }
       nextRecurring = {
         ...t,
         id: crypto.randomUUID(),
@@ -564,6 +573,8 @@ export function useAppState() {
         completedAt: undefined,
         createdAt: new Date().toISOString(),
         due: nextDue.toISOString(),
+        startDate: nextStart,
+        snoozedUntil: undefined,
         subtasks: t.subtasks.map((st) => ({ ...st, id: crypto.randomUUID(), done: false })),
       };
     }
@@ -604,6 +615,16 @@ export function useAppState() {
       pushXp(userId, memoryState.xp);
     }
   }, [today, userId]);
+
+  /** Pospone una tarea hasta una fecha. `null` limpia el snooze. */
+  const snoozeTask = useCallback((id: string, until: Date | null) => {
+    const t = memoryState.tasks.find((x) => x.id === id);
+    if (!t) return;
+    const updated: Task = { ...t, snoozedUntil: until ? until.toISOString() : undefined };
+    setState((s) => ({ ...s, tasks: s.tasks.map((x) => (x.id === id ? updated : x)) }));
+    if (userId) pushTask(userId, updated);
+  }, [userId]);
+
 
   const toggleSubtask = useCallback((taskId: string, subId: string) => {
     let updated: Task | undefined;
