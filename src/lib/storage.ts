@@ -53,6 +53,7 @@ import type {
   ProductivityStats,
   LearningCategory,
   RecurrenceFrequency,
+  RecurrenceMonthlyMode,
 } from "./storage-types";
 
 export type {
@@ -76,6 +77,7 @@ export type {
   ProductivityStats,
   LearningCategory,
   RecurrenceFrequency,
+  RecurrenceMonthlyMode,
   Category,
   SubCategory,
   Skill,
