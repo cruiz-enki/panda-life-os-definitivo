@@ -14,12 +14,18 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Inicia sesión o crea tu cuenta para sincronizar Panda's LIFE OS en la nube." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { next?: string } => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") ? s.next : undefined,
+  }),
   component: AuthPage,
 });
+
 
 function AuthPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  const safeNext = next && next.startsWith("/") ? next : "/";
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +35,8 @@ function AuthPage() {
   const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/" });
-  }, [user, loading, navigate]);
+    if (!loading && user) navigate({ to: safeNext });
+  }, [user, loading, navigate, safeNext]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +49,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}${safeNext}`,
             data: { full_name: name || email.split("@")[0] },
           },
         });
@@ -53,7 +59,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/" });
+        navigate({ to: safeNext });
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error";
@@ -78,7 +84,7 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/` },
+        options: { redirectTo: `${window.location.origin}${safeNext}` },
       });
       if (error) throw error;
     } catch (err: unknown) {
@@ -86,6 +92,7 @@ function AuthPage() {
       setBusy(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
