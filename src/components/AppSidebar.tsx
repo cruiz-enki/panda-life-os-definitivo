@@ -72,6 +72,7 @@ const moneyItems: NavItem[] = [
 
 const insightsItems: NavItem[] = [
   { to: "/insights", label: "Insights", icon: BarChart3 },
+  { to: "/timeline", label: "Timeline", icon: Clock },
   { to: "/rewards", label: "Misiones", icon: Trophy },
   { to: "/skill-tree", label: "Skill Tree", icon: Sparkles },
   { to: "/content", label: "Bitácora", icon: Library },

@@ -36,10 +36,23 @@ import {
   BarChart3,
   Settings,
   Target,
+  MapPin,
+  Users,
+  Pill,
+  Utensils,
+  Moon,
+  Activity,
+  Clock,
 } from "lucide-react";
 import { useAppState } from "@/lib/storage";
 import { useContentLog, useWishlist } from "@/hooks/use-content";
 import { useFinance } from "@/hooks/use-finance";
+import { useContacts } from "@/hooks/use-contacts";
+import { useHealth } from "@/hooks/use-health";
+import { useMeals } from "@/hooks/use-meals";
+import { useLocations } from "@/hooks/use-locations";
+import { useMood } from "@/hooks/use-mood";
+import { useSleep } from "@/hooks/use-sleep";
 import { useAuth } from "@/lib/auth-context";
 
 type Ctx = { open: boolean; setOpen: (v: boolean) => void; toggle: () => void };
@@ -65,6 +78,10 @@ const PAGES: { label: string; to: string; hash?: string; icon: typeof CheckSquar
   { label: "Aprende Hoy", to: "/learnings", icon: Sparkles },
   { label: "Bitácora", to: "/content", icon: Library, keywords: "contenido libros series bitacora" },
   { label: "Wishlist", to: "/wishlist", icon: Star, keywords: "deseos" },
+  { label: "Timeline", to: "/timeline", icon: Clock, keywords: "historia diario cronologia" },
+  { label: "Contactos", to: "/contacts", icon: Users, keywords: "crm personas" },
+  { label: "Ubicaciones", to: "/locations", icon: MapPin, keywords: "lugares check-in" },
+  { label: "Comidas", to: "/meals", icon: Utensils, keywords: "recetas platillos" },
   { label: "Energía", to: "/energy", icon: Battery },
   { label: "Identidad", to: "/identity", icon: Target },
   { label: "Chat IA", to: "/chat", icon: MessageCircle, keywords: "coach panda" },
@@ -113,6 +130,12 @@ function GlobalSearchDialog({ open, setOpen }: { open: boolean; setOpen: (v: boo
   const { items: contentItems } = useContentLog();
   const { items: wishItems } = useWishlist();
   const { cards, expenses } = useFinance();
+  const { contacts } = useContacts();
+  const { medications } = useHealth();
+  const { dishes } = useMeals();
+  const { checkins } = useLocations();
+  const { logs: moodLogs } = useMood();
+  const { logs: sleepLogs } = useSleep();
   const [query, setQuery] = useState("");
 
   const q = norm(query.trim());
@@ -244,6 +267,48 @@ function GlobalSearchDialog({ open, setOpen }: { open: boolean; setOpen: (v: boo
       .filter((e) => norm(`${e.note} ${e.category}`).includes(q))
       .slice(0, MAX_PER_GROUP);
   }, [q, expenses, tagMode]);
+
+  const filteredContacts = useMemo(() => {
+    if (tagMode || !q) return [];
+    return contacts
+      .filter((c) => norm(`${c.name} ${c.relationship ?? ""} ${c.notes ?? ""} ${(c.tags ?? []).join(" ")} ${c.email ?? ""} ${c.phone ?? ""}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, contacts, tagMode]);
+
+  const filteredMeds = useMemo(() => {
+    if (tagMode || !q) return [];
+    return medications
+      .filter((m) => norm(`${m.name} ${m.dose} ${m.unit} ${m.notes}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, medications, tagMode]);
+
+  const filteredDishes = useMemo(() => {
+    if (tagMode || !q) return [];
+    return dishes
+      .filter((d) => norm(`${d.name} ${d.notes} ${(d.ingredients ?? []).map((i) => i.name).join(" ")}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, dishes, tagMode]);
+
+  const filteredLocations = useMemo(() => {
+    if (tagMode || !q) return [];
+    return checkins
+      .filter((l) => norm(`${l.name} ${l.address ?? ""} ${l.note ?? ""} ${l.category}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, checkins, tagMode]);
+
+  const filteredMood = useMemo(() => {
+    if (tagMode || !q) return [];
+    return moodLogs
+      .filter((m) => norm(`${m.mood} ${m.note ?? ""} ${m.trigger ?? ""} ${m.dominant_thought ?? ""} ${(m.tags ?? []).join(" ")}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, moodLogs, tagMode]);
+
+  const filteredSleep = useMemo(() => {
+    if (tagMode || !q) return [];
+    return sleepLogs
+      .filter((s) => norm(`${s.date} ${s.notes ?? ""}`).includes(q))
+      .slice(0, MAX_PER_GROUP);
+  }, [q, sleepLogs, tagMode]);
 
   const openQuickCapture = () => {
     const w = window as unknown as { __openQuickCapture?: () => void };
@@ -440,6 +505,109 @@ function GlobalSearchDialog({ open, setOpen }: { open: boolean; setOpen: (v: boo
             </CommandGroup>
           </>
         )}
+
+        {filteredContacts.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Contactos">
+              {filteredContacts.map((c) => (
+                <CommandItem key={`contact-${c.id}`} value={`contact-${c.id}-${c.name}`} onSelect={() => go("/contacts")}>
+                  <Users />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{c.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{c.relationship ?? ""}{c.email ? ` · ${c.email}` : ""}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredMeds.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Medicamentos">
+              {filteredMeds.map((m) => (
+                <CommandItem key={`med-${m.id}`} value={`med-${m.id}-${m.name}`} onSelect={() => go("/health", "meds")}>
+                  <Pill />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{m.emoji} {m.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{m.dose} {m.unit}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredDishes.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Platillos">
+              {filteredDishes.map((d) => (
+                <CommandItem key={`dish-${d.id}`} value={`dish-${d.id}-${d.name}`} onSelect={() => go("/meals")}>
+                  <Utensils />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{d.emoji} {d.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{d.dish_type} · {d.classification}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredLocations.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Ubicaciones">
+              {filteredLocations.map((l) => (
+                <CommandItem key={`loc-${l.id}`} value={`loc-${l.id}-${l.name}`} onSelect={() => go("/locations")}>
+                  <MapPin />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{l.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{l.category}{l.address ? ` · ${l.address}` : ""}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredMood.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Mood / Psicología">
+              {filteredMood.map((m) => (
+                <CommandItem key={`mood-${m.id}`} value={`mood-${m.id}`} onSelect={() => go("/mood")}>
+                  <Activity />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{m.mood} · {m.intensity}/5</div>
+                    <div className="text-xs text-muted-foreground truncate">{m.note ?? m.trigger ?? m.dominant_thought ?? m.logged_at.slice(0, 10)}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {filteredSleep.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Sueño">
+              {filteredSleep.map((s) => (
+                <CommandItem key={`sleep-${s.id}`} value={`sleep-${s.id}-${s.date}`} onSelect={() => go("/sleep")}>
+                  <Moon />
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate">{s.date}{s.duration_minutes ? ` · ${(s.duration_minutes / 60).toFixed(1)}h` : ""}</div>
+                    <div className="text-xs text-muted-foreground truncate">{s.notes ?? ""}</div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
 
         {!q && (
           <>
