@@ -130,6 +130,12 @@ function GlobalSearchDialog({ open, setOpen }: { open: boolean; setOpen: (v: boo
   const { items: contentItems } = useContentLog();
   const { items: wishItems } = useWishlist();
   const { cards, expenses } = useFinance();
+  const { contacts } = useContacts();
+  const { medications } = useHealth();
+  const { dishes } = useMeals();
+  const { checkins } = useLocations();
+  const { logs: moodLogs } = useMood();
+  const { logs: sleepLogs } = useSleep();
   const [query, setQuery] = useState("");
 
   const q = norm(query.trim());
