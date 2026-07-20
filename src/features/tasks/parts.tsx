@@ -23,6 +23,9 @@ import {
   type RecurrenceFrequency,
   type RecurrenceMonthlyMode,
   type ReminderChannel,
+  type TaskAttachment,
+  type TaskComment,
+  type TaskTimeEntry,
 } from "@/lib/storage";
 import {
   Plus,
