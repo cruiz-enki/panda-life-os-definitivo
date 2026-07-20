@@ -1,16 +1,17 @@
 /**
  * **Componente** — Captura rápida: tarea/nota/aprendizaje desde un único input con hashtags.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Sparkles, Plus, X, Wand2, Loader2 } from "lucide-react";
+import { Sparkles, Plus, X, Wand2, Loader2, CheckSquare, Calendar as CalIcon, Flag, Hash, Inbox } from "lucide-react";
 import { QuickActionsFab } from "@/components/QuickActionsFab";
 import { useAppState } from "@/lib/storage";
 import { classifyCapture, type Classification } from "@/lib/ai-client";
+import { parseTaskInput } from "@/lib/task-nlp";
 import { toast } from "sonner";
 
 export function QuickCapture() {
-  const { quickCaptureNote, addNote, addTask, addLearning, state } = useAppState();
+  const { quickCaptureNote, addNote, addTask, addLearning, ensureInboxList, state } = useAppState();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [saved, setSaved] = useState(false);
