@@ -39,6 +39,7 @@ import {
   CheckCircle2,
   Flag,
   ChevronRight,
+  ChevronDown,
   Clock,
   ListChecks,
   Repeat,
@@ -53,6 +54,10 @@ import {
   CalendarDays,
   Bookmark,
   Save,
+  Star,
+  GripVertical,
+  FolderTree,
+  MoreHorizontal,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
