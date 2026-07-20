@@ -73,6 +73,8 @@ import { parseISO } from "date-fns";
 import { TasksKanban } from "./kanban";
 import { TasksCalendar } from "./calendar-view";
 import { NestedListsTree } from "./nested-lists-tree";
+import { decomposeTask, generateWeeklyReview, type WeeklyReview } from "@/lib/ai-client";
+import { toast } from "sonner";
 
 type ViewKey = "today" | "upcoming" | "overdue" | "all" | "completed" | "high" | string;
 type LayoutKey = "list" | "kanban" | "calendar";
@@ -148,6 +150,7 @@ export function TasksPage() {
   const [listModal, setListModal] = useState(false);
   const [editingList, setEditingList] = useState<{ id: string } | null>(null);
   const [tagModal, setTagModal] = useState(false);
+  const [weeklyOpen, setWeeklyOpen] = useState(false);
   const [layout, setLayout] = useState<LayoutKey>(() => {
     if (typeof window === "undefined") return "list";
     const v = window.localStorage.getItem(LAYOUT_KEY);
@@ -304,6 +307,12 @@ export function TasksPage() {
           >
             <Briefcase className="w-4 h-4" />
             {hideWork ? "Modo Enki: OFF trabajo" : "Modo Enki"}
+          </button>
+          <button
+            onClick={() => setWeeklyOpen(true)}
+            className="inline-flex items-center gap-2 px-3 py-2.5 rounded-xl border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 text-sm font-medium"
+          >
+            <Sparkles className="w-4 h-4" /> Semanal
           </button>
           <button
             onClick={() => { setEditingTask(null); setComposerOpen(true); }}
@@ -643,6 +652,9 @@ export function TasksPage() {
           onDelete={deleteTag}
           tags={state.tags}
         />
+      )}
+      {weeklyOpen && (
+        <WeeklyReviewModal state={state} onClose={() => setWeeklyOpen(false)} /> 
       )}
     </div>
   );
@@ -1585,7 +1597,17 @@ function TaskComposer({
           </div>
 
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Subtareas</label>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Subtareas</label>
+              <AiDecomposeButton
+                title={title}
+                description={description}
+                onAdd={(items) => setSubtasks((prev) => [
+                  ...prev,
+                  ...items.map((t) => ({ id: crypto.randomUUID(), title: t, done: false })),
+                ])}
+              />
+            </div>
             <ul className="mt-1 space-y-1.5">
               {subtasks.map((s) => (
                 <li key={s.id} className="flex items-center gap-2 text-sm">
@@ -1949,6 +1971,207 @@ function TagComposer({
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ================= AI: Descomponer con IA =================
+function AiDecomposeButton({
+  title,
+  description,
+  onAdd,
+}: {
+  title: string;
+  description?: string;
+  onAdd: (items: string[]) => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [proposed, setProposed] = useState<string[] | null>(null);
+  const [selected, setSelected] = useState<Record<number, boolean>>({});
+
+  const run = async () => {
+    if (!title.trim()) {
+      toast.error("Escribe primero el título de la tarea");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await decomposeTask(title.trim(), description?.trim() || undefined);
+      setProposed(res.subtasks);
+      setSelected(Object.fromEntries(res.subtasks.map((_, i) => [i, true])));
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Error IA");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={run}
+        disabled={loading}
+        className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 disabled:opacity-50"
+      >
+        <Sparkles className="w-3 h-3" />
+        {loading ? "Pensando…" : "Descomponer con IA"}
+      </button>
+      {proposed && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" onClick={() => setProposed(null)}>
+          <div className="w-full max-w-md rounded-2xl bg-card border border-border p-4 shadow-glow" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <h3 className="font-semibold text-sm">Subtareas propuestas</h3>
+            </div>
+            <ul className="space-y-2 mb-4 max-h-80 overflow-y-auto">
+              {proposed.map((s, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={!!selected[i]}
+                    onChange={(e) => setSelected({ ...selected, [i]: e.target.checked })}
+                    className="mt-0.5"
+                  />
+                  <span className="flex-1">{s}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setProposed(null)}
+                className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  const picked = proposed.filter((_, i) => selected[i]);
+                  if (picked.length) onAdd(picked);
+                  setProposed(null);
+                }}
+                className="px-3 py-1.5 rounded-lg text-sm bg-gradient-primary text-primary-foreground font-medium"
+              >
+                Añadir {Object.values(selected).filter(Boolean).length}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ================= AI: Resumen semanal =================
+function toISODate(d: Date) { return d.toISOString().slice(0, 10); }
+
+export function WeeklyReviewModal({
+  state,
+  onClose,
+}: {
+  state: ReturnType<typeof useAppState>["state"];
+  onClose: () => void;
+}) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [review, setReview] = useState<WeeklyReview | null>(null);
+  const [range] = useState(() => {
+    const end = new Date();
+    const start = new Date(end);
+    start.setDate(end.getDate() - 6);
+    return { weekStart: toISODate(start), weekEnd: toISODate(end) };
+  });
+
+  useEffect(() => {
+    let cancel = false;
+    (async () => {
+      try {
+        const res = await generateWeeklyReview(state, range.weekStart, range.weekEnd);
+        if (!cancel) setReview(res);
+      } catch (e) {
+        if (!cancel) setError(e instanceof Error ? e.message : "Error");
+      } finally {
+        if (!cancel) setLoading(false);
+      }
+    })();
+    return () => { cancel = true; };
+  }, [state, range.weekStart, range.weekEnd]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/70 p-4 overflow-y-auto" onClick={onClose}>
+      <div className="w-full max-w-2xl rounded-2xl bg-card border border-border p-5 shadow-glow my-8" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <h2 className="font-display font-bold text-lg">Resumen semanal</h2>
+          </div>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground mb-4">
+          {range.weekStart} → {range.weekEnd}
+        </p>
+
+        {loading && <div className="py-10 text-center text-sm text-muted-foreground">Analizando tu semana…</div>}
+        {error && <div className="py-6 text-center text-sm text-destructive">{error}</div>}
+
+        {review && (
+          <div className="space-y-5">
+            <p className="text-base font-medium">{review.headline}</p>
+
+            <section>
+              <h3 className="text-xs uppercase tracking-wider text-emerald-500 mb-2 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Cerraste ({review.closed.length})
+              </h3>
+              <ul className="space-y-1 text-sm">
+                {review.closed.map((c, i) => <li key={i} className="flex gap-2"><span className="text-emerald-500">✓</span><span>{c}</span></li>)}
+                {review.closed.length === 0 && <li className="text-muted-foreground text-xs">Sin cierres esta semana.</li>}
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="text-xs uppercase tracking-wider text-amber-500 mb-2 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" /> Arrastras ({review.dragging.length})
+              </h3>
+              <ul className="space-y-2 text-sm">
+                {review.dragging.map((d, i) => (
+                  <li key={i} className="p-2 rounded-lg bg-secondary/60 border border-border">
+                    <div className="font-medium">{d.title}</div>
+                    {d.reason && <div className="text-xs text-muted-foreground mt-0.5">{d.reason}</div>}
+                    <div className="text-xs text-primary mt-1">→ {d.suggestion}</div>
+                  </li>
+                ))}
+                {review.dragging.length === 0 && <li className="text-muted-foreground text-xs">Nada arrastrando.</li>}
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="text-xs uppercase tracking-wider text-destructive mb-2 flex items-center gap-1.5">
+                <Trash2 className="w-3.5 h-3.5" /> Considera eliminar ({review.drop.length})
+              </h3>
+              <ul className="space-y-2 text-sm">
+                {review.drop.map((d, i) => (
+                  <li key={i} className="p-2 rounded-lg bg-destructive/5 border border-destructive/20">
+                    <div className="font-medium">{d.title}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{d.reason}</div>
+                  </li>
+                ))}
+                {review.drop.length === 0 && <li className="text-muted-foreground text-xs">Nada obvio para eliminar.</li>}
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="text-xs uppercase tracking-wider text-primary mb-2 flex items-center gap-1.5">
+                <Flag className="w-3.5 h-3.5" /> Foco próxima semana
+              </h3>
+              <ul className="space-y-1 text-sm">
+                {review.next_week_focus.map((f, i) => <li key={i} className="flex gap-2"><span className="text-primary">•</span><span>{f}</span></li>)}
+              </ul>
+            </section>
+          </div>
+        )}
       </div>
     </div>
   );
