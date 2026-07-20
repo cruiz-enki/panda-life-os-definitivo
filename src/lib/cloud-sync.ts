@@ -46,6 +46,8 @@ function mapTaskList(r: Record<string, unknown>): TaskList {
     name: r.name as string,
     emoji: r.emoji as string,
     color: r.color as string,
+    parentId: (r.parent_id as string) ?? null,
+    sortOrder: (r.sort_order as number) ?? undefined,
   };
 }
 function mapTag(r: Record<string, unknown>): Tag {
@@ -76,6 +78,8 @@ function mapTask(r: Record<string, unknown>): Task {
       : undefined,
     recurrence: (r.recurrence as Recurrence) ?? undefined,
     snoozedUntil: (r.snoozed_until as string) ?? undefined,
+    pinned: (r.pinned as boolean) ?? false,
+    sortOrder: (r.sort_order as number) ?? undefined,
     xpReward: (r.xp_reward as number) ?? undefined,
     createdAt: r.created_at as string,
     completedAt: (r.completed_at as string) ?? undefined,
@@ -210,7 +214,15 @@ export async function deleteHabitCloud(id: string) {
 export async function pushList(userId: string, l: TaskList) {
   const { error } = await supabase
     .from("task_lists")
-    .upsert({ id: l.id, user_id: userId, name: l.name, emoji: l.emoji, color: l.color });
+    .upsert({
+      id: l.id,
+      user_id: userId,
+      name: l.name,
+      emoji: l.emoji,
+      color: l.color,
+      parent_id: l.parentId ?? null,
+      sort_order: l.sortOrder ?? null,
+    } as never);
   reportErr("list", error);
 }
 export async function deleteListCloud(id: string) {
@@ -248,6 +260,8 @@ export async function pushTask(userId: string, t: Task) {
     reminder_channels: t.reminderChannels ?? ["push"],
     recurrence: t.recurrence ?? null,
     snoozed_until: t.snoozedUntil ?? null,
+    pinned: t.pinned ?? false,
+    sort_order: t.sortOrder ?? null,
     xp_reward: t.xpReward ?? null,
     completed_at: t.completedAt ?? null,
     created_at: t.createdAt,
