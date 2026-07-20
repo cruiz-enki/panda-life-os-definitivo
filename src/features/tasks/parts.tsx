@@ -48,19 +48,52 @@ import {
   Moon,
   Timer,
   Play,
+  LayoutGrid,
+  List as ListIcon,
+  CalendarDays,
+  Bookmark,
+  Save,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
+import { TasksKanban } from "./kanban";
+import { TasksCalendar } from "./calendar-view";
 
-type ViewKey = "today" | "upcoming" | "all" | "completed" | "high" | string; // string for list/tag filters
+type ViewKey = "today" | "upcoming" | "overdue" | "all" | "completed" | "high" | string;
+type LayoutKey = "list" | "kanban" | "calendar";
 
 const VIEW_LABELS: Record<string, { label: string; emoji: string }> = {
   today: { label: "Hoy", emoji: "📅" },
-  upcoming: { label: "Próximos días", emoji: "📆" },
+  upcoming: { label: "Próximos 7 días", emoji: "📆" },
+  overdue: { label: "Vencidas", emoji: "🔥" },
   all: { label: "Todas las tareas", emoji: "📋" },
   completed: { label: "Completadas", emoji: "✅" },
-  high: { label: "Prioridad alta", emoji: "🔥" },
+  high: { label: "Prioridad alta", emoji: "🚩" },
 };
+
+type SavedFilter = {
+  id: string;
+  name: string;
+  view: ViewKey;
+  tag: string | null;
+  hideWork: boolean;
+  priority: "" | "high" | "medium" | "low";
+};
+
+const SAVED_FILTERS_KEY = "enki:tasks:saved-filters";
+const LAYOUT_KEY = "enki:tasks:layout";
+
+function loadSavedFilters(): SavedFilter[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SAVED_FILTERS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export function TasksPage() {
   const {
@@ -83,8 +116,25 @@ export function TasksPage() {
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<"" | "high" | "medium" | "low">("");
   const [listModal, setListModal] = useState(false);
   const [tagModal, setTagModal] = useState(false);
+  const [layout, setLayout] = useState<LayoutKey>(() => {
+    if (typeof window === "undefined") return "list";
+    const v = window.localStorage.getItem(LAYOUT_KEY);
+    return v === "kanban" || v === "calendar" ? v : "list";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") window.localStorage.setItem(LAYOUT_KEY, layout);
+  }, [layout]);
+
+  const [savedFilters, setSavedFilters] = useState<SavedFilter[]>(() => loadSavedFilters());
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(savedFilters));
+    }
+  }, [savedFilters]);
+
   const [hideWork, setHideWork] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem("enki:tasks:hide-work") === "1";
@@ -126,6 +176,8 @@ export function TasksPage() {
           new Date(t.due) >= now &&
           new Date(t.due) <= in7,
       );
+    } else if (view === "overdue") {
+      list = list.filter((t) => t.status !== "completed" && !isSnoozed(t) && isOverdue(t, now));
     } else if (view === "completed") {
       list = list.filter((t) => t.status === "completed");
     } else if (view === "high") {
@@ -134,6 +186,7 @@ export function TasksPage() {
       list = list.filter((t) => t.listId === view);
     }
     if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
+    if (priorityFilter) list = list.filter((t) => t.priority === priorityFilter);
     if (hideWork && !(typeof view === "string" && workListIds.has(view))) {
       list = list.filter((t) => !t.listId || !workListIds.has(t.listId));
     }
@@ -145,24 +198,47 @@ export function TasksPage() {
       const bd = b.due ? new Date(b.due).getTime() : Infinity;
       return ad - bd;
     });
-  }, [state.tasks, view, activeTagFilter, today, hideWork, workListIds]);
+  }, [state.tasks, view, activeTagFilter, priorityFilter, today, hideWork, workListIds]);
 
   const counts = useMemo(() => {
     const isWork = (t: Task) => !!t.listId && workListIds.has(t.listId);
     const base = hideWork ? state.tasks.filter((t) => !isWork(t)) : state.tasks;
     const pending = base.filter((t) => t.status !== "completed");
+    const now = Date.now();
     return {
       today: pending.filter((t) => isDueToday(t, today) || isOverdue(t)).length,
       upcoming: pending.filter((t) => {
         if (!t.due) return false;
         const d = new Date(t.due).getTime();
-        return d > Date.now() && d <= Date.now() + 7 * 86400000;
+        return d > now && d <= now + 7 * 86400000;
       }).length,
+      overdue: pending.filter((t) => isOverdue(t)).length,
       all: pending.length,
       completed: base.filter((t) => t.status === "completed").length,
       high: pending.filter((t) => t.priority === "high").length,
     };
   }, [state.tasks, today, hideWork, workListIds]);
+
+  const applyFilter = (f: SavedFilter) => {
+    setView(f.view);
+    setActiveTagFilter(f.tag);
+    setPriorityFilter(f.priority);
+    setHideWork(f.hideWork);
+  };
+  const saveCurrentFilter = () => {
+    const name = window.prompt("Nombre del filtro (ej: 'Trabajo esta semana alta')");
+    if (!name || !name.trim()) return;
+    const f: SavedFilter = {
+      id: `f_${Date.now().toString(36)}`,
+      name: name.trim(),
+      view,
+      tag: activeTagFilter,
+      hideWork,
+      priority: priorityFilter,
+    };
+    setSavedFilters((xs) => [...xs, f]);
+  };
+  const removeFilter = (id: string) => setSavedFilters((xs) => xs.filter((f) => f.id !== id));
 
   return (
     <div className="px-4 md:px-10 py-6 md:py-8 max-w-7xl mx-auto">
@@ -331,21 +407,98 @@ export function TasksPage() {
               )}
             </div>
           </div>
+
+          <div>
+            <div className="flex items-center justify-between px-2 mb-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <Bookmark className="w-3 h-3" /> Filtros guardados
+              </h3>
+              <button
+                onClick={saveCurrentFilter}
+                className="text-muted-foreground hover:text-primary"
+                title="Guardar filtro actual"
+              >
+                <Save className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <div className="space-y-1">
+              {savedFilters.length === 0 && (
+                <p className="text-[11px] text-muted-foreground px-2">
+                  Combina vista + etiqueta + prioridad y guarda con 💾.
+                </p>
+              )}
+              {savedFilters.map((f) => (
+                <div key={f.id} className="group relative">
+                  <button
+                    onClick={() => applyFilter(f)}
+                    className="w-full flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs hover:bg-secondary/50 text-foreground/80"
+                  >
+                    <Bookmark className="w-3 h-3 text-primary shrink-0" />
+                    <span className="flex-1 text-left truncate">{f.name}</span>
+                  </button>
+                  <button
+                    onClick={() => removeFilter(f.id)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1"
+                    aria-label="Eliminar filtro"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </aside>
 
         {/* Tasks list */}
         <main className="min-w-0">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
             <h2 className="font-display text-xl font-bold">
               {VIEW_LABELS[view]?.label ?? state.taskLists.find((l) => l.id === view)?.name ?? "Tareas"}
             </h2>
-            <div className="flex items-center gap-1.5 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20 shadow-sm animate-in fade-in slide-in-from-right-2 duration-500">
-              <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500/20" />
-              <span className="text-xs font-bold text-orange-600 uppercase tracking-tight">Racha: {state.productivity.streak || 0}</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="inline-flex rounded-xl border border-border bg-card overflow-hidden">
+                {([
+                  { k: "list", Icon: ListIcon, label: "Lista" },
+                  { k: "kanban", Icon: LayoutGrid, label: "Kanban" },
+                  { k: "calendar", Icon: CalendarDays, label: "Calendario" },
+                ] as { k: LayoutKey; Icon: typeof ListIcon; label: string }[]).map(({ k, Icon, label }) => (
+                  <button
+                    key={k}
+                    onClick={() => setLayout(k)}
+                    title={label}
+                    className={`px-2.5 py-1.5 text-xs inline-flex items-center gap-1 transition-all ${
+                      layout === k ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">{label}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-1.5 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20 shadow-sm">
+                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500/20" />
+                <span className="text-xs font-bold text-orange-600 uppercase tracking-tight">Racha: {state.productivity.streak || 0}</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 mb-4">
 
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <div className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+              Prioridad
+            </div>
+            {(["", "high", "medium", "low"] as const).map((p) => (
+              <button
+                key={p || "all"}
+                onClick={() => setPriorityFilter(p)}
+                className={`text-xs px-2 py-1 rounded-md border transition-all ${
+                  priorityFilter === p
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {p === "" ? "Todas" : p === "high" ? "Alta" : p === "medium" ? "Media" : "Baja"}
+              </button>
+            ))}
             {activeTagFilter && (
               <button
                 onClick={() => setActiveTagFilter(null)}
@@ -357,7 +510,33 @@ export function TasksPage() {
             <span className="ml-auto text-sm text-muted-foreground">{filtered.length}</span>
           </div>
 
-          {filtered.length === 0 ? (
+          {layout === "calendar" ? (
+            <TasksCalendar
+              tasks={filtered}
+              onOpenTask={(t) => setEditingTask(t)}
+              onReschedule={(id, d) => updateTask(id, { due: d.toISOString() })}
+              onNewOnDate={(d) => {
+                setEditingTask(null);
+                setComposerOpen(true);
+                // Nota: el composer no acepta pre-fecha directamente; el usuario la elige.
+                void d;
+              }}
+            />
+          ) : layout === "kanban" ? (
+            <TasksKanban
+              tasks={filtered}
+              lists={state.taskLists}
+              onOpenTask={(t) => setEditingTask(t)}
+              onMove={(id, listId) =>
+                updateTask(id, { listId: listId === "__none__" ? "" : listId })
+              }
+              onNewInList={(listId) => {
+                setView(listId);
+                setEditingTask(null);
+                setComposerOpen(true);
+              }}
+            />
+          ) : filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-12 text-center">
               <Inbox className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
               <p className="text-muted-foreground">Nada por aquí. Disfruta el momento 🐼</p>
