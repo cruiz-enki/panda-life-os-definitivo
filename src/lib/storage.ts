@@ -103,6 +103,7 @@ const emptyState: AppState = {
 
 const defaultSeed = (): { lists: TaskList[]; tags: Tag[]; habits: Habit[] } => ({
   lists: [
+    { id: crypto.randomUUID(), name: "Inbox", emoji: "📥", color: "oklch(0.78 0.05 250)" },
     { id: crypto.randomUUID(), name: "Trabajo", emoji: "💼", color: "oklch(0.78 0.18 150)" },
     { id: crypto.randomUUID(), name: "Personal", emoji: "🌱", color: "oklch(0.75 0.2 50)" },
     { id: crypto.randomUUID(), name: "Clientes", emoji: "🤝", color: "oklch(0.7 0.18 220)" },
@@ -622,6 +623,17 @@ export function useAppState() {
     if (userId) pushList(userId, l);
   }, [userId]);
 
+  /** Devuelve el id de la lista "Inbox" (la crea si no existe). */
+  const ensureInboxList = useCallback((): string => {
+    const existing = memoryState.taskLists.find((l) => /^inbox|bandeja/i.test(l.name));
+    if (existing) return existing.id;
+    const l: TaskList = { id: crypto.randomUUID(), name: "Inbox", emoji: "📥", color: "oklch(0.78 0.05 250)" };
+    setState((s) => ({ ...s, taskLists: [l, ...s.taskLists] }));
+    if (userId) pushList(userId, l);
+    return l.id;
+  }, [userId]);
+
+
   const deleteList = useCallback((id: string) => {
     setState((s) => ({
       ...s,
@@ -850,6 +862,7 @@ export function useAppState() {
     toggleTaskComplete,
     toggleSubtask,
     addList,
+    ensureInboxList,
     deleteList,
     addTag,
     deleteTag,
