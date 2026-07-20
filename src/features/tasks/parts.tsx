@@ -107,8 +107,15 @@ export function TasksPage() {
   const filtered = useMemo(() => {
     let list = [...state.tasks];
     const now = new Date();
+    const isSnoozed = (t: Task) =>
+      !!t.snoozedUntil && new Date(t.snoozedUntil).getTime() > now.getTime();
     if (view === "today") {
-      list = list.filter((t) => t.status !== "completed" && (isDueToday(t, today) || isOverdue(t, now)));
+      list = list.filter(
+        (t) =>
+          t.status !== "completed" &&
+          !isSnoozed(t) &&
+          (isDueToday(t, today) || isOverdue(t, now)),
+      );
     } else if (view === "upcoming") {
       const in7 = new Date(Date.now() + 7 * 86400000);
       list = list.filter(
@@ -121,9 +128,8 @@ export function TasksPage() {
     } else if (view === "completed") {
       list = list.filter((t) => t.status === "completed");
     } else if (view === "high") {
-      list = list.filter((t) => t.status !== "completed" && t.priority === "high");
+      list = list.filter((t) => t.status !== "completed" && t.priority === "high" && !isSnoozed(t));
     } else if (view !== "all") {
-      // list filter by listId
       list = list.filter((t) => t.listId === view);
     }
     if (activeTagFilter) list = list.filter((t) => t.tags.includes(activeTagFilter));
