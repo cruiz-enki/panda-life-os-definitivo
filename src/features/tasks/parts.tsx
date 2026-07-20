@@ -1040,6 +1040,101 @@ function TaskComposer({
   const [customReminder, setCustomReminder] = useState<string>("");
   const [subtasks, setSubtasks] = useState<Subtask[]>(task?.subtasks ?? []);
   const [newSub, setNewSub] = useState("");
+  const [attachments, setAttachments] = useState<TaskAttachment[]>(task?.attachments ?? []);
+  const [attUrl, setAttUrl] = useState("");
+  const [attName, setAttName] = useState("");
+  const [comments, setComments] = useState<TaskComment[]>(task?.comments ?? []);
+  const [newComment, setNewComment] = useState("");
+  const [timeEntries, setTimeEntries] = useState<TaskTimeEntry[]>(task?.timeEntries ?? []);
+  const [nowTick, setNowTick] = useState(Date.now());
+  const running = timeEntries.find((e) => e.endedAt === null) ?? null;
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+  const actualMinutes = timeEntries.reduce((acc, e) => {
+    const end = e.endedAt ? new Date(e.endedAt).getTime() : nowTick;
+    return acc + Math.max(0, Math.round((end - new Date(e.startedAt).getTime()) / 60000));
+  }, 0);
+  const startTimer = () => {
+    if (running) return;
+    setTimeEntries((prev) => [...prev, { id: crypto.randomUUID(), startedAt: new Date().toISOString(), endedAt: null }]);
+  };
+  const stopTimer = () => {
+    setTimeEntries((prev) => prev.map((e) => (e.endedAt === null ? { ...e, endedAt: new Date().toISOString() } : e)));
+  };
+  const detectType = (url: string): TaskAttachment["type"] => {
+    const u = url.toLowerCase();
+    if (u.match(/\.(png|jpe?g|webp|gif|heic|avif)(\?|$)/) || u.startsWith("data:image/")) return "image";
+    if (u.match(/\.pdf(\?|$)/) || u.startsWith("data:application/pdf")) return "pdf";
+    return "link";
+  };
+  const addAttachment = (typeOverride?: TaskAttachment["type"]) => {
+    const url = attUrl.trim();
+    if (!url) return;
+    setAttachments((a) => [
+      ...a,
+      { id: crypto.randomUUID(), type: typeOverride ?? detectType(url), url, name: attName.trim() || undefined, addedAt: new Date().toISOString() },
+    ]);
+    setAttUrl("");
+    setAttName("");
+  };
+  const onPickFile = async (file: File) => {
+    // Convertimos a data URL — sirve para recibos pequeños. Para archivos grandes
+    // pega un enlace público (Drive, iCloud, etc.).
+    if (file.size > 2_500_000) {
+      alert("Archivo mayor a 2.5 MB. Súbelo a Drive/iCloud y pega el enlace.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = String(reader.result);
+      const type: TaskAttachment["type"] = file.type.startsWith("image/") ? "image" : file.type === "application/pdf" ? "pdf" : "link";
+      setAttachments((a) => [
+        ...a,
+        { id: crypto.randomUUID(), type, url, name: file.name, addedAt: new Date().toISOString() },
+      ]);
+    };
+    reader.readAsDataURL(file);
+  };
+  const addComment = () => {
+    const body = newComment.trim();
+    if (!body) return;
+    setComments((c) => [...c, { id: crypto.randomUUID(), body, checklist: [], createdAt: new Date().toISOString() }]);
+    setNewComment("");
+  };
+  const addCommentChecklistItem = (commentId: string, title: string) => {
+    setComments((cs) =>
+      cs.map((c) =>
+        c.id === commentId
+          ? { ...c, checklist: [...(c.checklist ?? []), { id: crypto.randomUUID(), title, done: false }] }
+          : c,
+      ),
+    );
+  };
+  const toggleCommentChecklist = (commentId: string, itemId: string) => {
+    const toggle = (arr: Subtask[]): Subtask[] =>
+      arr.map((s) =>
+        s.id === itemId
+          ? { ...s, done: !s.done }
+          : s.children
+            ? { ...s, children: toggle(s.children) }
+            : s,
+      );
+    setComments((cs) => cs.map((c) => (c.id === commentId ? { ...c, checklist: toggle(c.checklist ?? []) } : c)));
+  };
+  const addNestedSubtask = (parentId: string, title: string) => {
+    const insert = (arr: Subtask[]): Subtask[] =>
+      arr.map((s) =>
+        s.id === parentId
+          ? { ...s, children: [...(s.children ?? []), { id: crypto.randomUUID(), title, done: false }] }
+          : s.children
+            ? { ...s, children: insert(s.children) }
+            : s,
+      );
+    setSubtasks(insert);
+  };
   const [xpReward, setXpReward] = useState<string>(
     task?.xpReward !== undefined ? String(task.xpReward) : "",
   );
