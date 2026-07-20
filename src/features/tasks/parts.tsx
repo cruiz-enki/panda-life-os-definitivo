@@ -461,6 +461,56 @@ function formatDue(due: string, today: string): string {
   return d.toLocaleDateString("es-ES", { day: "numeric", month: "short" }) + ` ${time}`;
 }
 
+function SnoozeMenu({ onPick }: { onPick: (until: Date | null) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+  const presets: { label: string; get: () => Date }[] = [
+    { label: "1 hora", get: () => new Date(Date.now() + 3600_000) },
+    { label: "Esta tarde (18:00)", get: () => { const d = new Date(); d.setHours(18, 0, 0, 0); if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1); return d; } },
+    { label: "Mañana 9:00", get: () => { const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(9, 0, 0, 0); return d; } },
+    { label: "Próxima semana", get: () => { const d = new Date(); d.setDate(d.getDate() + 7); d.setHours(9, 0, 0, 0); return d; } },
+    { label: "Próximo lunes 9:00", get: () => { const d = new Date(); const add = ((8 - d.getDay()) % 7) || 7; d.setDate(d.getDate() + add); d.setHours(9, 0, 0, 0); return d; } },
+  ];
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+        title="Posponer"
+        className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground"
+      >
+        <Moon className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 z-20 w-52 rounded-xl border border-border bg-card shadow-card p-1 text-sm">
+          {presets.map((p) => (
+            <button
+              key={p.label}
+              onClick={() => { onPick(p.get()); setOpen(false); }}
+              className="w-full px-3 py-2 rounded-lg text-left hover:bg-secondary flex items-center gap-2"
+            >
+              <Clock className="w-3.5 h-3.5 text-muted-foreground" /> {p.label}
+            </button>
+          ))}
+          <div className="my-1 border-t border-border" />
+          <button
+            onClick={() => { onPick(null); setOpen(false); }}
+            className="w-full px-3 py-2 rounded-lg text-left hover:bg-secondary text-muted-foreground"
+          >
+            Quitar posposición
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TaskRow({
   task,
   state,
@@ -471,6 +521,7 @@ function TaskRow({
   onDuplicate,
   onDelete,
   onReschedule,
+  onSnooze,
 }: {
   task: Task;
   state: ReturnType<typeof useAppState>["state"];
@@ -481,6 +532,7 @@ function TaskRow({
   onDuplicate: () => void;
   onDelete: () => void;
   onReschedule: () => void;
+  onSnooze: (until: Date | null) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const done = task.status === "completed";
@@ -488,15 +540,22 @@ function TaskRow({
   const list = state.taskLists.find((l) => l.id === task.listId);
   const taskTags = task.tags.map((id) => state.tags.find((t) => t.id === id)).filter(Boolean);
   const subDone = task.subtasks.filter((s) => s.done).length;
+  const snoozed = !!task.snoozedUntil && new Date(task.snoozedUntil).getTime() > Date.now();
+  const reminders = task.reminders && task.reminders.length > 0
+    ? task.reminders
+    : (task.reminder ? [task.reminder] : []);
+  const fmtOffset = (m: number) => m < 60 ? `${m}min` : m < 1440 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`;
 
   return (
     <li
       className={`group rounded-2xl border p-3 sm:p-4 shadow-card transition-all ${
         done
           ? "border-border bg-card/50 opacity-60"
-          : overdue
-            ? "border-destructive/40 bg-destructive/5"
-            : "border-border bg-card hover:border-primary/40"
+          : snoozed
+            ? "border-border bg-card/70 opacity-70"
+            : overdue
+              ? "border-destructive/40 bg-destructive/5"
+              : "border-border bg-card hover:border-primary/40"
       }`}
     >
       <div className="flex items-start gap-3">
@@ -533,6 +592,11 @@ function TaskRow({
                 <span>{list.emoji}</span> {list.name}
               </span>
             )}
+            {task.startDate && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <Play className="w-3 h-3" /> Inicia {formatDue(task.startDate, today)}
+              </span>
+            )}
             {task.due && (
               <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md ${
                 overdue ? "bg-destructive/15 text-destructive" : "bg-secondary/60 text-muted-foreground"
@@ -540,14 +604,24 @@ function TaskRow({
                 <CalendarIcon className="w-3 h-3" /> {formatDue(task.due, today)}
               </span>
             )}
-            {task.reminder && (
+            {task.durationMinutes && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
-                <Bell className="w-3 h-3" /> {task.reminder === 10 ? "10 min" : task.reminder === 60 ? "1h" : "1d"}
+                <Timer className="w-3 h-3" /> {task.durationMinutes < 60 ? `${task.durationMinutes}m` : `${(task.durationMinutes / 60).toFixed(task.durationMinutes % 60 ? 1 : 0)}h`}
+              </span>
+            )}
+            {reminders.length > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <Bell className="w-3 h-3" /> {reminders.map(fmtOffset).join(" · ")}
               </span>
             )}
             {task.recurrence && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary">
                 <Repeat className="w-3 h-3" /> {recurrenceLabel(task.recurrence)}
+              </span>
+            )}
+            {snoozed && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <Moon className="w-3 h-3" /> Hasta {formatDue(task.snoozedUntil!, today)}
               </span>
             )}
             {taskTags.map((tag) => (
@@ -587,7 +661,8 @@ function TaskRow({
           )}
         </div>
 
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+          <SnoozeMenu onPick={onSnooze} />
           <button onClick={onReschedule} title="Reprogramar a mañana" className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground">
             <CalendarIcon className="w-3.5 h-3.5" />
           </button>
