@@ -912,6 +912,15 @@ function TaskRow({
 
         <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <SnoozeMenu onPick={onSnooze} />
+          {onTogglePin && (
+            <button
+              onClick={onTogglePin}
+              title={task.pinned ? "Quitar destacado" : "Destacar"}
+              className={`p-1.5 rounded-lg hover:bg-secondary ${task.pinned ? "text-[var(--energy,#f59e0b)]" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <Star className={`w-3.5 h-3.5 ${task.pinned ? "fill-current" : ""}`} />
+            </button>
+          )}
           <button onClick={onReschedule} title="Reprogramar a mañana" className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground">
             <CalendarIcon className="w-3.5 h-3.5" />
           </button>
