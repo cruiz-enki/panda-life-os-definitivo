@@ -82,6 +82,8 @@ export type Task = {
   reminder?: ReminderOffset;
   /** Múltiples recordatorios en minutos antes del due. */
   reminders?: number[];
+  /** Canales por los que llegan los recordatorios de esta tarea. */
+  reminderChannels?: ReminderChannel[];
   recurrence?: Recurrence;
   /** Si tiene valor futuro, la tarea está pospuesta hasta esa fecha. */
   snoozedUntil?: string;
