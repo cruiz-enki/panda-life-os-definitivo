@@ -23,6 +23,9 @@ import {
   type RecurrenceFrequency,
   type RecurrenceMonthlyMode,
   type ReminderChannel,
+  type TaskAttachment,
+  type TaskComment,
+  type TaskTimeEntry,
 } from "@/lib/storage";
 import {
   Plus,
@@ -58,6 +61,12 @@ import {
   GripVertical,
   FolderTree,
   MoreHorizontal,
+  Paperclip,
+  Link2,
+  Image as ImageIcon,
+  FileText,
+  MessageSquare,
+  StopCircle,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
@@ -727,6 +736,65 @@ function SnoozeMenu({ onPick }: { onPick: (until: Date | null) => void }) {
   );
 }
 
+function CommentChecklistAdder({ onAdd }: { onAdd: (title: string) => void }) {
+  const [v, setV] = useState("");
+  return (
+    <div className="mt-2 flex gap-2">
+      <input
+        value={v}
+        onChange={(e) => setV(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && v.trim()) {
+            onAdd(v.trim());
+            setV("");
+          }
+        }}
+        placeholder="+ ítem de checklist…"
+        className="flex-1 px-2 py-1 rounded-md bg-background border border-border focus:border-primary outline-none text-xs"
+      />
+    </div>
+  );
+}
+
+function SubtaskRow({
+  subtask,
+  onToggle,
+  depth,
+}: {
+  subtask: Subtask;
+  onToggle: (id: string) => void;
+  depth: number;
+}) {
+  return (
+    <div style={{ paddingLeft: depth * 14 }}>
+      <button
+        onClick={() => onToggle(subtask.id)}
+        className="flex items-center gap-2 text-sm w-full text-left hover:text-primary transition-colors"
+      >
+        <span
+          className={`w-4 h-4 rounded border flex items-center justify-center ${
+            subtask.done ? "bg-primary border-primary" : "border-border"
+          }`}
+        >
+          {subtask.done && <Check className="w-3 h-3 text-primary-foreground" />}
+        </span>
+        <span className={subtask.done ? "line-through text-muted-foreground" : ""}>
+          {subtask.title}
+        </span>
+      </button>
+      {subtask.children && subtask.children.length > 0 && (
+        <ul className="mt-1 space-y-1">
+          {subtask.children.map((c) => (
+            <li key={c.id}>
+              <SubtaskRow subtask={c} onToggle={onToggle} depth={depth + 1} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function TaskRow({
   task,
   state,
@@ -887,23 +955,37 @@ function TaskRow({
                 <ChevronRight className={`w-3 h-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
               </button>
             )}
+            {task.attachments && task.attachments.length > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <Paperclip className="w-3 h-3" /> {task.attachments.length}
+              </span>
+            )}
+            {task.comments && task.comments.length > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
+                <MessageSquare className="w-3 h-3" /> {task.comments.length}
+              </span>
+            )}
+            {(task.actualMinutes || task.durationMinutes) && (
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 ${
+                  task.durationMinutes && task.actualMinutes && task.actualMinutes > task.durationMinutes
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }`}
+                title="Real / estimado"
+              >
+                <Timer className="w-3 h-3" />
+                {task.actualMinutes ? `${task.actualMinutes}m` : "0m"}
+                {task.durationMinutes ? ` / ${task.durationMinutes}m` : ""}
+              </span>
+            )}
           </div>
 
           {expanded && task.subtasks.length > 0 && (
             <ul className="mt-3 space-y-1.5 pl-1">
               {task.subtasks.map((s) => (
                 <li key={s.id}>
-                  <button
-                    onClick={() => onSubtaskToggle(s.id)}
-                    className="flex items-center gap-2 text-sm w-full text-left hover:text-primary transition-colors"
-                  >
-                    <span className={`w-4 h-4 rounded border flex items-center justify-center ${
-                      s.done ? "bg-primary border-primary" : "border-border"
-                    }`}>
-                      {s.done && <Check className="w-3 h-3 text-primary-foreground" />}
-                    </span>
-                    <span className={s.done ? "line-through text-muted-foreground" : ""}>{s.title}</span>
-                  </button>
+                  <SubtaskRow subtask={s} onToggle={onSubtaskToggle} depth={0} />
                 </li>
               ))}
             </ul>
@@ -978,6 +1060,101 @@ function TaskComposer({
   const [customReminder, setCustomReminder] = useState<string>("");
   const [subtasks, setSubtasks] = useState<Subtask[]>(task?.subtasks ?? []);
   const [newSub, setNewSub] = useState("");
+  const [attachments, setAttachments] = useState<TaskAttachment[]>(task?.attachments ?? []);
+  const [attUrl, setAttUrl] = useState("");
+  const [attName, setAttName] = useState("");
+  const [comments, setComments] = useState<TaskComment[]>(task?.comments ?? []);
+  const [newComment, setNewComment] = useState("");
+  const [timeEntries, setTimeEntries] = useState<TaskTimeEntry[]>(task?.timeEntries ?? []);
+  const [nowTick, setNowTick] = useState(Date.now());
+  const running = timeEntries.find((e) => e.endedAt === null) ?? null;
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+  const actualMinutes = timeEntries.reduce((acc, e) => {
+    const end = e.endedAt ? new Date(e.endedAt).getTime() : nowTick;
+    return acc + Math.max(0, Math.round((end - new Date(e.startedAt).getTime()) / 60000));
+  }, 0);
+  const startTimer = () => {
+    if (running) return;
+    setTimeEntries((prev) => [...prev, { id: crypto.randomUUID(), startedAt: new Date().toISOString(), endedAt: null }]);
+  };
+  const stopTimer = () => {
+    setTimeEntries((prev) => prev.map((e) => (e.endedAt === null ? { ...e, endedAt: new Date().toISOString() } : e)));
+  };
+  const detectType = (url: string): TaskAttachment["type"] => {
+    const u = url.toLowerCase();
+    if (u.match(/\.(png|jpe?g|webp|gif|heic|avif)(\?|$)/) || u.startsWith("data:image/")) return "image";
+    if (u.match(/\.pdf(\?|$)/) || u.startsWith("data:application/pdf")) return "pdf";
+    return "link";
+  };
+  const addAttachment = (typeOverride?: TaskAttachment["type"]) => {
+    const url = attUrl.trim();
+    if (!url) return;
+    setAttachments((a) => [
+      ...a,
+      { id: crypto.randomUUID(), type: typeOverride ?? detectType(url), url, name: attName.trim() || undefined, addedAt: new Date().toISOString() },
+    ]);
+    setAttUrl("");
+    setAttName("");
+  };
+  const onPickFile = async (file: File) => {
+    // Convertimos a data URL — sirve para recibos pequeños. Para archivos grandes
+    // pega un enlace público (Drive, iCloud, etc.).
+    if (file.size > 2_500_000) {
+      alert("Archivo mayor a 2.5 MB. Súbelo a Drive/iCloud y pega el enlace.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = String(reader.result);
+      const type: TaskAttachment["type"] = file.type.startsWith("image/") ? "image" : file.type === "application/pdf" ? "pdf" : "link";
+      setAttachments((a) => [
+        ...a,
+        { id: crypto.randomUUID(), type, url, name: file.name, addedAt: new Date().toISOString() },
+      ]);
+    };
+    reader.readAsDataURL(file);
+  };
+  const addComment = () => {
+    const body = newComment.trim();
+    if (!body) return;
+    setComments((c) => [...c, { id: crypto.randomUUID(), body, checklist: [], createdAt: new Date().toISOString() }]);
+    setNewComment("");
+  };
+  const addCommentChecklistItem = (commentId: string, title: string) => {
+    setComments((cs) =>
+      cs.map((c) =>
+        c.id === commentId
+          ? { ...c, checklist: [...(c.checklist ?? []), { id: crypto.randomUUID(), title, done: false }] }
+          : c,
+      ),
+    );
+  };
+  const toggleCommentChecklist = (commentId: string, itemId: string) => {
+    const toggle = (arr: Subtask[]): Subtask[] =>
+      arr.map((s) =>
+        s.id === itemId
+          ? { ...s, done: !s.done }
+          : s.children
+            ? { ...s, children: toggle(s.children) }
+            : s,
+      );
+    setComments((cs) => cs.map((c) => (c.id === commentId ? { ...c, checklist: toggle(c.checklist ?? []) } : c)));
+  };
+  const addNestedSubtask = (parentId: string, title: string) => {
+    const insert = (arr: Subtask[]): Subtask[] =>
+      arr.map((s) =>
+        s.id === parentId
+          ? { ...s, children: [...(s.children ?? []), { id: crypto.randomUUID(), title, done: false }] }
+          : s.children
+            ? { ...s, children: insert(s.children) }
+            : s,
+      );
+    setSubtasks(insert);
+  };
   const [xpReward, setXpReward] = useState<string>(
     task?.xpReward !== undefined ? String(task.xpReward) : "",
   );
@@ -1044,6 +1221,10 @@ function TaskComposer({
       subtasks,
       xpReward: Number.isFinite(xpNum as number) ? xpNum : undefined,
       recurrence,
+      attachments: attachments.length > 0 ? attachments : undefined,
+      comments: comments.length > 0 ? comments : undefined,
+      timeEntries: timeEntries.length > 0 ? timeEntries : undefined,
+      actualMinutes: actualMinutes > 0 ? actualMinutes : undefined,
     });
   };
 
@@ -1449,7 +1630,148 @@ function TaskComposer({
             </div>
           </div>
 
+          {/* ===== Time tracking ===== */}
+          <div className="rounded-xl border border-border bg-secondary/40 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Timer className="w-4 h-4" /> Tiempo
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Real <span className={durationMinutes && actualMinutes > Number(durationMinutes) ? "text-destructive font-semibold" : "text-foreground"}>{actualMinutes}m</span>
+                {durationMinutes && <> · Estimado {durationMinutes}m</>}
+              </div>
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              {running ? (
+                <button
+                  onClick={stopTimer}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-destructive/20 text-destructive hover:bg-destructive/30 text-sm font-medium"
+                >
+                  <StopCircle className="w-4 h-4" /> Parar sesión
+                </button>
+              ) : (
+                <button
+                  onClick={startTimer}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 text-sm font-medium"
+                >
+                  <Play className="w-4 h-4" /> Iniciar sesión
+                </button>
+              )}
+              {timeEntries.length > 0 && (
+                <button
+                  onClick={() => setTimeEntries([])}
+                  className="px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-destructive"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+            {timeEntries.length > 0 && (
+              <p className="mt-1 text-[10px] text-muted-foreground">{timeEntries.length} sesión{timeEntries.length === 1 ? "" : "es"}</p>
+            )}
+          </div>
+
+          {/* ===== Adjuntos ===== */}
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Paperclip className="w-3 h-3" /> Adjuntos
+            </label>
+            <ul className="mt-1 space-y-1.5">
+              {attachments.map((a) => (
+                <li key={a.id} className="flex items-center gap-2 text-sm bg-secondary/50 rounded-lg px-2 py-1.5">
+                  {a.type === "image" ? <ImageIcon className="w-4 h-4 text-primary shrink-0" /> : a.type === "pdf" ? <FileText className="w-4 h-4 text-destructive shrink-0" /> : <Link2 className="w-4 h-4 text-muted-foreground shrink-0" />}
+                  <a href={a.url} target="_blank" rel="noreferrer" className="flex-1 truncate hover:underline">
+                    {a.name || a.url}
+                  </a>
+                  <button onClick={() => setAttachments((prev) => prev.filter((x) => x.id !== a.id))} className="text-muted-foreground hover:text-destructive">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 flex flex-col sm:flex-row gap-2">
+              <input
+                value={attUrl}
+                onChange={(e) => setAttUrl(e.target.value)}
+                placeholder="Pega URL (foto, PDF, link)"
+                className="flex-1 px-3 py-2 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-sm"
+              />
+              <input
+                value={attName}
+                onChange={(e) => setAttName(e.target.value)}
+                placeholder="Nombre (opcional)"
+                className="sm:w-40 px-3 py-2 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-sm"
+              />
+              <button
+                onClick={() => addAttachment()}
+                disabled={!attUrl.trim()}
+                className="px-3 py-2 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 text-sm disabled:opacity-50"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            <label className="mt-2 flex items-center gap-2 text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span>o sube archivo (foto/PDF, máx 2.5MB)</span>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onPickFile(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          </div>
+
+          {/* ===== Comentarios con checklist ===== */}
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <MessageSquare className="w-3 h-3" /> Comentarios
+            </label>
+            <ul className="mt-1 space-y-2">
+              {comments.map((c) => (
+                <li key={c.id} className="rounded-lg bg-secondary/50 p-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm whitespace-pre-wrap flex-1">{c.body}</p>
+                    <button onClick={() => setComments((prev) => prev.filter((x) => x.id !== c.id))} className="text-muted-foreground hover:text-destructive">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {c.checklist && c.checklist.length > 0 && (
+                    <ul className="mt-2 space-y-1">
+                      {c.checklist.map((it) => (
+                        <li key={it.id}>
+                          <SubtaskRow subtask={it} onToggle={(sid) => toggleCommentChecklist(c.id, sid)} depth={0} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <CommentChecklistAdder onAdd={(t) => addCommentChecklistItem(c.id, t)} />
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 flex gap-2">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Nuevo comentario…"
+                rows={2}
+                className="flex-1 px-3 py-2 rounded-lg bg-secondary border border-border focus:border-primary outline-none text-sm resize-none"
+              />
+              <button
+                onClick={addComment}
+                disabled={!newComment.trim()}
+                className="px-3 py-2 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 disabled:opacity-50"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
           <button
+
             disabled={!title.trim()}
             onClick={submit}
             className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50 disabled:shadow-none"
