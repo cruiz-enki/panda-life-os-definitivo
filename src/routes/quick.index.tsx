@@ -154,7 +154,7 @@ function QuickIndex() {
 
       <div className="space-y-3">
         {SHORTCUTS.map((sc) => (
-          <Card key={sc.action} className="p-5">
+          <Card key={sc.example} className="p-5">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
                 <h3 className="font-display font-bold text-lg">
