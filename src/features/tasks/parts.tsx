@@ -48,19 +48,52 @@ import {
   Moon,
   Timer,
   Play,
+  LayoutGrid,
+  List as ListIcon,
+  CalendarDays,
+  Bookmark,
+  Save,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
+import { TasksKanban } from "./kanban";
+import { TasksCalendar } from "./calendar-view";
 
-type ViewKey = "today" | "upcoming" | "all" | "completed" | "high" | string; // string for list/tag filters
+type ViewKey = "today" | "upcoming" | "overdue" | "all" | "completed" | "high" | string;
+type LayoutKey = "list" | "kanban" | "calendar";
 
 const VIEW_LABELS: Record<string, { label: string; emoji: string }> = {
   today: { label: "Hoy", emoji: "📅" },
-  upcoming: { label: "Próximos días", emoji: "📆" },
+  upcoming: { label: "Próximos 7 días", emoji: "📆" },
+  overdue: { label: "Vencidas", emoji: "🔥" },
   all: { label: "Todas las tareas", emoji: "📋" },
   completed: { label: "Completadas", emoji: "✅" },
-  high: { label: "Prioridad alta", emoji: "🔥" },
+  high: { label: "Prioridad alta", emoji: "🚩" },
 };
+
+type SavedFilter = {
+  id: string;
+  name: string;
+  view: ViewKey;
+  tag: string | null;
+  hideWork: boolean;
+  priority: "" | "high" | "medium" | "low";
+};
+
+const SAVED_FILTERS_KEY = "enki:tasks:saved-filters";
+const LAYOUT_KEY = "enki:tasks:layout";
+
+function loadSavedFilters(): SavedFilter[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SAVED_FILTERS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export function TasksPage() {
   const {
