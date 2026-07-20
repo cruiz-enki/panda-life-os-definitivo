@@ -623,6 +623,17 @@ export function useAppState() {
     if (userId) pushList(userId, l);
   }, [userId]);
 
+  /** Devuelve el id de la lista "Inbox" (la crea si no existe). */
+  const ensureInboxList = useCallback((): string => {
+    const existing = memoryState.taskLists.find((l) => /^inbox|bandeja/i.test(l.name));
+    if (existing) return existing.id;
+    const l: TaskList = { id: crypto.randomUUID(), name: "Inbox", emoji: "📥", color: "oklch(0.78 0.05 250)" };
+    setState((s) => ({ ...s, taskLists: [l, ...s.taskLists] }));
+    if (userId) pushList(userId, l);
+    return l.id;
+  }, [userId]);
+
+
   const deleteList = useCallback((id: string) => {
     setState((s) => ({
       ...s,
