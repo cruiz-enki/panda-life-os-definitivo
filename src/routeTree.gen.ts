@@ -84,6 +84,7 @@ import { Route as IntrospectionCategoryCategoryKeyRouteImport } from './routes/i
 import { Route as FinanceCardsCardIdRouteImport } from './routes/finance_.cards.$cardId'
 import { Route as ApiPublicVapidKeyRouteImport } from './routes/api.public.vapid-key'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicHooksTelegramWebhookRouteImport } from './routes/api.public.hooks.telegram-webhook'
 import { Route as ApiPublicHooksTelegramSendRouteImport } from './routes/api.public.hooks.telegram-send'
@@ -481,6 +482,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -641,6 +647,7 @@ export interface FileRoutesByFullPath {
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/quick/': typeof QuickIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
   '/finance/cards/$cardId': typeof FinanceCardsCardIdRoute
@@ -731,6 +738,7 @@ export interface FileRoutesByTo {
   '/introspection': typeof IntrospectionIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/quick': typeof QuickIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
   '/finance/cards/$cardId': typeof FinanceCardsCardIdRoute
@@ -824,6 +832,7 @@ export interface FileRoutesById {
   '/introspection/': typeof IntrospectionIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/quick/': typeof QuickIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/vapid-key': typeof ApiPublicVapidKeyRoute
   '/finance_/cards/$cardId': typeof FinanceCardsCardIdRoute
@@ -918,6 +927,7 @@ export interface FileRouteTypes {
     | '/introspection/'
     | '/projects/'
     | '/quick/'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/vapid-key'
     | '/finance/cards/$cardId'
@@ -1008,6 +1018,7 @@ export interface FileRouteTypes {
     | '/introspection'
     | '/projects'
     | '/quick'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/vapid-key'
     | '/finance/cards/$cardId'
@@ -1100,6 +1111,7 @@ export interface FileRouteTypes {
     | '/introspection/'
     | '/projects/'
     | '/quick/'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/vapid-key'
     | '/finance_/cards/$cardId'
@@ -1190,6 +1202,7 @@ export interface RootRouteChildren {
   ApiTestPushRoute: typeof ApiTestPushRoute
   QuickActionRoute: typeof QuickActionRoute
   QuickIndexRoute: typeof QuickIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicVapidKeyRoute: typeof ApiPublicVapidKeyRoute
   FinanceCardsCardIdRoute: typeof FinanceCardsCardIdRoute
@@ -1737,6 +1750,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -1945,6 +1965,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiTestPushRoute: ApiTestPushRoute,
   QuickActionRoute: QuickActionRoute,
   QuickIndexRoute: QuickIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicVapidKeyRoute: ApiPublicVapidKeyRoute,
   FinanceCardsCardIdRoute: FinanceCardsCardIdRoute,
