@@ -1585,7 +1585,17 @@ function TaskComposer({
           </div>
 
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Subtareas</label>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Subtareas</label>
+              <AiDecomposeButton
+                title={title}
+                description={description}
+                onAdd={(items) => setSubtasks((prev) => [
+                  ...prev,
+                  ...items.map((t) => ({ id: crypto.randomUUID(), title: t, done: false })),
+                ])}
+              />
+            </div>
             <ul className="mt-1 space-y-1.5">
               {subtasks.map((s) => (
                 <li key={s.id} className="flex items-center gap-2 text-sm">
