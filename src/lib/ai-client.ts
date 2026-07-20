@@ -80,3 +80,66 @@ export async function generateLearningSummary(text: string): Promise<string> {
   if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
   return (data as { summary: string }).summary;
 }
+
+export async function decomposeTask(title: string, description?: string, context?: string): Promise<{ subtasks: string[]; reasoning?: string }> {
+  const { data, error } = await supabase.functions.invoke("ai-decompose-task", {
+    body: { title, description, context },
+  });
+  if (error) throw new Error(error.message);
+  if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
+  return data as { subtasks: string[]; reasoning?: string };
+}
+
+export type WeeklyReview = {
+  headline: string;
+  closed: string[];
+  dragging: { title: string; reason?: string; suggestion: string }[];
+  drop: { title: string; reason: string }[];
+  next_week_focus: string[];
+};
+
+export function buildWeeklySnapshot(state: AppState, weekStart: string, weekEnd: string) {
+  const inRange = (iso?: string | null) => !!iso && iso.slice(0, 10) >= weekStart && iso.slice(0, 10) <= weekEnd;
+  const closedThisWeek = state.tasks.filter((t) => t.status === "completed" && inRange(t.completedAt));
+  const openTasks = state.tasks.filter((t) => t.status !== "completed");
+  const draggingOpen = openTasks.filter((t) => {
+    const created = (t as { createdAt?: string }).createdAt;
+    return t.due && t.due.slice(0, 10) < weekStart || (created && created.slice(0, 10) < weekStart);
+  });
+  const veryOld = openTasks.filter((t) => {
+    const created = (t as { createdAt?: string }).createdAt;
+    if (!created) return false;
+    const days = Math.floor((Date.parse(weekEnd) - Date.parse(created)) / 86400000);
+    return days > 21;
+  });
+  const listName = (id?: string) => state.taskLists.find((l) => l.id === id)?.name ?? "—";
+  const slim = (t: typeof state.tasks[number]) => ({
+    titulo: t.title,
+    prioridad: t.priority,
+    lista: listName(t.listId),
+    due: t.due?.slice(0, 10) ?? null,
+    creada: (t as { createdAt?: string }).createdAt?.slice(0, 10) ?? null,
+  });
+  return {
+    rango: { desde: weekStart, hasta: weekEnd },
+    cerradas_semana: closedThisWeek.slice(0, 30).map(slim),
+    arrastrando: draggingOpen.slice(0, 30).map(slim),
+    muy_antiguas_abiertas: veryOld.slice(0, 20).map(slim),
+    totales: {
+      cerradas: closedThisWeek.length,
+      abiertas: openTasks.length,
+      arrastrando: draggingOpen.length,
+    },
+  };
+}
+
+export async function generateWeeklyReview(state: AppState, weekStart: string, weekEnd: string): Promise<WeeklyReview> {
+  const snapshot = buildWeeklySnapshot(state, weekStart, weekEnd);
+  const { data, error } = await supabase.functions.invoke("ai-weekly-review", {
+    body: { snapshot },
+  });
+  if (error) throw new Error(error.message);
+  if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
+  return data as WeeklyReview;
+}
+
