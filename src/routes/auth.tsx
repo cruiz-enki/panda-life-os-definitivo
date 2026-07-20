@@ -14,8 +14,12 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Inicia sesión o crea tu cuenta para sincronizar Panda's LIFE OS en la nube." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { next?: string } => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") ? s.next : undefined,
+  }),
   component: AuthPage,
 });
+
 
 function AuthPage() {
   const { user, loading } = useAuth();
