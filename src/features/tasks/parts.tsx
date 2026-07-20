@@ -61,6 +61,12 @@ import {
   GripVertical,
   FolderTree,
   MoreHorizontal,
+  Paperclip,
+  Link2,
+  Image as ImageIcon,
+  FileText,
+  MessageSquare,
+  StopCircle,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
