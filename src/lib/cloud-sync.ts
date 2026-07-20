@@ -52,18 +52,26 @@ function mapTag(r: Record<string, unknown>): Tag {
   return { id: r.id as string, name: r.name as string, color: r.color as string };
 }
 function mapTask(r: Record<string, unknown>): Task {
+  const remindersRaw = r.reminders;
+  const reminders = Array.isArray(remindersRaw)
+    ? (remindersRaw as unknown[]).map((x) => Number(x)).filter((n) => Number.isFinite(n) && n > 0)
+    : [];
   return {
     id: r.id as string,
     title: r.title as string,
     description: (r.description as string) ?? undefined,
+    startDate: (r.start_date as string) ?? undefined,
     due: (r.due as string) ?? undefined,
+    durationMinutes: (r.duration_minutes as number) ?? undefined,
     priority: (r.priority as Priority) ?? "medium",
     tags: ((r.tags as string[]) ?? []) as string[],
     listId: (r.list_id as string) ?? "",
     status: (r.status as TaskStatus) ?? "pending",
     subtasks: ((r.subtasks as DBSubtask[]) ?? []) as Subtask[],
     reminder: (r.reminder as ReminderOffset) ?? undefined,
+    reminders: reminders.length > 0 ? reminders : undefined,
     recurrence: (r.recurrence as Recurrence) ?? undefined,
+    snoozedUntil: (r.snoozed_until as string) ?? undefined,
     xpReward: (r.xp_reward as number) ?? undefined,
     createdAt: r.created_at as string,
     completedAt: (r.completed_at as string) ?? undefined,
@@ -223,19 +231,23 @@ export async function pushTask(userId: string, t: Task) {
     user_id: userId,
     title: t.title,
     description: t.description ?? null,
+    start_date: t.startDate ?? null,
     due: t.due ?? null,
+    duration_minutes: t.durationMinutes ?? null,
     priority: t.priority,
     status: t.status,
     list_id: t.listId || null,
     tags: t.tags,
     subtasks: t.subtasks,
     reminder: t.reminder ?? null,
+    reminders: t.reminders ?? [],
     recurrence: t.recurrence ?? null,
+    snoozed_until: t.snoozedUntil ?? null,
     xp_reward: t.xpReward ?? null,
     completed_at: t.completedAt ?? null,
     created_at: t.createdAt,
   };
-  const { error } = await supabase.from("tasks").upsert(row);
+  const { error } = await supabase.from("tasks").upsert(row as never);
   reportErr("task", error);
 }
 export async function deleteTaskCloud(id: string) {
