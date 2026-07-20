@@ -107,7 +107,7 @@ function Consent() {
             <div>
               <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Permisos solicitados</div>
               <ul className="text-sm space-y-1">
-                {scopes.map((s) => (
+                {scopes.map((s: string) => (
                   <li key={s} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                     <span>{s === "openid" ? "Identidad" : s === "email" ? "Tu correo" : s === "profile" ? "Tu perfil básico" : s}</span>
