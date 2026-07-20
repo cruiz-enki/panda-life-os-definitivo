@@ -1453,20 +1453,54 @@ function TaskComposer({
   );
 }
 
-function ListComposer({ onClose, onCreate }: { onClose: () => void; onCreate: (name: string, emoji: string, color: string) => void }) {
-  const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState("📁");
+function ListComposer({
+  onClose,
+  onCreate,
+  onUpdate,
+  lists,
+  editingId,
+}: {
+  onClose: () => void;
+  onCreate: (name: string, emoji: string, color: string, parentId: string | null) => void;
+  onUpdate?: (id: string, patch: { name?: string; emoji?: string; color?: string; parentId?: string | null }) => void;
+  lists: Array<{ id: string; name: string; emoji: string; color: string; parentId?: string | null }>;
+  editingId?: string | null;
+}) {
+  const editing = editingId ? lists.find((l) => l.id === editingId) ?? null : null;
+  const [name, setName] = useState(editing?.name ?? "");
+  const [emoji, setEmoji] = useState(editing?.emoji ?? "📁");
   const colors = [
     "oklch(0.78 0.18 150)", "oklch(0.75 0.2 50)", "oklch(0.7 0.18 220)",
     "oklch(0.7 0.22 295)", "oklch(0.82 0.17 90)", "oklch(0.65 0.22 25)",
   ];
-  const [color, setColor] = useState(colors[0]);
+  const [color, setColor] = useState(editing?.color ?? colors[0]);
+  const [parentId, setParentId] = useState<string | null>(editing?.parentId ?? null);
+
+  // Padres válidos: cualquier lista distinta a la editada y que no sea su descendiente.
+  const descendants = new Set<string>();
+  if (editing) {
+    const walk = (id: string) => {
+      descendants.add(id);
+      for (const l of lists) if (l.parentId === id) walk(l.id);
+    };
+    walk(editing.id);
+  }
+  const parentOptions = lists.filter((l) => !descendants.has(l.id));
+
+  const submit = () => {
+    if (!name.trim()) return;
+    if (editing && onUpdate) {
+      onUpdate(editing.id, { name: name.trim(), emoji, color, parentId });
+    } else {
+      onCreate(name.trim(), emoji, color, parentId);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div className="w-full max-w-sm rounded-2xl bg-card border border-border p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-bold">Nueva lista</h2>
+          <h2 className="font-display text-lg font-bold">{editing ? "Editar lista" : "Nueva lista"}</h2>
           <button onClick={onClose}><X className="w-5 h-5 text-muted-foreground" /></button>
         </div>
         <div className="space-y-3">
@@ -1484,6 +1518,21 @@ function ListComposer({ onClose, onCreate }: { onClose: () => void; onCreate: (n
               className="flex-1 px-3 py-2.5 rounded-xl bg-secondary border border-border outline-none focus:border-primary"
             />
           </div>
+          <div>
+            <label className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+              Carpeta padre
+            </label>
+            <select
+              value={parentId ?? ""}
+              onChange={(e) => setParentId(e.target.value || null)}
+              className="w-full px-3 py-2 rounded-xl bg-secondary border border-border text-sm outline-none focus:border-primary"
+            >
+              <option value="">— Sin padre (raíz) —</option>
+              {parentOptions.map((l) => (
+                <option key={l.id} value={l.id}>{l.emoji} {l.name}</option>
+              ))}
+            </select>
+          </div>
           <div className="flex gap-2">
             {colors.map((c) => (
               <button
@@ -1496,10 +1545,10 @@ function ListComposer({ onClose, onCreate }: { onClose: () => void; onCreate: (n
           </div>
           <button
             disabled={!name.trim()}
-            onClick={() => onCreate(name.trim(), emoji, color)}
+            onClick={submit}
             className="w-full py-2.5 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50"
           >
-            Crear lista
+            {editing ? "Guardar" : "Crear lista"}
           </button>
         </div>
       </div>
