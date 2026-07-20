@@ -715,6 +715,9 @@ function TaskComposer({
     ? task.reminders
     : (task?.reminder ? [task.reminder] : []);
   const [reminders, setReminders] = useState<number[]>(initialReminders);
+  const [reminderChannels, setReminderChannels] = useState<ReminderChannel[]>(
+    task?.reminderChannels && task.reminderChannels.length > 0 ? task.reminderChannels : ["push"],
+  );
   const [customReminder, setCustomReminder] = useState<string>("");
   const [subtasks, setSubtasks] = useState<Subtask[]>(task?.subtasks ?? []);
   const [newSub, setNewSub] = useState("");
