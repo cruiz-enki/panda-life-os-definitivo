@@ -90,6 +90,7 @@ import { Route as ApiPublicHooksProcessQuestNotificationsRouteImport } from './r
 import { Route as ApiPublicHooksProcessNotificationsRouteImport } from './routes/api.public.hooks.process-notifications'
 import { Route as ApiPublicHooksProcessIdentityNotificationsRouteImport } from './routes/api.public.hooks.process-identity-notifications'
 import { Route as ApiPublicHooksIdentityRemindersRouteImport } from './routes/api.public.hooks.identity-reminders'
+import { Route as ApiPublicHooksEmailToTaskRouteImport } from './routes/api.public.hooks.email-to-task'
 
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
@@ -512,6 +513,12 @@ const ApiPublicHooksIdentityRemindersRoute =
     path: '/api/public/hooks/identity-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksEmailToTaskRoute =
+  ApiPublicHooksEmailToTaskRouteImport.update({
+    id: '/api/public/hooks/email-to-task',
+    path: '/api/public/hooks/email-to-task',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -581,6 +588,7 @@ export interface FileRoutesByFullPath {
   '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
   '/introspection/exercise/$exerciseId': typeof IntrospectionExerciseExerciseIdRoute
   '/introspection/result/$sessionId': typeof IntrospectionResultSessionIdRoute
+  '/api/public/hooks/email-to-task': typeof ApiPublicHooksEmailToTaskRoute
   '/api/public/hooks/identity-reminders': typeof ApiPublicHooksIdentityRemindersRoute
   '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
@@ -662,6 +670,7 @@ export interface FileRoutesByTo {
   '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
   '/introspection/exercise/$exerciseId': typeof IntrospectionExerciseExerciseIdRoute
   '/introspection/result/$sessionId': typeof IntrospectionResultSessionIdRoute
+  '/api/public/hooks/email-to-task': typeof ApiPublicHooksEmailToTaskRoute
   '/api/public/hooks/identity-reminders': typeof ApiPublicHooksIdentityRemindersRoute
   '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
@@ -746,6 +755,7 @@ export interface FileRoutesById {
   '/introspection/category/$categoryKey': typeof IntrospectionCategoryCategoryKeyRoute
   '/introspection/exercise/$exerciseId': typeof IntrospectionExerciseExerciseIdRoute
   '/introspection/result/$sessionId': typeof IntrospectionResultSessionIdRoute
+  '/api/public/hooks/email-to-task': typeof ApiPublicHooksEmailToTaskRoute
   '/api/public/hooks/identity-reminders': typeof ApiPublicHooksIdentityRemindersRoute
   '/api/public/hooks/process-identity-notifications': typeof ApiPublicHooksProcessIdentityNotificationsRoute
   '/api/public/hooks/process-notifications': typeof ApiPublicHooksProcessNotificationsRoute
@@ -831,6 +841,7 @@ export interface FileRouteTypes {
     | '/introspection/category/$categoryKey'
     | '/introspection/exercise/$exerciseId'
     | '/introspection/result/$sessionId'
+    | '/api/public/hooks/email-to-task'
     | '/api/public/hooks/identity-reminders'
     | '/api/public/hooks/process-identity-notifications'
     | '/api/public/hooks/process-notifications'
@@ -912,6 +923,7 @@ export interface FileRouteTypes {
     | '/introspection/category/$categoryKey'
     | '/introspection/exercise/$exerciseId'
     | '/introspection/result/$sessionId'
+    | '/api/public/hooks/email-to-task'
     | '/api/public/hooks/identity-reminders'
     | '/api/public/hooks/process-identity-notifications'
     | '/api/public/hooks/process-notifications'
@@ -995,6 +1007,7 @@ export interface FileRouteTypes {
     | '/introspection/category/$categoryKey'
     | '/introspection/exercise/$exerciseId'
     | '/introspection/result/$sessionId'
+    | '/api/public/hooks/email-to-task'
     | '/api/public/hooks/identity-reminders'
     | '/api/public/hooks/process-identity-notifications'
     | '/api/public/hooks/process-notifications'
@@ -1073,6 +1086,7 @@ export interface RootRouteChildren {
   ApiTestPushRoute: typeof ApiTestPushRoute
   ApiPublicVapidKeyRoute: typeof ApiPublicVapidKeyRoute
   FinanceCardsCardIdRoute: typeof FinanceCardsCardIdRoute
+  ApiPublicHooksEmailToTaskRoute: typeof ApiPublicHooksEmailToTaskRoute
   ApiPublicHooksIdentityRemindersRoute: typeof ApiPublicHooksIdentityRemindersRoute
   ApiPublicHooksProcessIdentityNotificationsRoute: typeof ApiPublicHooksProcessIdentityNotificationsRoute
   ApiPublicHooksProcessNotificationsRoute: typeof ApiPublicHooksProcessNotificationsRoute
@@ -1658,6 +1672,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksIdentityRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/email-to-task': {
+      id: '/api/public/hooks/email-to-task'
+      path: '/api/public/hooks/email-to-task'
+      fullPath: '/api/public/hooks/email-to-task'
+      preLoaderRoute: typeof ApiPublicHooksEmailToTaskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1755,6 +1776,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiTestPushRoute: ApiTestPushRoute,
   ApiPublicVapidKeyRoute: ApiPublicVapidKeyRoute,
   FinanceCardsCardIdRoute: FinanceCardsCardIdRoute,
+  ApiPublicHooksEmailToTaskRoute: ApiPublicHooksEmailToTaskRoute,
   ApiPublicHooksIdentityRemindersRoute: ApiPublicHooksIdentityRemindersRoute,
   ApiPublicHooksProcessIdentityNotificationsRoute:
     ApiPublicHooksProcessIdentityNotificationsRoute,
@@ -1778,3 +1800,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

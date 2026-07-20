@@ -74,6 +74,7 @@ async function handleAyuda(): Promise<string> {
     "*Panda's LIFE OS — comandos*",
     "",
     "/tareas — ver tareas pendientes",
+    "/t <texto> — crear tarea directa (NLP)",
     "/ayuda — este menú",
     "",
     "*Captura libre:* escribe lo que quieras y lo clasifico:",
@@ -81,8 +82,101 @@ async function handleAyuda(): Promise<string> {
     "• `gasté 200 en uber` → gasto",
     "• `idea: rediseñar dashboard` → nota",
     "",
+    "*Tarea rápida:* `/t Llamar a Juan mañana 3pm #trabajo !alta`",
+    "",
     "Cualquier otra cosa va al coach.",
   ].join("\n");
+}
+
+async function createTaskFromText(ctx: ProcessCtx, text: string): Promise<string> {
+  if (!ctx.ownerUserId) return "🚫 Sin owner.";
+  const raw = text.trim();
+  if (!raw) return "❌ Escribe algo después de /t. Ejemplo: `/t Comprar pan mañana 9am !alta`";
+
+  // Parser NLP ligero (fecha relativa, hora, prioridad, tags)
+  let title = raw;
+  let due: string | null = null;
+  let priority: "high" | "medium" | "low" = "medium";
+  const tags: string[] = [];
+
+  // Prioridad !alta !media !baja o !!/!!!
+  const prio = title.match(/(?:^|\s)!(alta|media|baja|high|medium|low|!{0,2})(?=\s|$)/i);
+  if (prio) {
+    const p = prio[1].toLowerCase();
+    if (p === "alta" || p === "high" || p === "!!" || p === "!!!") priority = "high";
+    else if (p === "baja" || p === "low") priority = "low";
+    title = title.replace(prio[0], " ").trim();
+  }
+
+  // Tags #foo
+  title = title.replace(/(?:^|\s)#([\wáéíóúñ-]+)/gi, (_m, t) => {
+    tags.push(String(t).toLowerCase());
+    return " ";
+  }).replace(/\s+/g, " ").trim();
+
+  // Fecha relativa
+  const now = new Date();
+  const tz = (d: Date) => d.toISOString();
+  const setTime = (d: Date, hh: number, mm: number) => { d.setHours(hh, mm, 0, 0); return d; };
+  const timeMatch = title.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+  let hh = 9, mm = 0, hasTime = false;
+  if (timeMatch) {
+    hh = parseInt(timeMatch[1], 10);
+    mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
+    const ap = timeMatch[3]?.toLowerCase();
+    if (ap === "pm" && hh < 12) hh += 12;
+    if (ap === "am" && hh === 12) hh = 0;
+    if (hh <= 23 && mm <= 59 && (timeMatch[3] || timeMatch[2] || (hh >= 6 && hh <= 22))) {
+      hasTime = true;
+      title = title.replace(timeMatch[0], " ").replace(/\s+/g, " ").trim();
+    }
+  }
+  const lower = title.toLowerCase();
+  const dayRe = /\b(hoy|mañana|pasado\s+mañana|lunes|martes|mi[eé]rcoles|jueves|viernes|s[aá]bado|domingo)\b/i;
+  const dayMatch = lower.match(dayRe);
+  if (dayMatch) {
+    const w = dayMatch[1].toLowerCase();
+    const d = new Date(now);
+    if (w === "hoy") { /* today */ }
+    else if (w === "mañana") d.setDate(d.getDate() + 1);
+    else if (w.startsWith("pasado")) d.setDate(d.getDate() + 2);
+    else {
+      const map: Record<string, number> = { domingo: 0, lunes: 1, martes: 2, "miércoles": 3, "miercoles": 3, jueves: 4, viernes: 5, "sábado": 6, "sabado": 6 };
+      const target = map[w] ?? d.getDay();
+      const diff = ((target - d.getDay()) + 7) % 7 || 7;
+      d.setDate(d.getDate() + diff);
+    }
+    setTime(d, hasTime ? hh : 9, hasTime ? mm : 0);
+    due = tz(d);
+    title = title.replace(new RegExp(dayMatch[0], "i"), " ").replace(/\s+/g, " ").trim();
+  } else if (hasTime) {
+    const d = new Date(now);
+    setTime(d, hh, mm);
+    if (d.getTime() < now.getTime()) d.setDate(d.getDate() + 1);
+    due = tz(d);
+  }
+
+  if (!title) return "❌ No entendí el título.";
+
+  const { data: inserted, error } = await (ctx.supabase as any)
+    .from("tasks")
+    .insert({
+      user_id: ctx.ownerUserId,
+      title,
+      due,
+      priority,
+      tags: tags.length ? tags : undefined,
+    })
+    .select("id")
+    .single();
+  if (error) return `❌ Error: ${error.message}`;
+
+  const parts = [`📝 *Tarea creada:* ${title}`];
+  if (due) parts.push(`📅 ${new Date(due).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: hh || mm ? "short" : undefined })}`);
+  if (priority !== "medium") parts.push(`⚡ Prioridad: ${priority === "high" ? "alta" : "baja"}`);
+  if (tags.length) parts.push(`🏷️ ${tags.map((t) => `#${t}`).join(" ")}`);
+  parts.push(`\n${ctx.baseUrl}/tasks`);
+  return parts.join("\n");
 }
 
 async function handleTareas(ctx: ProcessCtx): Promise<string> {
@@ -227,6 +321,9 @@ export async function processTelegramUpdate(ctx: ProcessCtx, upd: TgUpdate): Pro
     response = await handleAyuda();
   } else if (cmd === "/tareas" || cmd === "/tasks") {
     response = await handleTareas(ctx);
+  } else if (cmd === "/t" || cmd === "/tarea" || cmd === "/todo") {
+    const rest = text.slice(cmd.length).trim();
+    response = await createTaskFromText(ctx, rest);
   } else if (text) {
     response = await handleFreeText(ctx, text);
   } else {
