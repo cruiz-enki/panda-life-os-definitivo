@@ -736,6 +736,45 @@ function SnoozeMenu({ onPick }: { onPick: (until: Date | null) => void }) {
   );
 }
 
+function SubtaskRow({
+  subtask,
+  onToggle,
+  depth,
+}: {
+  subtask: Subtask;
+  onToggle: (id: string) => void;
+  depth: number;
+}) {
+  return (
+    <div style={{ paddingLeft: depth * 14 }}>
+      <button
+        onClick={() => onToggle(subtask.id)}
+        className="flex items-center gap-2 text-sm w-full text-left hover:text-primary transition-colors"
+      >
+        <span
+          className={`w-4 h-4 rounded border flex items-center justify-center ${
+            subtask.done ? "bg-primary border-primary" : "border-border"
+          }`}
+        >
+          {subtask.done && <Check className="w-3 h-3 text-primary-foreground" />}
+        </span>
+        <span className={subtask.done ? "line-through text-muted-foreground" : ""}>
+          {subtask.title}
+        </span>
+      </button>
+      {subtask.children && subtask.children.length > 0 && (
+        <ul className="mt-1 space-y-1">
+          {subtask.children.map((c) => (
+            <li key={c.id}>
+              <SubtaskRow subtask={c} onToggle={onToggle} depth={depth + 1} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function TaskRow({
   task,
   state,
