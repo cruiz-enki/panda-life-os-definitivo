@@ -352,7 +352,7 @@ export function TasksPage() {
                 return (
                   <button
                     key={k}
-                    onClick={() => { setView(k); setActiveTagFilter(null); }}
+                    onClick={() => { setView(k); setActiveTagFilters([]); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all ${
                       active ? "bg-primary/15 text-primary font-medium" : "hover:bg-secondary/50 text-foreground/80"
                     }`}
@@ -372,41 +372,59 @@ export function TasksPage() {
 
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
-              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Listas</h3>
-              <button onClick={() => setListModal(true)} className="text-muted-foreground hover:text-primary">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <FolderTree className="w-3 h-3" /> Listas
+              </h3>
+              <button onClick={() => { setEditingList(null); setListModal(true); }} className="text-muted-foreground hover:text-primary">
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="space-y-1">
-              {state.taskLists.map((l) => {
-                const active = view === l.id;
-                const count = state.tasks.filter((t) => t.listId === l.id && t.status !== "completed").length;
+            <NestedListsTree
+              lists={state.taskLists}
+              tasks={state.tasks}
+              activeView={view}
+              onSelect={(id) => { setView(id); setActiveTagFilters([]); }}
+              onDelete={(l) => { if (confirm(`¿Eliminar lista "${l.name}" y todas sus tareas?`)) deleteList(l.id); }}
+              onEdit={(id) => { setEditingList({ id }); setListModal(true); }}
+              onReorder={(orderedIds, parentId) => reorderLists(orderedIds, parentId)}
+              onSetParent={(childId, parentId) => updateList(childId, { parentId })}
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between px-2 mb-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Etiquetas</h3>
+              <button onClick={() => setTagModal(true)} className="text-muted-foreground hover:text-primary">
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-1.5 px-2">
+              {state.tags.map((tag) => {
+                const active = activeTagFilters.includes(tag.id);
                 return (
-                  <div key={l.id} className="group relative">
-                    <button
-                      onClick={() => { setView(l.id); setActiveTagFilter(null); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all ${
-                        active ? "bg-primary/15 text-primary font-medium" : "hover:bg-secondary/50 text-foreground/80"
-                      }`}
-                    >
-                      <span>{l.emoji}</span>
-                      <span className="flex-1 text-left truncate">{l.name}</span>
-                      {count > 0 && (
-                        <span className="text-xs text-muted-foreground">{count}</span>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => { if (confirm(`¿Eliminar lista "${l.name}" y todas sus tareas?`)) deleteList(l.id); }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1"
-                      aria-label="Eliminar lista"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
+                  <button
+                    key={tag.id}
+                    onClick={() => toggleTag(tag.id)}
+                    className={`text-xs px-2 py-1 rounded-md border transition-all ${
+                      active ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                    }`}
+                    style={{ color: tag.color }}
+                  >
+                    #{tag.name}
+                  </button>
                 );
               })}
+              {state.tags.length === 0 && (
+                <span className="text-xs text-muted-foreground">Sin etiquetas</span>
+              )}
             </div>
+            {activeTagFilters.length > 1 && (
+              <p className="text-[10px] text-muted-foreground px-2 mt-1">
+                Filtro AND: {activeTagFilters.length} etiquetas
+              </p>
+            )}
           </div>
+
 
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
