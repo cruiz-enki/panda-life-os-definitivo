@@ -517,14 +517,15 @@ export function TasksPage() {
                 {p === "" ? "Todas" : p === "high" ? "Alta" : p === "medium" ? "Media" : "Baja"}
               </button>
             ))}
-            {activeTagFilter && (
+            {activeTagFilters.length > 0 && activeTagFilters.map((tid) => (
               <button
-                onClick={() => setActiveTagFilter(null)}
+                key={tid}
+                onClick={() => setActiveTagFilters((xs) => xs.filter((x) => x !== tid))}
                 className="text-xs px-2 py-1 rounded-md bg-primary/10 text-primary inline-flex items-center gap-1"
               >
-                #{state.tags.find((t) => t.id === activeTagFilter)?.name} <X className="w-3 h-3" />
+                #{state.tags.find((t) => t.id === tid)?.name} <X className="w-3 h-3" />
               </button>
-            )}
+            ))}
             <span className="ml-auto text-sm text-muted-foreground">{filtered.length}</span>
           </div>
 
