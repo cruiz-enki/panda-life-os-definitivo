@@ -116,6 +116,14 @@ export type Task = {
   /** Orden manual persistente dentro de la vista. Menor va primero. */
   sortOrder?: number;
   xpReward?: number;
+  /** Adjuntos: fotos de recibos, PDFs, enlaces. */
+  attachments?: TaskAttachment[];
+  /** Comentarios/notas con checklist propio. */
+  comments?: TaskComment[];
+  /** Sesiones de trabajo (para time tracking). */
+  timeEntries?: TaskTimeEntry[];
+  /** Minutos reales acumulados (suma de timeEntries cerradas). */
+  actualMinutes?: number;
   createdAt: string;
   completedAt?: string;
 };
