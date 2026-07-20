@@ -931,21 +931,7 @@ function TaskRow({
               ))}
             </ul>
           )}
-                  <button
-                    onClick={() => onSubtaskToggle(s.id)}
-                    className="flex items-center gap-2 text-sm w-full text-left hover:text-primary transition-colors"
-                  >
-                    <span className={`w-4 h-4 rounded border flex items-center justify-center ${
-                      s.done ? "bg-primary border-primary" : "border-border"
-                    }`}>
-                      {s.done && <Check className="w-3 h-3 text-primary-foreground" />}
-                    </span>
-                    <span className={s.done ? "line-through text-muted-foreground" : ""}>{s.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+        </div>
         </div>
 
         <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
