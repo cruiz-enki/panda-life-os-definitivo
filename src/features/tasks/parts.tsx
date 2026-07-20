@@ -783,6 +783,7 @@ function TaskComposer({
       tags: tagIds,
       reminder: reminders[0] ?? undefined,
       reminders: reminders.length > 0 ? reminders : undefined,
+      reminderChannels: reminders.length > 0 ? reminderChannels : undefined,
       subtasks,
       xpReward: Number.isFinite(xpNum as number) ? xpNum : undefined,
       recurrence,
