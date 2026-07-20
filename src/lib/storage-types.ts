@@ -58,7 +58,30 @@ export type Recurrence = {
   fromCompletion?: boolean;
 };
 
-export type Subtask = { id: string; title: string; done: boolean };
+export type Subtask = { id: string; title: string; done: boolean; children?: Subtask[] };
+
+export type TaskAttachment = {
+  id: string;
+  /** `image` (jpg/png/webp), `pdf`, o `link` (URL genérica). */
+  type: "image" | "pdf" | "link";
+  url: string;
+  name?: string;
+  addedAt: string;
+};
+
+export type TaskComment = {
+  id: string;
+  body: string;
+  checklist?: Subtask[];
+  createdAt: string;
+};
+
+export type TaskTimeEntry = {
+  id: string;
+  startedAt: string;
+  /** Si está `null` la sesión está corriendo. */
+  endedAt: string | null;
+};
 export type ReminderChannel = "push" | "telegram" | "email" | "inapp";
 
 export type TaskList = { id: string; name: string; emoji: string; color: string; parentId?: string | null; sortOrder?: number };
