@@ -168,6 +168,25 @@ function ShortcutsPage() {
         </div>
       </Card>
 
+      <Card className="p-5 bg-gradient-to-br from-green-500/5 to-transparent border-green-500/20">
+        <div className="flex items-start gap-3">
+          <Smartphone className="w-5 h-5 text-green-500 mt-1 shrink-0" />
+          <div>
+            <h2 className="font-display font-bold text-lg mb-2">Cómo usarlo en Android</h2>
+            <p className="text-sm text-muted-foreground mb-2">
+              <b>Instalar la app:</b> abre <code>os.cmrs.mx</code> en Chrome → menú ⋮ → <b>Instalar app</b> (o toca el banner "Instalar" que aparece automáticamente). Queda como app nativa en tu cajón, con push notifications reales.
+            </p>
+            <p className="text-sm font-semibold mt-3 mb-1">Formas de disparar los deep links:</p>
+            <ol className="text-sm space-y-1.5 list-decimal list-inside text-muted-foreground">
+              <li><b>Google Assistant (Rutinas):</b> app Google Home → Rutinas → "Cuando yo diga: tomé mis medicinas" → acción "Abrir URL" con la de Meds AM. Luego dices "Hey Google, tomé mis medicinas".</li>
+              <li><b>Tasker</b> (app de pago, la más potente): tarea con acción <b>Browse URL</b>. Dispárala por NFC, ubicación, hora, gesto, botón, voz, etc.</li>
+              <li><b>Widget de acceso directo a URL:</b> apps gratuitas como <b>URL Shortcut Maker</b> o <b>Shortcut Maker</b> crean íconos en el home que abren una URL específica al tocarlos.</li>
+              <li><b>NFC:</b> con la app <b>NFC Tools</b> escribe la URL en un tag → pega el tag donde quieras (mesita de noche, refri, coche) → acerca el celular.</li>
+            </ol>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-5">
         <div className="flex items-start gap-3">
           <Link2 className="w-5 h-5 text-primary mt-1 shrink-0" />
