@@ -4,7 +4,7 @@
  * Reutilizables entre la ruta principal y el dashboard.
  */
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import {
   useAppState,
   smartTaskRecommendation,
@@ -21,6 +21,7 @@ import {
   type Subtask,
   type Recurrence,
   type RecurrenceFrequency,
+  type RecurrenceMonthlyMode,
 } from "@/lib/storage";
 import {
   Plus,
@@ -43,6 +44,9 @@ import {
   Zap,
   Flame,
   Briefcase,
+  Moon,
+  Timer,
+  Play,
 } from "lucide-react";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { parseISO } from "date-fns";
