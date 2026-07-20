@@ -613,6 +613,11 @@ function TaskRow({
             {reminders.length > 0 && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/60 text-muted-foreground">
                 <Bell className="w-3 h-3" /> {reminders.map(fmtOffset).join(" · ")}
+                {task.reminderChannels && task.reminderChannels.length > 0 && (
+                  <span className="opacity-70">
+                    · {task.reminderChannels.map((c) => c === "push" ? "🔔" : c === "telegram" ? "✈️" : c === "email" ? "✉️" : "📥").join("")}
+                  </span>
+                )}
               </span>
             )}
             {task.recurrence && (
