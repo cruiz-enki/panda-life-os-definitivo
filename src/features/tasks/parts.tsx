@@ -407,6 +407,46 @@ export function TasksPage() {
               )}
             </div>
           </div>
+
+          <div>
+            <div className="flex items-center justify-between px-2 mb-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <Bookmark className="w-3 h-3" /> Filtros guardados
+              </h3>
+              <button
+                onClick={saveCurrentFilter}
+                className="text-muted-foreground hover:text-primary"
+                title="Guardar filtro actual"
+              >
+                <Save className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <div className="space-y-1">
+              {savedFilters.length === 0 && (
+                <p className="text-[11px] text-muted-foreground px-2">
+                  Combina vista + etiqueta + prioridad y guarda con 💾.
+                </p>
+              )}
+              {savedFilters.map((f) => (
+                <div key={f.id} className="group relative">
+                  <button
+                    onClick={() => applyFilter(f)}
+                    className="w-full flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs hover:bg-secondary/50 text-foreground/80"
+                  >
+                    <Bookmark className="w-3 h-3 text-primary shrink-0" />
+                    <span className="flex-1 text-left truncate">{f.name}</span>
+                  </button>
+                  <button
+                    onClick={() => removeFilter(f.id)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1"
+                    aria-label="Eliminar filtro"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </aside>
 
         {/* Tasks list */}
