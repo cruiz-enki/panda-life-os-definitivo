@@ -41,10 +41,22 @@ export type EnergyEntry = {
 
 export type Priority = "high" | "medium" | "low";
 export type TaskStatus = "pending" | "in_progress" | "completed";
-export type ReminderOffset = 10 | 60 | 1440;
+/** Minutos antes del `due` para el recordatorio. Presets clásicos: 10/60/1440. */
+export type ReminderOffset = number;
 
 export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly";
-export type Recurrence = { frequency: RecurrenceFrequency; interval: number };
+export type RecurrenceMonthlyMode = "day-of-month" | "nth-weekday" | "last-weekday";
+export type Recurrence = {
+  frequency: RecurrenceFrequency;
+  interval: number;
+  /** Solo `weekly`: días 0-6 (dom-sab). Si vacío usa el weekday del due. */
+  byWeekday?: number[];
+  /** Solo `monthly`. */
+  monthlyMode?: RecurrenceMonthlyMode;
+  /** Si true, la siguiente ocurrencia se calcula desde la fecha en que se
+   *  completa la tarea, no desde el due original. */
+  fromCompletion?: boolean;
+};
 
 export type Subtask = { id: string; title: string; done: boolean };
 
@@ -55,14 +67,24 @@ export type Task = {
   id: string;
   title: string;
   description?: string;
+  /** Fecha/hora en que empieza el trabajo (opcional). */
+  startDate?: string;
+  /** Fecha/hora límite. */
   due?: string;
+  /** Duración estimada en minutos. */
+  durationMinutes?: number;
   priority: Priority;
   tags: string[];
   listId: string;
   status: TaskStatus;
   subtasks: Subtask[];
+  /** Recordatorio único (legacy). */
   reminder?: ReminderOffset;
+  /** Múltiples recordatorios en minutos antes del due. */
+  reminders?: number[];
   recurrence?: Recurrence;
+  /** Si tiene valor futuro, la tarea está pospuesta hasta esa fecha. */
+  snoozedUntil?: string;
   xpReward?: number;
   createdAt: string;
   completedAt?: string;
