@@ -43,7 +43,7 @@ export const Route = createFileRoute("/quick/$action")({
   validateSearch: (r: Record<string, unknown>): QuickSearch => ({
     amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
     method: s(r.method, "cash"), name: s(r.name), names: s(r.names), id: s(r.id),
-    lat: s(r.lat), lng: s(r.lng), mood: s(r.mood), intensity: s(r.intensity),
+    key: s(r.key), lat: s(r.lat), lng: s(r.lng), mood: s(r.mood), intensity: s(r.intensity),
     energy: s(r.energy), pain: s(r.pain), auto: s(r.auto, "1"), redirect: s(r.redirect),
   }),
   component: QuickActionPage,
