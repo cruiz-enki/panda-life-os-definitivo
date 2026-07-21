@@ -33,6 +33,7 @@ type QuickSearch = {
   amount: string; cat: string; category: string; note: string; method: string;
   name: string; names: string; id: string; key: string; lat: string; lng: string;
   mood: string; intensity: string; energy: string; pain: string;
+  type: string; classification: string; protein: string; time: string;
   auto: string; redirect: string;
 };
 
@@ -44,7 +45,9 @@ export const Route = createFileRoute("/quick/$action")({
     amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
     method: s(r.method, "cash"), name: s(r.name), names: s(r.names), id: s(r.id),
     key: s(r.key), lat: s(r.lat), lng: s(r.lng), mood: s(r.mood), intensity: s(r.intensity),
-    energy: s(r.energy), pain: s(r.pain), auto: s(r.auto, "1"), redirect: s(r.redirect),
+    energy: s(r.energy), pain: s(r.pain),
+    type: s(r.type), classification: s(r.classification, "regular"), protein: s(r.protein), time: s(r.time),
+    auto: s(r.auto, "1"), redirect: s(r.redirect),
   }),
   component: QuickActionPage,
 });
