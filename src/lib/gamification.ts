@@ -367,6 +367,34 @@ export function avatarForLevel(level: number): { current: AvatarStage; next: Ava
   return { current, next };
 }
 
+// ===== Rangos militares (mapeo por nivel/XP) =====
+export type MilitaryRank = {
+  id: string;
+  name: string;
+  insignia: string; // emoji/símbolo
+  minLevel: number;
+  gradient: string;
+  description: string;
+};
+
+export const MILITARY_RANKS: MilitaryRank[] = [
+  { id: "recruit",    name: "Recluta",    insignia: "🪖", minLevel: 1,  gradient: "from-stone-400 to-stone-600",       description: "El viaje comienza" },
+  { id: "legionary",  name: "Legionario", insignia: "🛡️", minLevel: 5,  gradient: "from-emerald-400 to-emerald-700",   description: "Disciplina forjada" },
+  { id: "centurion",  name: "Centurión",  insignia: "⚔️", minLevel: 15, gradient: "from-amber-400 to-orange-600",      description: "Al mando de tu vida" },
+  { id: "tribune",    name: "Tribuno",    insignia: "🎖️", minLevel: 30, gradient: "from-indigo-400 to-purple-700",     description: "Estratega y guía" },
+  { id: "caesar",     name: "César",      insignia: "👑", minLevel: 60, gradient: "from-yellow-300 via-amber-400 to-orange-600", description: "Emperador del hábito" },
+];
+
+export function rankForLevel(level: number): { current: MilitaryRank; next: MilitaryRank | null } {
+  let current = MILITARY_RANKS[0];
+  let next: MilitaryRank | null = null;
+  for (let i = 0; i < MILITARY_RANKS.length; i++) {
+    if (level >= MILITARY_RANKS[i].minLevel) current = MILITARY_RANKS[i];
+    else { next = MILITARY_RANKS[i]; break; }
+  }
+  return { current, next };
+}
+
 // ===== Detección de misiones fijas nuevas =====
 /**
  * Evalúa todas las misiones fijas y devuelve las que el usuario acaba de
