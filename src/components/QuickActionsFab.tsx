@@ -13,6 +13,7 @@ import {
   MessageCircle,
   ClipboardList,
   DollarSign,
+  X,
 } from "lucide-react";
 
 import { useLifeMode } from "@/hooks/use-life-mode";
