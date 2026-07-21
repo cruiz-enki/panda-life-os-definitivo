@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Sparkles,
-  Plus,
   Calendar as CalendarIcon,
   CheckSquare,
   NotebookPen,
@@ -15,6 +14,7 @@ import {
   DollarSign,
   X,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import { useLifeMode } from "@/hooks/use-life-mode";
 
