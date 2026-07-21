@@ -571,6 +571,51 @@ export function HabitsPage() {
                   />
                 </div>
               )}
+              {frequency === "daily" && (
+                <div className="rounded-xl border border-border bg-secondary/40 p-3 space-y-2">
+                  <label className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <Link2 className="w-3.5 h-3.5" /> Auto-completar desde un registro
+                  </label>
+                  <select
+                    value={linkedMetric}
+                    onChange={(e) => {
+                      const v = e.target.value as HabitLinkedMetric | "";
+                      setLinkedMetric(v);
+                      if (v) {
+                        const opt = HABIT_METRIC_OPTIONS.find((o) => o.value === v);
+                        if (opt && !targetValue) setTargetValue(opt.defaultTarget);
+                      } else {
+                        setTargetValue("");
+                      }
+                    }}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm outline-none focus:border-primary"
+                  >
+                    <option value="">Sin vínculo (marcar manual)</option>
+                    {HABIT_METRIC_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                  </select>
+                  {linkedMetric && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          step="any"
+                          placeholder="Meta"
+                          value={targetValue}
+                          onChange={(e) => setTargetValue(e.target.value === "" ? "" : Number(e.target.value))}
+                          className="flex-1 px-3 py-2 rounded-lg bg-background border border-border text-sm outline-none focus:border-primary"
+                        />
+                        <span className="text-xs text-muted-foreground w-14">{metricUnit(linkedMetric)}</span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        {HABIT_METRIC_OPTIONS.find((o) => o.value === linkedMetric)?.hint}
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
               <button
                 disabled={!name.trim()}
                 onClick={submitForm}
