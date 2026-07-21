@@ -70,9 +70,8 @@ function QuickActionPage() {
   const ranRef = useRef(false);
 
   const goHomeAfter = () => {
-    if (search.redirect) {
-      setTimeout(() => navigate({ to: search.redirect as any }), 1200);
-    }
+    const dest = search.redirect || "/";
+    setTimeout(() => navigate({ to: dest as any }), 1500);
   };
 
   const run = async () => {
