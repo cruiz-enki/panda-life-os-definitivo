@@ -203,6 +203,7 @@ function AuthGate() {
         <DeferredGamification />
         <HabitAutoSyncer />
         <TitoMascot />
+        <TitoMissions />
         <Toaster />
       </div>
     </GlobalSearchProvider>
