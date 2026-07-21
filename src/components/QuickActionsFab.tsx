@@ -99,7 +99,7 @@ export function QuickActionsFab({
         }`}
         style={{ transform: open ? "translateY(-7.5rem)" : "translateY(-7.5rem) scale(0.95)" }}
       >
-        <div className="flex flex-col gap-2 min-w-[13rem] p-2 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-card">
+        <div className="flex flex-col gap-2 min-w-[15rem] max-w-[17rem] p-2 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-card">
           <div className="flex items-center justify-between px-2 pt-1 pb-1">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               Tito · Acciones
@@ -113,6 +113,7 @@ export function QuickActionsFab({
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
+          <TitoMissionsPanel />
           {visibleShortcuts.map((s, idx) => {
             const Icon = s.icon;
             return (
