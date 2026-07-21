@@ -157,24 +157,58 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
           };
 
           // === Medicamentos ===
+          // Si hay med_slots definidos, se envía UNA notificación por slot
+          // (agrupada) con la lista de meds. Si no hay slots, cae al
+          // comportamiento legacy: una notif por cada schedule_time.
           if (cfg.notify_medications && globalPrefs.medical_reminders_enabled) {
-            const { data: meds } = await supabase
-              .from("health_medications")
-              .select("id, name, dose, schedule_times, status, active")
+            const { data: slots } = await supabase
+              .from("med_slots")
+              .select("id, key, label, emoji, time, active, med_slot_items(medication_id, health_medications(id, name, dose, active))")
               .eq("user_id", cfg.user_id)
-              .eq("active", true)
-              .eq("status", "active");
-            for (const m of meds ?? []) {
-              for (const t of (m.schedule_times ?? []) as string[]) {
-                const target = parseHM(t);
+              .eq("active", true);
+
+            const hasSlots = Array.isArray(slots) && slots.length > 0;
+
+            if (hasSlots) {
+              for (const slot of slots!) {
+                const target = parseHM((slot.time as string).slice(0, 5));
                 if (!withinWindow(now, target)) continue;
-                const key = `${now.ymd}|med|${m.id}|${t}`;
-                const dose = m.dose ? ` (${m.dose})` : "";
+                const items = (slot.med_slot_items ?? []) as Array<{
+                  health_medications: { id: string; name: string; dose: string | null; active: boolean } | null;
+                }>;
+                const meds = items
+                  .map((i) => i.health_medications)
+                  .filter((m): m is NonNullable<typeof m> => !!m && m.active);
+                if (!meds.length) continue;
+                const key = `${now.ymd}|slot|${slot.id}`;
+                const list = meds.map((m) => `• ${m.name}${m.dose ? ` (${m.dose})` : ""}`).join("\n");
+                const emoji = (slot.emoji as string) || "💊";
+                const label = slot.label as string;
                 await fire(
                   key,
-                  `💊 *Medicamento*\nEs hora de: *${m.name}*${dose}`,
-                  { title: "💊 Medicamento", body: `Es hora de: ${m.name}${dose}`, url: "/health", tag: `med-${m.id}-${t}` },
+                  `${emoji} *${label}*\nToca 1 sola vez para registrar las ${meds.length}:\n\n${list}\n\nhttps://os.cmrs.mx/quick/slot?key=${slot.key}`,
+                  { title: `${emoji} ${label}`, body: `${meds.length} medicinas`, url: `/quick/slot?key=${slot.key}`, tag: `slot-${slot.id}` },
                 );
+              }
+            } else {
+              const { data: meds } = await supabase
+                .from("health_medications")
+                .select("id, name, dose, schedule_times, status, active")
+                .eq("user_id", cfg.user_id)
+                .eq("active", true)
+                .eq("status", "active");
+              for (const m of meds ?? []) {
+                for (const t of (m.schedule_times ?? []) as string[]) {
+                  const target = parseHM(t);
+                  if (!withinWindow(now, target)) continue;
+                  const key = `${now.ymd}|med|${m.id}|${t}`;
+                  const dose = m.dose ? ` (${m.dose})` : "";
+                  await fire(
+                    key,
+                    `💊 *Medicamento*\nEs hora de: *${m.name}*${dose}`,
+                    { title: "💊 Medicamento", body: `Es hora de: ${m.name}${dose}`, url: "/health", tag: `med-${m.id}-${t}` },
+                  );
+                }
               }
             }
           }
