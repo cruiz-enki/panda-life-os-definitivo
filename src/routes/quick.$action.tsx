@@ -174,14 +174,14 @@ function QuickActionPage() {
         case "slot": {
           const slotKey = norm(search.key || search.name);
           if (!slotKey) throw new Error("Falta key=am|pm");
-          const { data: slot, error: sErr } = await supabase
+          const { data: slot, error: sErr } = await (supabase as any)
             .from("med_slots")
             .select("id, label, emoji, med_slot_items(medication_id)")
             .eq("user_id", user.id)
             .eq("key", slotKey)
             .maybeSingle();
           if (sErr) throw new Error(sErr.message);
-          if (!slot) throw new Error(`No existe el slot "${slotKey}". Créalo en Salud → Medicación.`);
+          if (!slot) throw new Error(`No existe el slot "${slotKey}". Corre la migración med_slots.`);
           const ids: string[] = (slot.med_slot_items ?? []).map((i: { medication_id: string }) => i.medication_id);
           if (!ids.length) throw new Error(`El slot "${slotKey}" no tiene medicinas.`);
           const now = new Date();
