@@ -354,6 +354,19 @@ export function TitoMascot() {
         @keyframes tito-sad { 0%,100% { transform: translateY(2px) rotate(-2deg); } 50% { transform: translateY(6px) rotate(-2deg); } }
         @keyframes tito-hungry { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.02); } }
         @keyframes tito-tired { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(3px) rotate(4deg); } }
+
+        /* Reacciones en tiempo real */
+        @keyframes tito-salute { 0% { transform: rotate(0) translateY(0); } 25% { transform: rotate(-8deg) translateY(-4px); } 50% { transform: rotate(-8deg) translateY(-4px) scale(1.04); } 100% { transform: rotate(0) translateY(0); } }
+        @keyframes tito-splash { 0%,100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-6px) scale(1.05,.95); } 60% { transform: translateY(4px) scale(.95,1.05); } }
+        @keyframes tito-pushup { 0%,100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(6px) rotate(-4deg) scale(1.02,.96); } 50% { transform: translateY(-6px) rotate(2deg) scale(.98,1.04); } 75% { transform: translateY(6px) rotate(-4deg) scale(1.02,.96); } }
+        @keyframes tito-heart { 0%,100% { transform: scale(1); } 20% { transform: scale(1.12); } 40% { transform: scale(.98); } 60% { transform: scale(1.08); } }
+        @keyframes tito-sleepy { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(4px) rotate(6deg); } }
+        @keyframes tito-bounce-run { 0%,100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-8px) rotate(-4deg); } 50% { transform: translateY(0) rotate(0); } 75% { transform: translateY(-6px) rotate(4deg); } }
+        @keyframes tito-coin { 0%,100% { transform: rotateY(0) translateY(0); } 50% { transform: rotateY(180deg) translateY(-6px); } }
+        @keyframes tito-eat { 0%,100% { transform: scale(1); } 25% { transform: scale(1.05,.95); } 50% { transform: scale(.98,1.05); } 75% { transform: scale(1.05,.95); } }
+
+        /* Ráfaga de emojis */
+        @keyframes tito-burst { 0% { opacity: 0; transform: translate(0,0) scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: var(--tito-burst-end) scale(1.1); } }
       `}</style>
 
       <div className="fixed z-[60] bottom-24 right-3 md:bottom-6 md:right-6 pointer-events-none select-none">
