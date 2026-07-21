@@ -1,10 +1,13 @@
 /**
- * **TitoMissions** — Panel flotante con las 3 misiones diarias que da Tito.
- * Se muestra encima de la mascota; al completar una misión dispara
- * animación de victoria (confetti emoji) + burbuja de Tito + bonus XP.
+ * **TitoMissions** — Motor + panel de misiones diarias de Tito.
+ *
+ * - `TitoMissionsEngine`: componente invisible que evalúa progreso, dispara
+ *   confetti, cheer de Tito y otorga bonus XP. Se monta una sola vez en root.
+ * - `TitoMissionsPanel`: lista embebible (usada dentro del FAB) con el
+ *   estado en vivo de las 3 misiones del día.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useAppState } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -14,29 +17,15 @@ import {
   type Mission,
 } from "@/lib/daily-missions";
 
-const LS_COLLAPSED = "tito:missions:collapsed";
-
 type Burst = { id: number; emoji: string };
 
-export function TitoMissions() {
+function useTodayMissions() {
   const { user } = useAuth();
-  const { state, addBonusXp } = useAppState();
-  const [collapsed, setCollapsed] = useState(true);
-  const [bursts, setBursts] = useState<Burst[]>([]);
-  const seen = useRef<Record<string, boolean>>({});
-  const initRef = useRef(false);
-
-  // Hydrate colapsado
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setCollapsed(window.localStorage.getItem(LS_COLLAPSED) !== "0");
-  }, []);
-
-  const missions: Mission[] = useMemo(() => {
-    if (!user) return [];
-    return pickTodayMissions(user.id, 3);
-  }, [user]);
-
+  const { state } = useAppState();
+  const missions: Mission[] = useMemo(
+    () => (user ? pickTodayMissions(user.id, 3) : []),
+    [user]
+  );
   const evaluated = useMemo(
     () =>
       missions.map((m) => {
@@ -45,17 +34,23 @@ export function TitoMissions() {
       }),
     [missions, state]
   );
-
   const doneCount = evaluated.filter((e) => e.done).length;
   const allDone = missions.length > 0 && doneCount === missions.length;
+  return { user, missions, evaluated, doneCount, allDone };
+}
 
-  // Detección de completadas nuevas → cheer + XP + confetti
+/** Motor invisible: reacciones, XP, confetti. */
+export function TitoMissionsEngine() {
+  const { user, missions, evaluated, allDone } = useTodayMissions();
+  const { addBonusXp } = useAppState();
+  const [bursts, setBursts] = useState<Burst[]>([]);
+  const seen = useRef<Record<string, boolean>>({});
+  const initRef = useRef(false);
+  const finalCelebrated = useRef(false);
+
   useEffect(() => {
     if (!user) return;
     const rec = loadMissionsRecord(user.id);
-
-    // En la primera pasada, marca como vistas las ya hechas para no re-celebrar
-    // misiones completadas antes de abrir la app hoy.
     if (!initRef.current) {
       initRef.current = true;
       evaluated.forEach((e) => {
@@ -63,22 +58,15 @@ export function TitoMissions() {
       });
       return;
     }
-
     for (const e of evaluated) {
       if (e.done && !seen.current[e.mission.id]) {
         seen.current[e.mission.id] = true;
-
-        // Bonus XP una sola vez por día
         if (!rec.claimed.includes(e.mission.id)) {
           addBonusXp(e.mission.xp);
           rec.claimed = [...rec.claimed, e.mission.id];
           saveMissionsRecord(user.id, rec);
         }
-
-        // Anima confetti
         triggerBurst(e.mission.emoji);
-
-        // Tito celebra
         if (typeof window !== "undefined") {
           window.dispatchEvent(
             new CustomEvent("tito:cheer", {
@@ -90,21 +78,16 @@ export function TitoMissions() {
             })
           );
         }
-
-        // Auto-expande para que se vea el ✓
-        setCollapsed(false);
-        if (typeof window !== "undefined") window.localStorage.setItem(LS_COLLAPSED, "0");
       }
     }
   }, [evaluated, user, addBonusXp]);
 
-  // Celebración final si TODAS las misiones están hechas
-  const finalCelebrated = useRef(false);
   useEffect(() => {
     if (allDone && !finalCelebrated.current) {
       finalCelebrated.current = true;
-      // Ráfaga grande
-      ["⚔️", "🐼", "🌟", "🔥", "🎉"].forEach((e, i) => setTimeout(() => triggerBurst(e), i * 120));
+      ["⚔️", "🐼", "🌟", "🔥", "🎉"].forEach((e, i) =>
+        setTimeout(() => triggerBurst(e), i * 120)
+      );
       if (typeof window !== "undefined") {
         window.dispatchEvent(
           new CustomEvent("tito:cheer", {
@@ -122,14 +105,11 @@ export function TitoMissions() {
   function triggerBurst(emoji: string) {
     const id = Date.now() + Math.random();
     setBursts((prev) => [...prev, { id, emoji }]);
-    setTimeout(() => setBursts((prev) => prev.filter((b) => b.id !== id)), 1500);
+    setTimeout(
+      () => setBursts((prev) => prev.filter((b) => b.id !== id)),
+      1500
+    );
   }
-
-  const toggle = () => {
-    const next = !collapsed;
-    setCollapsed(next);
-    if (typeof window !== "undefined") window.localStorage.setItem(LS_COLLAPSED, next ? "1" : "0");
-  };
 
   if (!user || missions.length === 0) return null;
 
@@ -148,81 +128,75 @@ export function TitoMissions() {
         }
         .mission-check-in { animation: mission-check .35s ease-out; }
       `}</style>
-
-      {/* Confetti overlay (por encima de todo, no bloquea clics) */}
       <div className="fixed inset-0 z-[70] pointer-events-none overflow-hidden">
         {bursts.map((b) => (
           <ConfettiBurst key={b.id} emoji={b.emoji} />
         ))}
       </div>
-
-      {/* Panel de misiones — anclado sobre Tito */}
-      <div
-        className="fixed z-[59] right-3 md:right-6 pointer-events-none"
-        style={{ bottom: "calc(6rem + 128px)" }}
-      >
-        <div className="pointer-events-auto ml-auto w-[240px] md:w-[280px] bg-card/95 backdrop-blur border border-border rounded-2xl shadow-lg overflow-hidden">
-          <button
-            onClick={toggle}
-            className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-muted/40 transition-colors"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <Sparkles className="w-4 h-4 text-primary shrink-0" />
-              <div className="min-w-0">
-                <div className="text-xs uppercase tracking-wide text-muted-foreground leading-none">Misión de Tito</div>
-                <div className="text-sm font-medium truncate">
-                  {allDone ? "¡Día conquistado! 👑" : `${doneCount}/${missions.length} completadas`}
-                </div>
-              </div>
-            </div>
-            {collapsed ? <ChevronUp className="w-4 h-4 shrink-0" /> : <ChevronDown className="w-4 h-4 shrink-0" />}
-          </button>
-
-          {!collapsed && (
-            <ul className="px-2 pb-2 space-y-1 border-t border-border/60">
-              {evaluated.map(({ mission, done, progress, label }) => (
-                <li
-                  key={mission.id}
-                  className={`flex items-center gap-2 px-2 py-2 rounded-xl text-sm transition-colors ${
-                    done ? "bg-primary/10" : "bg-muted/20"
-                  }`}
-                >
-                  <span
-                    className={`w-8 h-8 flex items-center justify-center rounded-full text-lg shrink-0 ${
-                      done ? "bg-primary/20 mission-check-in" : "bg-background/60"
-                    }`}
-                  >
-                    {done ? "✓" : mission.emoji}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-medium leading-tight truncate ${done ? "line-through text-muted-foreground" : ""}`}>
-                      {mission.title}
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                      <span>+{mission.xp} XP</span>
-                      {label && <span>· {label}</span>}
-                    </div>
-                    {!done && progress > 0 && (
-                      <div className="mt-1 h-1 rounded-full bg-background/60 overflow-hidden">
-                        <div
-                          className="h-full bg-primary transition-all"
-                          style={{ width: `${Math.round(progress * 100)}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
     </>
   );
 }
 
+/** Panel embebible con las 3 misiones (para meterlo en el FAB). */
+export function TitoMissionsPanel() {
+  const { missions, evaluated, doneCount, allDone } = useTodayMissions();
+  if (missions.length === 0) return null;
+
+  return (
+    <div className="rounded-xl border border-border/60 bg-muted/20 p-2">
+      <div className="flex items-center gap-2 px-1 pb-2">
+        <Sparkles className="w-3.5 h-3.5 text-primary" />
+        <div className="text-[11px] uppercase tracking-wide text-muted-foreground leading-none">
+          Misión de Tito
+        </div>
+        <div className="ml-auto text-[11px] font-medium">
+          {allDone ? "👑 ¡Día conquistado!" : `${doneCount}/${missions.length}`}
+        </div>
+      </div>
+      <ul className="space-y-1">
+        {evaluated.map(({ mission, done, progress, label }) => (
+          <li
+            key={mission.id}
+            className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm ${
+              done ? "bg-primary/10" : "bg-background/40"
+            }`}
+          >
+            <span
+              className={`w-7 h-7 flex items-center justify-center rounded-full text-base shrink-0 ${
+                done ? "bg-primary/20 mission-check-in" : "bg-background/70"
+              }`}
+            >
+              {done ? "✓" : mission.emoji}
+            </span>
+            <div className="flex-1 min-w-0">
+              <div
+                className={`text-[13px] font-medium leading-tight truncate ${
+                  done ? "line-through text-muted-foreground" : ""
+                }`}
+              >
+                {mission.title}
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                <span>+{mission.xp} XP</span>
+                {label && <span>· {label}</span>}
+              </div>
+              {!done && progress > 0 && (
+                <div className="mt-1 h-1 rounded-full bg-background/60 overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all"
+                    style={{ width: `${Math.round(progress * 100)}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function ConfettiBurst({ emoji }: { emoji: string }) {
-  // 14 partículas con dirección aleatoria
   const pieces = useMemo(() => {
     return Array.from({ length: 14 }).map((_, i) => {
       const angle = (Math.PI * 2 * i) / 14 + (Math.random() - 0.5) * 0.6;
@@ -235,7 +209,6 @@ function ConfettiBurst({ emoji }: { emoji: string }) {
       };
     });
   }, []);
-
   return (
     <div className="absolute right-16 bottom-32 md:right-24 md:bottom-32 text-2xl">
       {pieces.map((p, i) => (
@@ -258,3 +231,6 @@ function ConfettiBurst({ emoji }: { emoji: string }) {
     </div>
   );
 }
+
+// Compat: export previo
+export const TitoMissions = TitoMissionsEngine;
