@@ -126,10 +126,10 @@ function QuickActionPage() {
           break;
         }
         case "med": {
-          const query = (search.name || search.id).toLowerCase().trim();
+          const query = norm(search.name || search.id);
           if (!query) throw new Error("Falta nombre del medicamento");
           const med = health.medications.find(
-            (m) => m.id === search.id || m.name.toLowerCase().includes(query),
+            (m) => m.id === search.id || norm(m.name).includes(query),
           );
           if (!med) throw new Error(`No encontré "${query}"`);
           const now = new Date();
@@ -147,14 +147,14 @@ function QuickActionPage() {
           break;
         }
         case "meds": {
-          const list = (search.names || search.name).split(",").map((n: string) => n.trim().toLowerCase()).filter(Boolean);
+          const list = (search.names || search.name).split(",").map((n: string) => norm(n)).filter(Boolean);
           if (!list.length) throw new Error("Falta names=med1,med2,...");
           const now = new Date();
           const scheduled = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
           const ok: string[] = [];
           const miss: string[] = [];
           for (const q of list) {
-            const med = health.medications.find((m) => m.name.toLowerCase().includes(q));
+            const med = health.medications.find((m) => norm(m.name).includes(q));
             if (!med) { miss.push(q); continue; }
             const err = await health.logMedication({
               medication_id: med.id,
@@ -169,6 +169,40 @@ function QuickActionPage() {
           if (!ok.length) throw new Error(`No encontré: ${miss.join(", ")}`);
           setMessage(`${ok.length} medicamento${ok.length > 1 ? "s" : ""} registrado${ok.length > 1 ? "s" : ""}`);
           setDetail(ok.join(" · ") + (miss.length ? ` — sin match: ${miss.join(", ")}` : ""));
+          break;
+        }
+        case "slot": {
+          const slotKey = norm(search.key || search.name);
+          if (!slotKey) throw new Error("Falta key=am|pm");
+          const { data: slot, error: sErr } = await supabase
+            .from("med_slots")
+            .select("id, label, emoji, med_slot_items(medication_id)")
+            .eq("user_id", user.id)
+            .eq("key", slotKey)
+            .maybeSingle();
+          if (sErr) throw new Error(sErr.message);
+          if (!slot) throw new Error(`No existe el slot "${slotKey}". Créalo en Salud → Medicación.`);
+          const ids: string[] = (slot.med_slot_items ?? []).map((i: { medication_id: string }) => i.medication_id);
+          if (!ids.length) throw new Error(`El slot "${slotKey}" no tiene medicinas.`);
+          const now = new Date();
+          const scheduled = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          const ok: string[] = [];
+          for (const medId of ids) {
+            const med = health.medications.find((m) => m.id === medId);
+            if (!med || !med.active) continue;
+            const err = await health.logMedication({
+              medication_id: medId,
+              date: todayCDMX(),
+              scheduled_time: scheduled,
+              taken: true,
+              taken_at: now.toISOString(),
+              notes: search.note || `slot:${slotKey}`,
+            });
+            if (!err) ok.push(`${med.emoji ?? "💊"} ${med.name}`);
+          }
+          if (!ok.length) throw new Error("No se registró ninguna");
+          setMessage(`${slot.emoji ?? "💊"} ${slot.label} · ${ok.length} med${ok.length > 1 ? "s" : ""}`);
+          setDetail(ok.join(" · "));
           break;
         }
         case "location":
