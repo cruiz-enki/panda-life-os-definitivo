@@ -109,8 +109,9 @@ export function RewardsPage() {
             <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-primary mb-2">
               <Sparkles className="w-3.5 h-3.5" /> Nivel {level} · {current.name}
             </div>
+            <div className="mb-2"><RankBadge xp={state.xp} size="lg" /></div>
             <h2 className="font-display text-2xl md:text-3xl font-bold">{state.xp} XP totales</h2>
-            <p className="mt-2 text-muted-foreground text-sm md:text-base">{current.description}</p>
+            <p className="mt-2 text-muted-foreground text-sm md:text-base">{rank.description} · {current.description}</p>
             <div className="mt-4">
               <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
                 <span>{state.xp - currentLevelXp} / {nextLevelXp - currentLevelXp} XP</span>
