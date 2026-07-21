@@ -431,6 +431,32 @@ export function TitoMascot() {
                 }
                 draggable={false}
               />
+              {activeSkin.aura && !minimized && (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{ boxShadow: `0 0 32px 6px ${activeSkin.aura}`, opacity: 0.85 }}
+                />
+              )}
+              {!minimized && accessories.length > 0 && (
+                <div className="pointer-events-none absolute inset-0" aria-hidden>
+                  {accessories.map((a, i) => (
+                    <span
+                      key={`${a.emoji}-${i}`}
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 ${a.size ?? "text-xl"}`}
+                      style={{
+                        top: a.top,
+                        left: a.left,
+                        transform: `translate(-50%, -50%) rotate(${a.rotate ?? 0}deg)`,
+                        filter: a.filter,
+                        zIndex: a.z ?? 3,
+                      }}
+                    >
+                      {a.emoji}
+                    </span>
+                  ))}
+                </div>
+              )}
               {reaction && (
                 <div key={reaction.id} className="pointer-events-none absolute inset-0 overflow-visible">
                   {reaction.spec.emojis.map((emo, i) => {
