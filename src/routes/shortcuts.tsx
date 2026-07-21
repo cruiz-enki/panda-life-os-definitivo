@@ -32,6 +32,16 @@ type Shortcut = {
 
 const SHORTCUTS: Shortcut[] = [
   {
+    id: "log",
+    action: "log",
+    label: "Abrir Registrar (hub)",
+    emoji: "📝",
+    example: "/quick/log",
+    params: [
+      { name: "—", desc: "Abre /log donde registras gasto, hábito, mood, sueño, comida, etc." },
+    ],
+  },
+  {
     id: "expense",
     action: "expense",
     label: "Registrar gasto",
