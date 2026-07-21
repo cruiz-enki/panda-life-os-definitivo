@@ -351,6 +351,8 @@ export function useExercise() {
       xp_awarded: xp,
     } as never);
     await refresh();
+    const { titoReact } = await import("@/lib/tito-react");
+    titoReact("exercise", ex ? { text: `${ex.name} 💪 +${xp} XP` } : {});
     return xp;
   };
 
