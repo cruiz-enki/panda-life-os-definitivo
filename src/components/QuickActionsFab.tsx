@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { TitoMissionsPanel } from "@/components/TitoMissions";
 
 import { useLifeMode } from "@/hooks/use-life-mode";
 
