@@ -134,11 +134,17 @@ export function TitoMascot() {
         ttl: detail?.ttl ?? 4000,
       });
     };
+    const onFabState = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
+      setFabOpen(!!detail?.open);
+    };
     window.addEventListener("tito:cheer", onCheer);
     window.addEventListener("tito:say", onCheer);
+    window.addEventListener("fab:state", onFabState);
     return () => {
       window.removeEventListener("tito:cheer", onCheer);
       window.removeEventListener("tito:say", onCheer);
+      window.removeEventListener("fab:state", onFabState);
     };
   }, [showBubble]);
 
