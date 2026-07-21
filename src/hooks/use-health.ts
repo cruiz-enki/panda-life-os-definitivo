@@ -151,6 +151,9 @@ export function useHealth() {
           last_health_date: today
         } as any).eq("id", user.id);
       }
+
+      const { titoReact } = await import("@/lib/tito-react");
+      titoReact("med", med ? { text: `${med.emoji ?? "💊"} ${med.name} registrada 🫡` } : {});
     }
 
     if (!error) await refresh();
