@@ -4,6 +4,14 @@
  */
 export type HabitFrequency = "daily" | "weekly" | "monthly";
 
+export type HabitLinkedMetric =
+  | "water_ml"
+  | "exercise_any"
+  | "protein_g"
+  | "sleep_hours"
+  | "meds_am"
+  | "meds_pm";
+
 export type Habit = {
   id: string;
   name: string;
@@ -15,6 +23,8 @@ export type Habit = {
   frequency: HabitFrequency;
   targetCount: number;
   category?: string;
+  linkedMetric?: HabitLinkedMetric | null;
+  targetValue?: number | null;
 };
 
 export type LearningCategory = "tech" | "mindset" | "health" | "creative" | "business" | "other";
