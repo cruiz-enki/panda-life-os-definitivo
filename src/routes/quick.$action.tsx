@@ -242,6 +242,40 @@ function QuickActionPage() {
           setDetail(`Mood: ${moodKey}`);
           break;
         }
+        case "meal":
+        case "desayuno":
+        case "comida":
+        case "cena":
+        case "snack": {
+          const mealTypeMap: Record<string, "desayuno" | "comida" | "cena" | "snack"> = {
+            meal: "desayuno", desayuno: "desayuno", breakfast: "desayuno",
+            comida: "comida", lunch: "comida", cena: "cena", dinner: "cena",
+            snack: "snack",
+          };
+          const requested = norm(search.type || action);
+          const meal_type = mealTypeMap[requested] ?? "desayuno";
+          const classification = ["saludable", "regular", "chatarra"].includes(search.classification)
+            ? (search.classification as "saludable" | "regular" | "chatarra")
+            : "regular";
+          const now = new Date();
+          const time = search.time || `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          const description = search.name || search.note || "";
+          const protein = search.protein ? Number(search.protein) : null;
+          const { error } = await supabase.from("health_meals").insert({
+            user_id: user.id,
+            date: todayCDMX(),
+            time,
+            meal_type,
+            classification,
+            description,
+            protein_grams: protein,
+          });
+          if (error) throw new Error(error.message);
+          const label = meal_type === "desayuno" ? "Desayuno" : meal_type === "comida" ? "Comida" : meal_type === "cena" ? "Cena" : "Snack";
+          setMessage(`${label} registrado`);
+          setDetail(description || `${classification} · ${time}`);
+          break;
+        }
         case "water": {
           const amount = Number(search.amount) || 250;
           const today = todayCDMX();
