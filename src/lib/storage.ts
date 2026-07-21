@@ -209,7 +209,9 @@ async function bootstrap(userId: string) {
     const cloud = await loadCloudState(userId);
     memoryState = cloud;
     cloudReady = true;
-    persistLocal();
+    // Flush síncrono: garantiza que localStorage refleje la nube antes de
+    // que cualquier setState posterior pueda sobrescribir con datos stale.
+    flushPersist();
     emit();
     await ensureSeed(userId);
   } catch (e) {
