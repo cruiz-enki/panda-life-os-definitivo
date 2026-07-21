@@ -83,6 +83,7 @@ export function TitoMascot() {
   const [hiddenToday, setHiddenToday] = useState(false);
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [mood, setMood] = useState<Mood>("idle");
+  const [fabOpen, setFabOpen] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hydrate persistencia
@@ -133,11 +134,17 @@ export function TitoMascot() {
         ttl: detail?.ttl ?? 4000,
       });
     };
+    const onFabState = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
+      setFabOpen(!!detail?.open);
+    };
     window.addEventListener("tito:cheer", onCheer);
     window.addEventListener("tito:say", onCheer);
+    window.addEventListener("fab:state", onFabState);
     return () => {
       window.removeEventListener("tito:cheer", onCheer);
       window.removeEventListener("tito:say", onCheer);
+      window.removeEventListener("fab:state", onFabState);
     };
   }, [showBubble]);
 
@@ -155,8 +162,17 @@ export function TitoMascot() {
   if (hiddenToday) return null;
 
   const onTap = () => {
-    const pool = messages.length > 0 ? messages : [{ mood: "happy" as Mood, text: "¡Aquí estoy, general!" }];
-    showBubble(pool[Math.floor(Math.random() * pool.length)]);
+    // Toggle del panel de acciones (Tito ES el FAB)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("tito:toggleFab"));
+    }
+    // Además, si va a abrirse el panel, no mostramos burbuja para no encimar
+    if (fabOpen) {
+      const pool = messages.length > 0 ? messages : [{ mood: "happy" as Mood, text: "¡Aquí estoy, general!" }];
+      showBubble(pool[Math.floor(Math.random() * pool.length)]);
+    } else {
+      setBubble(null);
+    }
   };
 
   const minimize = () => {
@@ -186,8 +202,8 @@ export function TitoMascot() {
       `}</style>
 
       <div className="fixed z-[60] bottom-24 right-3 md:bottom-6 md:right-6 pointer-events-none select-none">
-        {/* Bocadillo */}
-        {!minimized && bubble && (
+        {/* Bocadillo — oculto cuando el panel de acciones está abierto */}
+        {!minimized && bubble && !fabOpen && (
           <div
             className="pointer-events-auto max-w-[240px] mb-2 ml-auto bg-card/95 backdrop-blur border border-border rounded-2xl rounded-br-sm px-3 py-2 text-sm shadow-lg"
             style={{ animation: "tito-pop .22s ease-out both" }}

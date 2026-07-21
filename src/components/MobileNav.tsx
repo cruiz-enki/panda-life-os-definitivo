@@ -224,7 +224,7 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
             <div className="flex items-end justify-between px-2 pt-2 pb-1.5 gap-1">
               <NavBtn to={primary[0].to} label={primary[0].label} icon={primary[0].icon} active={location.pathname === primary[0].to} />
               <NavBtn to={primary[1].to} label={primary[1].label} icon={primary[1].icon} active={location.pathname === primary[1].to} />
-              <div className="w-16 shrink-0" aria-hidden />
+              
               <NavBtn to={primary[2].to} label={primary[2].label} icon={primary[2].icon} active={location.pathname === primary[2].to} />
               <NavBtn to={primary[3].to} label={primary[3].label} icon={primary[3].icon} active={location.pathname === primary[3].to} />
               <button
