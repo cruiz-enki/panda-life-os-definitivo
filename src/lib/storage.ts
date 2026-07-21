@@ -207,12 +207,19 @@ async function bootstrap(userId: string) {
   // 2) Cargar de la nube
   try {
     const cloud = await loadCloudState(userId);
-    memoryState = cloud;
+    // Nunca degradar XP / PandaCoins: si la nube trae menos que el cache local
+    // (escritura pendiente de sincronizar o pushXp que falló silenciosamente),
+    // conservamos el máximo y re-empujamos a la nube.
+    const localXp = cached?.xp ?? 0;
+    const localCoins = cached?.pandaCoins ?? 0;
+    const mergedXp = Math.max(cloud.xp ?? 0, localXp);
+    const mergedCoins = Math.max(cloud.pandaCoins ?? 0, localCoins);
+    memoryState = { ...cloud, xp: mergedXp, pandaCoins: mergedCoins };
     cloudReady = true;
-    // Flush síncrono: garantiza que localStorage refleje la nube antes de
-    // que cualquier setState posterior pueda sobrescribir con datos stale.
     flushPersist();
     emit();
+    if (mergedXp > (cloud.xp ?? 0)) pushXp(userId, mergedXp);
+    if (mergedCoins > (cloud.pandaCoins ?? 0)) pushPandaCoins(userId, mergedCoins);
     await ensureSeed(userId);
   } catch (e) {
     console.error("[cloud:load]", e);
