@@ -145,7 +145,24 @@ export function TitoMascot() {
     if (until && new Date(until).getTime() > Date.now()) setHiddenToday(true);
   }, []);
 
-  const messages = useMemo(() => pickTimeMessages(state), [state]);
+  const vitals = useMemo(() => computeVitals(state), [state]);
+  const hourNow = new Date().getHours();
+  const ambient = useMemo(() => ambientMood(vitals, hourNow), [vitals, hourNow]);
+
+  const messages = useMemo(() => {
+    const base = pickTimeMessages(state);
+    const extra: Bubble[] = [];
+    if (vitals.care < 0.25) {
+      extra.push({ mood: "sad", text: "Me siento decaído… llevamos varios pendientes. ¿Un tap y arrancamos?" });
+    }
+    if (vitals.hunger < 0.3) {
+      extra.push({ mood: "hungry", text: "Tengo hambre 🍙 ¿Registramos comida o un vaso de agua?" });
+    }
+    if (vitals.energy < 0.3) {
+      extra.push({ mood: "tired", text: "Estoy agotado 😴 ¿Ya registraste tu sueño?" });
+    }
+    return [...base, ...extra];
+  }, [state, vitals]);
 
   const showBubble = useCallback((b: Bubble) => {
     setBubble(b);
@@ -156,6 +173,11 @@ export function TitoMascot() {
       setMood("idle");
     }, b.ttl ?? 5000);
   }, []);
+
+  // Mood ambiental cuando no hay burbuja activa (Tamagotchi)
+  useEffect(() => {
+    if (!bubble) setMood(ambient);
+  }, [ambient, bubble]);
 
   // Bocadillo inicial + rotación
   useEffect(() => {
