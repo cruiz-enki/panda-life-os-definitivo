@@ -16,6 +16,28 @@ type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think" | "hungry" | 
 
 type Bubble = { text: string; mood: Mood; ttl?: number };
 
+type ReactionType = "med" | "water" | "exercise" | "mood" | "sleep" | "task" | "expense" | "meal" | "habit";
+
+type ReactionSpec = {
+  anim: string;
+  duration: number;
+  emojis: string[];
+  text: string;
+  mood: Mood;
+};
+
+const REACTIONS: Record<ReactionType, ReactionSpec> = {
+  med:      { anim: "tito-salute",      duration: 1200, emojis: ["💊","🫡","✨"], text: "¡Medicina tomada, general! 🫡", mood: "cheer" },
+  water:    { anim: "tito-splash",      duration: 1000, emojis: ["💧","💦","🫧"], text: "¡Hidratado! 💧",                  mood: "happy" },
+  exercise: { anim: "tito-pushup",      duration: 1400, emojis: ["💪","🔥","⚡"], text: "¡Uno, dos, uno, dos! 💪",         mood: "cheer" },
+  mood:     { anim: "tito-heart",       duration: 1200, emojis: ["❤️","🧠","✨"], text: "Registrado. Aquí estoy contigo.", mood: "happy" },
+  sleep:    { anim: "tito-sleepy",      duration: 1400, emojis: ["😴","💤","🌙"], text: "Buenas noches, legionario.",       mood: "sleep" },
+  task:     { anim: "tito-bounce-run",  duration: 900,  emojis: ["✅","⚔️","✨"], text: "¡Otra menos, general!",           mood: "cheer" },
+  expense:  { anim: "tito-coin",        duration: 1100, emojis: ["💰","🧾","✨"], text: "Anotado en el libro mayor.",       mood: "think" },
+  meal:     { anim: "tito-eat",         duration: 1100, emojis: ["🍽️","😋","✨"], text: "¡Provecho!",                       mood: "happy" },
+  habit:    { anim: "tito-bounce-run",  duration: 900,  emojis: ["🎯","⚔️","✨"], text: "Otro día firme en la formación.", mood: "cheer" },
+};
+
 type Vitals = { happy: number; hunger: number; energy: number; care: number };
 
 /**
