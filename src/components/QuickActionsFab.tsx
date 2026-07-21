@@ -20,7 +20,7 @@ import { useLifeMode } from "@/hooks/use-life-mode";
 
 type Variant = "mobile" | "desktop";
 
-const shortcuts: { to: string; label: string; icon: typeof Plus; search?: Record<string, string> }[] = [
+const shortcuts: { to: string; label: string; icon: LucideIcon; search?: Record<string, string> }[] = [
   { to: "/log", label: "Registrar", icon: ClipboardList },
   { to: "/log", label: "Gasto", icon: DollarSign, search: { tab: "expense" } },
   { to: "/calendar", label: "Calendario", icon: CalendarIcon },
