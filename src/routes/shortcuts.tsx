@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Copy, Check, Zap, Smartphone, Link2, Bot, ShieldCheck, Terminal } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/shortcuts")({
