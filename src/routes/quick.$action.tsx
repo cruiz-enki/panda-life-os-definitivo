@@ -21,12 +21,17 @@ import { useFinance } from "@/hooks/use-finance";
 import { useHealth } from "@/hooks/use-health";
 import { useLocations } from "@/hooks/use-locations";
 import { useMood } from "@/hooks/use-mood";
+import { supabase } from "@/integrations/supabase/client";
 import { todayCDMX } from "@/lib/date-utils";
 import { toast } from "sonner";
 
+/** Normaliza texto: minúsculas + sin acentos, para hacer match tolerante. */
+const norm = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
 type QuickSearch = {
   amount: string; cat: string; category: string; note: string; method: string;
-  name: string; names: string; id: string; lat: string; lng: string;
+  name: string; names: string; id: string; key: string; lat: string; lng: string;
   mood: string; intensity: string; energy: string; pain: string;
   auto: string; redirect: string;
 };
