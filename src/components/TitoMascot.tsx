@@ -113,7 +113,11 @@ function moodFrame(mood: Mood): string {
     case "happy":
       return "animate-[tito-wiggle_2.4s_ease-in-out_infinite]";
     case "sad":
-      return "opacity-70 saturate-50";
+      return "opacity-60 saturate-[.4] animate-[tito-sad_3s_ease-in-out_infinite]";
+    case "hungry":
+      return "opacity-80 animate-[tito-hungry_1.6s_ease-in-out_infinite]";
+    case "tired":
+      return "opacity-70 saturate-75 animate-[tito-tired_4s_ease-in-out_infinite]";
     case "sleep":
       return "opacity-80";
     case "think":
