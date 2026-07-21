@@ -14,6 +14,7 @@ import {
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
+import { RankBadge } from "@/components/RankBadge";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 import { useFocusMode } from "@/hooks/use-focus-mode";
 import { useLifeMode, type CategoryKey } from "@/hooks/use-life-mode";
