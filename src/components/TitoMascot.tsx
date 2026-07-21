@@ -158,8 +158,47 @@ export function TitoMascot() {
     prevXp.current = state.xp;
   }, [state.xp, showBubble]);
 
+  const unhide = () => {
+    setHiddenToday(false);
+    if (typeof window !== "undefined") window.localStorage.removeItem(LS_HIDDEN);
+  };
+
+  // Permite volver a mostrar a Tito desde cualquier lado con window.dispatchEvent(new Event('tito:show'))
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onShow = () => unhide();
+    window.addEventListener("tito:show", onShow);
+    return () => window.removeEventListener("tito:show", onShow);
+  }, []);
+
   if (!user) return null;
-  if (hiddenToday) return null;
+  if (hiddenToday) {
+    return (
+      <button
+        onClick={unhide}
+        aria-label="Mostrar a Tito"
+        title="Mostrar a Tito"
+        style={{
+          position: "fixed",
+          right: 12,
+          bottom: 92,
+          zIndex: 60,
+          width: 32,
+          height: 32,
+          borderRadius: 9999,
+          border: "1px solid rgba(255,255,255,0.15)",
+          background: "rgba(0,0,0,0.55)",
+          color: "white",
+          fontSize: 16,
+          lineHeight: 1,
+          cursor: "pointer",
+          backdropFilter: "blur(6px)",
+        }}
+      >
+        🐼
+      </button>
+    );
+  }
 
   const onTap = () => {
     // Toggle del panel de acciones (Tito ES el FAB)
