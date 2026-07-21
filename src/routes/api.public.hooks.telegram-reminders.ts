@@ -211,10 +211,16 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                   if (!withinWindow(now, target)) continue;
                   const key = `${now.ymd}|med|${m.id}|${t}`;
                   const dose = m.dose ? ` (${m.dose})` : "";
+                  const tito = titoReminderMessage({
+                    kind: "med",
+                    subject: `${m.name}${dose}`,
+                    level: 1,
+                    seed: `${m.id}|${t}`,
+                  });
                   await fire(
                     key,
-                    `💊 *Medicamento*\nEs hora de: *${m.name}*${dose}`,
-                    { title: "💊 Medicamento", body: `Es hora de: ${m.name}${dose}`, url: "/health", tag: `med-${m.id}-${t}` },
+                    tito.body,
+                    { title: tito.title, body: `${m.name}${dose}`, url: "/health", tag: `med-${m.id}-${t}` },
                   );
                 }
               }
