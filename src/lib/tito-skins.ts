@@ -168,7 +168,7 @@ const POSTURES: Record<TitoPostureId, TitoPosture> = {
 /**
  * Resuelve la postura activa a partir de hora y (opcional) reacción actual.
  */
-export function currentPosture(hour: number, reaction?: ReactionType | null): TitoPosture {
+export function currentPosture(hour: number, reaction?: TitoReactionType | null): TitoPosture {
   // Prioridad: reacción activa gana sobre la hora.
   if (reaction === "exercise") return POSTURES["workout-sword"];
   if (reaction === "sleep") return POSTURES["night-sleep"];
