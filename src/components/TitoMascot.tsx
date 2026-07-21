@@ -235,12 +235,28 @@ export function TitoMascot() {
       const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
       setFabOpen(!!detail?.open);
     };
+    const onReact = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { type?: ReactionType; text?: string; emojis?: string[] } | undefined;
+      const type = detail?.type;
+      if (!type || !REACTIONS[type]) return;
+      const base = REACTIONS[type];
+      const spec: ReactionSpec = {
+        ...base,
+        emojis: detail?.emojis ?? base.emojis,
+      };
+      setReaction({ spec, id: Date.now() });
+      showBubble({ mood: spec.mood, text: detail?.text ?? spec.text, ttl: Math.max(spec.duration + 800, 2500) });
+      if (reactionTimerRef.current) clearTimeout(reactionTimerRef.current);
+      reactionTimerRef.current = setTimeout(() => setReaction(null), spec.duration + 200);
+    };
     window.addEventListener("tito:cheer", onCheer);
     window.addEventListener("tito:say", onCheer);
+    window.addEventListener("tito:react", onReact);
     window.addEventListener("fab:state", onFabState);
     return () => {
       window.removeEventListener("tito:cheer", onCheer);
       window.removeEventListener("tito:say", onCheer);
+      window.removeEventListener("tito:react", onReact);
       window.removeEventListener("fab:state", onFabState);
     };
   }, [showBubble]);
