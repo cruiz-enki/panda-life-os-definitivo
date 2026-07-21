@@ -191,18 +191,32 @@ export function useHealth() {
   const logWater = async (date: string, amount: number) => {
     if (!user) return;
     const existing = waterLogs.find((w) => w.date === date);
+    const prev = existing?.amount_ml ?? 0;
+    const delta = amount - prev;
     if (existing) {
       const { error } = await supabase
         .from("health_water_logs")
         .update({ amount_ml: amount })
         .eq("id", existing.id);
-      if (!error) await refresh();
+      if (!error) {
+        if (delta > 0) {
+          const { titoReact } = await import("@/lib/tito-react");
+          titoReact("water", { text: `+${delta} ml · Hoy: ${amount} ml 💧` });
+        }
+        await refresh();
+      }
       return error;
     }
     const { error } = await supabase
       .from("health_water_logs")
       .insert({ date, amount_ml: amount, user_id: user.id });
-    if (!error) await refresh();
+    if (!error) {
+      if (amount > 0) {
+        const { titoReact } = await import("@/lib/tito-react");
+        titoReact("water", { text: `+${amount} ml 💧` });
+      }
+      await refresh();
+    }
     return error;
   };
 
