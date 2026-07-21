@@ -351,6 +351,24 @@ export function TitoMascot() {
               />
             </button>
 
+            {/* Vitales tipo Tamagotchi — visibles cuando algo anda bajo */}
+            {!minimized && vitals.care < 0.75 && (
+              <div
+                className="pointer-events-none absolute -top-2 -right-1 flex flex-col gap-1"
+                title={`Ánimo ${Math.round(vitals.happy * 100)}% · Hambre ${Math.round(vitals.hunger * 100)}% · Energía ${Math.round(vitals.energy * 100)}%`}
+              >
+                {vitals.happy < 0.5 && (
+                  <span className="text-[11px] leading-none bg-card/90 border border-border rounded-full px-1 py-0.5 shadow-sm">❤️</span>
+                )}
+                {vitals.hunger < 0.4 && (
+                  <span className="text-[11px] leading-none bg-card/90 border border-border rounded-full px-1 py-0.5 shadow-sm">🍙</span>
+                )}
+                {vitals.energy < 0.4 && (
+                  <span className="text-[11px] leading-none bg-card/90 border border-border rounded-full px-1 py-0.5 shadow-sm">⚡</span>
+                )}
+              </div>
+            )}
+
             {/* Controles */}
             {!minimized ? (
               <div className="absolute -top-1 -left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
