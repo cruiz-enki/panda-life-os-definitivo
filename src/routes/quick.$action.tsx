@@ -33,6 +33,7 @@ type QuickSearch = {
   amount: string; cat: string; category: string; note: string; method: string;
   name: string; names: string; id: string; key: string; lat: string; lng: string;
   mood: string; intensity: string; energy: string; pain: string;
+  type: string; classification: string; protein: string; time: string;
   auto: string; redirect: string;
 };
 
@@ -44,7 +45,9 @@ export const Route = createFileRoute("/quick/$action")({
     amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
     method: s(r.method, "cash"), name: s(r.name), names: s(r.names), id: s(r.id),
     key: s(r.key), lat: s(r.lat), lng: s(r.lng), mood: s(r.mood), intensity: s(r.intensity),
-    energy: s(r.energy), pain: s(r.pain), auto: s(r.auto, "1"), redirect: s(r.redirect),
+    energy: s(r.energy), pain: s(r.pain),
+    type: s(r.type), classification: s(r.classification, "regular"), protein: s(r.protein), time: s(r.time),
+    auto: s(r.auto, "1"), redirect: s(r.redirect),
   }),
   component: QuickActionPage,
 });
@@ -237,6 +240,40 @@ function QuickActionPage() {
           });
           setMessage("Check-in emocional registrado");
           setDetail(`Mood: ${moodKey}`);
+          break;
+        }
+        case "meal":
+        case "desayuno":
+        case "comida":
+        case "cena":
+        case "snack": {
+          const mealTypeMap: Record<string, "desayuno" | "comida" | "cena" | "snack"> = {
+            meal: "desayuno", desayuno: "desayuno", breakfast: "desayuno",
+            comida: "comida", lunch: "comida", cena: "cena", dinner: "cena",
+            snack: "snack",
+          };
+          const requested = norm(search.type || action);
+          const meal_type = mealTypeMap[requested] ?? "desayuno";
+          const classification = ["saludable", "regular", "chatarra"].includes(search.classification)
+            ? (search.classification as "saludable" | "regular" | "chatarra")
+            : "regular";
+          const now = new Date();
+          const time = search.time || `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          const description = search.name || search.note || "";
+          const protein = search.protein ? Number(search.protein) : null;
+          const { error } = await supabase.from("health_meals").insert({
+            user_id: user.id,
+            date: todayCDMX(),
+            time,
+            meal_type,
+            classification,
+            description,
+            protein_grams: protein,
+          });
+          if (error) throw new Error(error.message);
+          const label = meal_type === "desayuno" ? "Desayuno" : meal_type === "comida" ? "Comida" : meal_type === "cena" ? "Cena" : "Snack";
+          setMessage(`${label} registrado`);
+          setDetail(description || `${classification} · ${time}`);
           break;
         }
         case "water": {
