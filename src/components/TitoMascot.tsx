@@ -8,9 +8,15 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { X, Minus } from "lucide-react";
 import titoAsset from "@/assets/tito.png.asset.json";
-import { useAppState } from "@/lib/storage";
+import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { todayCDMX } from "@/lib/date-utils";
+import {
+  resolveActiveSkin,
+  readStoredSkinId,
+  currentPosture,
+  type TitoSkinAccessory,
+} from "@/lib/tito-skins";
 
 type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think" | "hungry" | "tired";
 
@@ -157,7 +163,8 @@ export function TitoMascot() {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [mood, setMood] = useState<Mood>("idle");
   const [fabOpen, setFabOpen] = useState(false);
-  const [reaction, setReaction] = useState<{ spec: ReactionSpec; id: number } | null>(null);
+  const [reaction, setReaction] = useState<{ spec: ReactionSpec; id: number; type: ReactionType } | null>(null);
+  const [skinId, setSkinId] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -167,11 +174,28 @@ export function TitoMascot() {
     setMinimized(window.localStorage.getItem(LS_MIN) === "1");
     const until = window.localStorage.getItem(LS_HIDDEN);
     if (until && new Date(until).getTime() > Date.now()) setHiddenToday(true);
+    setSkinId(readStoredSkinId());
+    const onSkin = (e: Event) => {
+      const id = (e as CustomEvent).detail?.id as string | undefined;
+      setSkinId(id ?? readStoredSkinId());
+    };
+    window.addEventListener("tito:skin-change", onSkin);
+    return () => window.removeEventListener("tito:skin-change", onSkin);
   }, []);
 
   const vitals = useMemo(() => computeVitals(state), [state]);
   const hourNow = new Date().getHours();
   const ambient = useMemo(() => ambientMood(vitals, hourNow), [vitals, hourNow]);
+  const level = useMemo(() => levelFromXp(state.xp).level, [state.xp]);
+  const activeSkin = useMemo(() => resolveActiveSkin(level, skinId), [level, skinId]);
+  const posture = useMemo(
+    () => currentPosture(hourNow, reaction?.type ?? null),
+    [hourNow, reaction],
+  );
+  const accessories: TitoSkinAccessory[] = useMemo(
+    () => [...activeSkin.accessories, ...posture.extras],
+    [activeSkin, posture],
+  );
 
   const messages = useMemo(() => {
     const base = pickTimeMessages(state);
@@ -244,7 +268,7 @@ export function TitoMascot() {
         ...base,
         emojis: detail?.emojis ?? base.emojis,
       };
-      setReaction({ spec, id: Date.now() });
+      setReaction({ spec, id: Date.now(), type });
       showBubble({ mood: spec.mood, text: detail?.text ?? spec.text, ttl: Math.max(spec.duration + 800, 2500) });
       if (reactionTimerRef.current) clearTimeout(reactionTimerRef.current);
       reactionTimerRef.current = setTimeout(() => setReaction(null), spec.duration + 200);
@@ -407,6 +431,32 @@ export function TitoMascot() {
                 }
                 draggable={false}
               />
+              {activeSkin.aura && !minimized && (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{ boxShadow: `0 0 32px 6px ${activeSkin.aura}`, opacity: 0.85 }}
+                />
+              )}
+              {!minimized && accessories.length > 0 && (
+                <div className="pointer-events-none absolute inset-0" aria-hidden>
+                  {accessories.map((a, i) => (
+                    <span
+                      key={`${a.emoji}-${i}`}
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 ${a.size ?? "text-xl"}`}
+                      style={{
+                        top: a.top,
+                        left: a.left,
+                        transform: `translate(-50%, -50%) rotate(${a.rotate ?? 0}deg)`,
+                        filter: a.filter,
+                        zIndex: a.z ?? 3,
+                      }}
+                    >
+                      {a.emoji}
+                    </span>
+                  ))}
+                </div>
+              )}
               {reaction && (
                 <div key={reaction.id} className="pointer-events-none absolute inset-0 overflow-visible">
                   {reaction.spec.emojis.map((emo, i) => {

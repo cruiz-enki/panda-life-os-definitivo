@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MagicInventory } from "@/components/MagicInventory";
 import { cn } from "@/lib/utils";
+import { TitoWardrobe } from "@/components/TitoWardrobe";
 
 const CATEGORY_LABEL: Record<FixedMissionCategory, string> = {
   habits: "Hábitos", tasks: "Tareas", notes: "Notas", energy: "Energía",
@@ -166,6 +167,8 @@ export function RewardsPage() {
           })}
         </div>
       </section>
+
+      <TitoWardrobe />
 
 
       <Tabs defaultValue="quests" className="w-full">
