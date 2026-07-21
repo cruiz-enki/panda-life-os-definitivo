@@ -399,9 +399,37 @@ export function TitoMascot() {
               <img
                 src={titoAsset.url}
                 alt="Tito"
-                className={`w-full h-full object-contain ${moodFrame(mood)}`}
+                className={`w-full h-full object-contain ${reaction ? "" : moodFrame(mood)}`}
+                style={
+                  reaction
+                    ? { animation: `${reaction.spec.anim} ${reaction.spec.duration}ms ease-in-out both`, transformOrigin: "50% 80%" }
+                    : undefined
+                }
                 draggable={false}
               />
+              {reaction && (
+                <div key={reaction.id} className="pointer-events-none absolute inset-0 overflow-visible">
+                  {reaction.spec.emojis.map((emo, i) => {
+                    const angle = (-90 + (i - (reaction.spec.emojis.length - 1) / 2) * 30) * (Math.PI / 180);
+                    const dist = 70;
+                    const dx = Math.cos(angle) * dist;
+                    const dy = Math.sin(angle) * dist;
+                    return (
+                      <span
+                        key={i}
+                        className="absolute left-1/2 top-1/2 text-2xl"
+                        style={{
+                          ["--tito-burst-end" as string]: `translate(${dx.toFixed(0)}px, ${dy.toFixed(0)}px)`,
+                          animation: `tito-burst ${reaction.spec.duration}ms ease-out both`,
+                          animationDelay: `${i * 60}ms`,
+                        }}
+                      >
+                        {emo}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </button>
 
             {/* Vitales tipo Tamagotchi — visibles cuando algo anda bajo */}
