@@ -202,8 +202,8 @@ export function TitoMascot() {
       `}</style>
 
       <div className="fixed z-[60] bottom-24 right-3 md:bottom-6 md:right-6 pointer-events-none select-none">
-        {/* Bocadillo */}
-        {!minimized && bubble && (
+        {/* Bocadillo — oculto cuando el panel de acciones está abierto */}
+        {!minimized && bubble && !fabOpen && (
           <div
             className="pointer-events-auto max-w-[240px] mb-2 ml-auto bg-card/95 backdrop-blur border border-border rounded-2xl rounded-br-sm px-3 py-2 text-sm shadow-lg"
             style={{ animation: "tito-pop .22s ease-out both" }}
