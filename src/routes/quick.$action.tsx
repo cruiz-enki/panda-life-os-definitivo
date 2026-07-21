@@ -84,6 +84,14 @@ function QuickActionPage() {
     setStatus("running");
     try {
       switch (action) {
+        case "log":
+        case "registrar": {
+          setMessage("Abriendo Registrar");
+          setDetail("Redirigiendo a /log…");
+          setStatus("success");
+          setTimeout(() => navigate({ to: "/log" as any }), 200);
+          return;
+        }
         case "expense": {
           const amount = Number(search.amount);
           if (!amount || amount <= 0) throw new Error("Monto inválido");
