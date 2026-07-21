@@ -15,6 +15,7 @@ import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
 import { useGamification } from "@/hooks/use-gamification";
 import { GlobalSearchProvider } from "@/components/GlobalSearch";
+import { HabitAutoSyncer } from "@/components/HabitAutoSyncer";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -198,6 +199,7 @@ function AuthGate() {
         <MobileNav />
         
         <DeferredGamification />
+        <HabitAutoSyncer />
         <Toaster />
       </div>
     </GlobalSearchProvider>

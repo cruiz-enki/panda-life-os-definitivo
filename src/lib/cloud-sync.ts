@@ -38,6 +38,8 @@ function mapHabit(r: Record<string, unknown>): Habit {
     history: ((r.history as string[]) ?? []) as string[],
     frequency: ((r.frequency as Habit["frequency"]) ?? "daily"),
     targetCount: (r.target_count as number) ?? 1,
+    linkedMetric: (r.linked_metric as Habit["linkedMetric"]) ?? null,
+    targetValue: (r.target_value as number | null) ?? null,
   };
 }
 function mapTaskList(r: Record<string, unknown>): TaskList {
@@ -206,7 +208,9 @@ export async function pushHabit(userId: string, h: Habit) {
     history: h.history,
     frequency: h.frequency,
     target_count: h.targetCount,
-  };
+    linked_metric: h.linkedMetric ?? null,
+    target_value: h.targetValue ?? null,
+  } as never;
   const { error } = await supabase.from("habits").upsert(row);
   reportErr("habit", error);
 }

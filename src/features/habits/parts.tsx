@@ -6,10 +6,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useAppState } from "@/lib/storage";
-import type { Habit, HabitFrequency } from "@/lib/storage-types";
+import type { Habit, HabitFrequency, HabitLinkedMetric } from "@/lib/storage-types";
+import { HABIT_METRIC_OPTIONS, metricUnit } from "@/lib/habit-metrics";
 import { todayCDMX, humanDateLabel, daysAgoCDMX } from "@/lib/date-utils";
 import { DateQuickPicker } from "@/components/DateQuickPicker";
-import { Flame, Plus, Check, Trash2, X, Crown, Pencil, BarChart3, TrendingUp, Calendar } from "lucide-react";
+import { Flame, Plus, Check, Trash2, X, Crown, Pencil, BarChart3, TrendingUp, Calendar, Link2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 const CEO_HABITS: { name: string; emoji: string; points: number }[] = [
@@ -62,6 +63,8 @@ export function HabitsPage() {
   const [frequency, setFrequency] = useState<HabitFrequency>("daily");
   const [targetCount, setTargetCount] = useState(1);
   const [category, setCategory] = useState("");
+  const [linkedMetric, setLinkedMetric] = useState<HabitLinkedMetric | "">("");
+  const [targetValue, setTargetValue] = useState<number | "">("");
   const [showStats, setShowStats] = useState(false);
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null);
 
@@ -74,6 +77,8 @@ export function HabitsPage() {
     setFrequency("daily");
     setTargetCount(1);
     setCategory("");
+    setLinkedMetric("");
+    setTargetValue("");
     setOpen(true);
   };
 
@@ -87,6 +92,8 @@ export function HabitsPage() {
     setFrequency(h.frequency ?? "daily");
     setTargetCount(h.targetCount ?? 1);
     setCategory(h.category ?? "");
+    setLinkedMetric(h.linkedMetric ?? "");
+    setTargetValue(h.targetValue ?? "");
     setOpen(true);
   };
 
@@ -95,14 +102,16 @@ export function HabitsPage() {
     if (!trimmed) return;
     const finalName = isCeoForm && !trimmed.startsWith(CEO_TAG) ? `${CEO_TAG} ${trimmed}` : trimmed;
     const tgt = frequency === "daily" ? 1 : Math.max(1, targetCount);
+    const metric = linkedMetric || null;
+    const tVal = metric && typeof targetValue === "number" && targetValue > 0 ? targetValue : null;
     if (editingId) {
-      updateHabit(editingId, { name: finalName, emoji: emoji || "✨", points, frequency, targetCount: tgt, category: category.trim() || undefined });
+      updateHabit(editingId, { name: finalName, emoji: emoji || "✨", points, frequency, targetCount: tgt, category: category.trim() || undefined, linkedMetric: metric as HabitLinkedMetric | null, targetValue: tVal });
     } else {
-      addHabit(finalName, emoji || "✨", points, frequency, tgt, category.trim() || undefined);
+      addHabit(finalName, emoji || "✨", points, frequency, tgt, category.trim() || undefined, metric as HabitLinkedMetric | null, tVal);
     }
     setOpen(false);
     setEditingId(null);
-    setName(""); setEmoji("✨"); setPoints(15); setIsCeoForm(false); setFrequency("daily"); setTargetCount(1); setCategory("");
+    setName(""); setEmoji("✨"); setPoints(15); setIsCeoForm(false); setFrequency("daily"); setTargetCount(1); setCategory(""); setLinkedMetric(""); setTargetValue("");
   };
 
   const isCeo = (n: string) => n.startsWith(CEO_TAG);
@@ -560,6 +569,51 @@ export function HabitsPage() {
                     onChange={(e) => setTargetCount(Math.max(1, Number(e.target.value)))}
                     className="mt-1 w-full px-3 py-2.5 rounded-xl bg-secondary border border-border focus:border-primary outline-none"
                   />
+                </div>
+              )}
+              {frequency === "daily" && (
+                <div className="rounded-xl border border-border bg-secondary/40 p-3 space-y-2">
+                  <label className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <Link2 className="w-3.5 h-3.5" /> Auto-completar desde un registro
+                  </label>
+                  <select
+                    value={linkedMetric}
+                    onChange={(e) => {
+                      const v = e.target.value as HabitLinkedMetric | "";
+                      setLinkedMetric(v);
+                      if (v) {
+                        const opt = HABIT_METRIC_OPTIONS.find((o) => o.value === v);
+                        if (opt && !targetValue) setTargetValue(opt.defaultTarget);
+                      } else {
+                        setTargetValue("");
+                      }
+                    }}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm outline-none focus:border-primary"
+                  >
+                    <option value="">Sin vínculo (marcar manual)</option>
+                    {HABIT_METRIC_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                  </select>
+                  {linkedMetric && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          step="any"
+                          placeholder="Meta"
+                          value={targetValue}
+                          onChange={(e) => setTargetValue(e.target.value === "" ? "" : Number(e.target.value))}
+                          className="flex-1 px-3 py-2 rounded-lg bg-background border border-border text-sm outline-none focus:border-primary"
+                        />
+                        <span className="text-xs text-muted-foreground w-14">{metricUnit(linkedMetric)}</span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        {HABIT_METRIC_OPTIONS.find((o) => o.value === linkedMetric)?.hint}
+                      </p>
+                    </>
+                  )}
                 </div>
               )}
               <button

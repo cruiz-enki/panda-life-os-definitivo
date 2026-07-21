@@ -377,8 +377,24 @@ export function useAppState() {
   // Compatibilidad con código existente: toggle para HOY.
   const toggleHabit = useCallback((id: string) => toggleHabitForDate(id), [toggleHabitForDate]);
 
-  const addHabit = useCallback((name: string, emoji: string, points: number, frequency: Habit["frequency"] = "daily", targetCount: number = 1, category?: string) => {
-    const h: Habit = { id: crypto.randomUUID(), name, emoji, points, streak: 0, lastCompleted: null, history: [], frequency, targetCount, category };
+  const addHabit = useCallback((
+    name: string,
+    emoji: string,
+    points: number,
+    frequency: Habit["frequency"] = "daily",
+    targetCount: number = 1,
+    category?: string,
+    linkedMetric?: Habit["linkedMetric"],
+    targetValue?: number | null,
+  ) => {
+    const h: Habit = {
+      id: crypto.randomUUID(),
+      name, emoji, points,
+      streak: 0, lastCompleted: null, history: [],
+      frequency, targetCount, category,
+      linkedMetric: linkedMetric ?? null,
+      targetValue: targetValue ?? null,
+    };
     setState((s) => ({ ...s, habits: [...s.habits, h] }));
     if (userId) pushHabit(userId, h);
   }, [userId]);
@@ -388,7 +404,7 @@ export function useAppState() {
     deleteHabitCloud(id);
   }, []);
 
-  const updateHabit = useCallback((id: string, patch: Partial<Pick<Habit, "name" | "emoji" | "points" | "frequency" | "targetCount" | "category" | "streak" | "lastCompleted" | "history">>) => {
+  const updateHabit = useCallback((id: string, patch: Partial<Pick<Habit, "name" | "emoji" | "points" | "frequency" | "targetCount" | "category" | "streak" | "lastCompleted" | "history" | "linkedMetric" | "targetValue">>) => {
     setState((s) => {
       const habits = s.habits.map((h) => (h.id === id ? { ...h, ...patch } : h));
       const updated = habits.find((h) => h.id === id);
