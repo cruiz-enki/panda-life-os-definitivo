@@ -5,7 +5,7 @@
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Copy, Check, Zap, Smartphone, Link2 } from "lucide-react";
+import { Copy, Check, Zap, Smartphone, Link2, Bot, ShieldCheck, Terminal } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
