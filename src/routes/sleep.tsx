@@ -204,9 +204,37 @@ function SleepPage() {
       {/* Apple Shortcuts hint */}
       <Card className="p-4 bg-muted/30 border-dashed">
         <p className="text-xs text-muted-foreground">
-          <strong>Apple Shortcuts:</strong> Puedes crear un atajo de iOS que envíe tu sueño al endpoint público de la app cada mañana. Pídeme la config si la quieres activar (necesita un secret nuevo).
+          <strong>NFC / Apple Shortcuts:</strong> Programa un tag NFC en tu buró que abra{" "}
+          <code className="px-1 rounded bg-background">https://os.cmrs.mx/quick/sleep-start</code> al acostarte, y otro (o el mismo)
+          con <code className="px-1 rounded bg-background">https://os.cmrs.mx/quick/sleep-end</code> al despertar. Calcula la duración solo.
         </p>
       </Card>
     </div>
+  );
+}
+
+function TapNowButton({ kind }: { kind: "bedtime" | "wake" }) {
+  const isBed = kind === "bedtime";
+  const to = isBed ? "/quick/sleep-start" : "/quick/sleep-end";
+  return (
+    <a href={to} className="block">
+      <div
+        className={`rounded-xl p-4 border-2 transition active:scale-[.98] ${
+          isBed
+            ? "bg-indigo-500/10 border-indigo-500/40 hover:bg-indigo-500/20"
+            : "bg-amber-500/10 border-amber-500/40 hover:bg-amber-500/20"
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          {isBed ? <Moon className="w-6 h-6 text-indigo-500" /> : <Sun className="w-6 h-6 text-amber-500" />}
+          <div className="text-left">
+            <div className="font-semibold text-sm">{isBed ? "Me acuesto ahora" : "Ya desperté"}</div>
+            <div className="text-xs text-muted-foreground">
+              {isBed ? "Guarda bedtime = ahora" : "Guarda wake + duración"}
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
   );
 }
