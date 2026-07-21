@@ -185,10 +185,17 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                 const list = meds.map((m) => `• ${m.name}${m.dose ? ` (${m.dose})` : ""}`).join("\n");
                 const emoji = (slot.emoji as string) || "💊";
                 const label = slot.label as string;
+                const tito = titoReminderMessage({
+                  kind: "med",
+                  subject: `${label.toLowerCase()} (${meds.length} med${meds.length === 1 ? "" : "s"})`,
+                  detail: `${list}\n\nToca 1 sola vez para registrar: https://os.cmrs.mx/quick/slot?key=${slot.key}`,
+                  level: 1,
+                  seed: slot.id as string,
+                });
                 await fire(
                   key,
-                  `${emoji} *${label}*\nToca 1 sola vez para registrar las ${meds.length}:\n\n${list}\n\nhttps://os.cmrs.mx/quick/slot?key=${slot.key}`,
-                  { title: `${emoji} ${label}`, body: `${meds.length} medicinas`, url: `/quick/slot?key=${slot.key}`, tag: `slot-${slot.id}` },
+                  `${emoji} ${tito.body}`,
+                  { title: `${emoji} ${tito.title}`, body: `${meds.length} medicinas`, url: `/quick/slot?key=${slot.key}`, tag: `slot-${slot.id}` },
                 );
               }
             } else {
