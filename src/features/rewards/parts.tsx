@@ -167,6 +167,8 @@ export function RewardsPage() {
         </div>
       </section>
 
+      <TitoWardrobe />
+
 
       <Tabs defaultValue="quests" className="w-full">
         <TabsList className="grid grid-cols-5 w-full mb-6">
