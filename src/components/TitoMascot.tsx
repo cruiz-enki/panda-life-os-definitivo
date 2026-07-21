@@ -157,7 +157,9 @@ export function TitoMascot() {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [mood, setMood] = useState<Mood>("idle");
   const [fabOpen, setFabOpen] = useState(false);
+  const [reaction, setReaction] = useState<{ spec: ReactionSpec; id: number } | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hydrate persistencia
   useEffect(() => {
