@@ -5,6 +5,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { sendTelegramMessage } from "@/server/telegram.server";
+import { titoReminderMessage } from "@/lib/tito-tone";
 
 type Cfg = {
   user_id: string;
@@ -184,10 +185,17 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                 const list = meds.map((m) => `• ${m.name}${m.dose ? ` (${m.dose})` : ""}`).join("\n");
                 const emoji = (slot.emoji as string) || "💊";
                 const label = slot.label as string;
+                const tito = titoReminderMessage({
+                  kind: "med",
+                  subject: `${label.toLowerCase()} (${meds.length} med${meds.length === 1 ? "" : "s"})`,
+                  detail: `${list}\n\nToca 1 sola vez para registrar: https://os.cmrs.mx/quick/slot?key=${slot.key}`,
+                  level: 1,
+                  seed: slot.id as string,
+                });
                 await fire(
                   key,
-                  `${emoji} *${label}*\nToca 1 sola vez para registrar las ${meds.length}:\n\n${list}\n\nhttps://os.cmrs.mx/quick/slot?key=${slot.key}`,
-                  { title: `${emoji} ${label}`, body: `${meds.length} medicinas`, url: `/quick/slot?key=${slot.key}`, tag: `slot-${slot.id}` },
+                  `${emoji} ${tito.body}`,
+                  { title: `${emoji} ${tito.title}`, body: `${meds.length} medicinas`, url: `/quick/slot?key=${slot.key}`, tag: `slot-${slot.id}` },
                 );
               }
             } else {
@@ -203,10 +211,16 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                   if (!withinWindow(now, target)) continue;
                   const key = `${now.ymd}|med|${m.id}|${t}`;
                   const dose = m.dose ? ` (${m.dose})` : "";
+                  const tito = titoReminderMessage({
+                    kind: "med",
+                    subject: `${m.name}${dose}`,
+                    level: 1,
+                    seed: `${m.id}|${t}`,
+                  });
                   await fire(
                     key,
-                    `💊 *Medicamento*\nEs hora de: *${m.name}*${dose}`,
-                    { title: "💊 Medicamento", body: `Es hora de: ${m.name}${dose}`, url: "/health", tag: `med-${m.id}-${t}` },
+                    tito.body,
+                    { title: tito.title, body: `${m.name}${dose}`, url: "/health", tag: `med-${m.id}-${t}` },
                   );
                 }
               }

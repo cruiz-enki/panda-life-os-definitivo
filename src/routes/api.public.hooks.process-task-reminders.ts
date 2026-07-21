@@ -11,6 +11,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { sendTelegramMessage } from "@/server/telegram.server";
+import { titoReminderMessage, toneLevelFromSentCount } from "@/lib/tito-tone";
 
 type TaskRow = {
   id: string;
@@ -123,8 +124,15 @@ export const Route = createFileRoute("/api/public/hooks/process-task-reminders")
           if (dueNow.length === 0) continue;
 
           for (const offset of dueNow) {
-            const title = `⏰ ${t.title}`;
-            const body = `Vence ${fmtOffset(offset)} · ${new Date(t.due).toLocaleString("es-MX")}`;
+            const level = toneLevelFromSentCount(sent.size);
+            const detail = `Vence ${fmtOffset(offset)} · ${new Date(t.due).toLocaleString("es-MX")}`;
+            const { title, body } = titoReminderMessage({
+              kind: "task",
+              subject: t.title,
+              detail,
+              level,
+              seed: t.id,
+            });
 
             for (const ch of channels) {
               try {
@@ -139,7 +147,7 @@ export const Route = createFileRoute("/api/public/hooks/process-task-reminders")
                   if (!cfg?.chat_id) throw new Error("Telegram no vinculado");
                   await sendTelegramMessage(
                     cfg.chat_id as number,
-                    `⏰ *${t.title}*\n${body}\n\nhttps://os.cmrs.mx/tasks`,
+                    `${body}\n\nhttps://os.cmrs.mx/tasks`,
                   );
                 } else if (ch === "email") {
                   const { data: u } = await supabase.auth.admin.getUserById(t.user_id);
@@ -155,7 +163,7 @@ export const Route = createFileRoute("/api/public/hooks/process-task-reminders")
                     scheduled_at: new Date().toISOString(),
                     status: "sent",
                     sent_at: new Date().toISOString(),
-                    delivery_log: { inapp: { ok: true } },
+                    delivery_log: { inapp: { ok: true, tito_level: level } },
                   } as never);
                 }
                 dispatched++;
