@@ -45,6 +45,8 @@ import {
   Users,
   Car,
   Bell,
+  Zap,
+
   Eye,
   FolderKanban,
   Send,
@@ -145,9 +147,11 @@ const productivityItems: MoreItem[] = [
 
 const setupItems: MoreItem[] = [
   { to: "/notifications", label: "Notificaciones", icon: Bell },
+  { to: "/shortcuts", label: "Atajos & Deep links", icon: Zap },
   { to: "/settings", label: "Ajustes", icon: Settings },
   { to: "/import", label: "Importar", icon: Download },
 ];
+
 
 export function MobileNav({ onCapture }: { onCapture?: () => void }) {
   const location = useLocation();
