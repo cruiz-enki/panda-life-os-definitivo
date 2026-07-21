@@ -33,6 +33,7 @@ export function RewardsPage() {
   const custom = useRewardsCustom() as any;
   const { level, progress, currentLevelXp, nextLevelXp } = levelFromXp(state.xp);
   const { current, next } = avatarForLevel(level);
+  const { current: rank, next: nextRank } = rankForLevel(level);
 
   const [filter, setFilter] = useState<FixedMissionCategory | "all">("all");
   const [typeFilter, setTypeFilter] = useState<"all" | "active" | "fixed">("all");
