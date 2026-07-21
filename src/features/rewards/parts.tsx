@@ -8,7 +8,8 @@ import { useAppState, levelFromXp } from "@/lib/storage";
 import { useGamification } from "@/hooks/use-gamification";
 import { useRewardsCustom, type CustomQuest, type CustomFixedMission, type Reward } from "@/hooks/use-rewards-custom";
 import { PandaAvatar } from "@/components/PandaAvatar";
-import { AVATAR_STAGES, RARITY_META, avatarForLevel, type FixedMissionCategory } from "@/lib/gamification";
+import { RankBadge } from "@/components/RankBadge";
+import { AVATAR_STAGES, RARITY_META, MILITARY_RANKS, avatarForLevel, rankForLevel, type FixedMissionCategory } from "@/lib/gamification";
 import { RewardsEditor } from "@/components/RewardsEditor";
 import { Sparkles, Lock, Trophy, Target, Gift, Plus, Pencil, EyeOff, Eye, Store, Check, ShoppingBag, Edit3, Box, Calendar } from "lucide-react";
 import { useState } from "react";
@@ -32,6 +33,7 @@ export function RewardsPage() {
   const custom = useRewardsCustom() as any;
   const { level, progress, currentLevelXp, nextLevelXp } = levelFromXp(state.xp);
   const { current, next } = avatarForLevel(level);
+  const { current: rank, next: nextRank } = rankForLevel(level);
 
   const [filter, setFilter] = useState<FixedMissionCategory | "all">("all");
   const [typeFilter, setTypeFilter] = useState<"all" | "active" | "fixed">("all");
@@ -107,8 +109,9 @@ export function RewardsPage() {
             <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-primary mb-2">
               <Sparkles className="w-3.5 h-3.5" /> Nivel {level} · {current.name}
             </div>
+            <div className="mb-2"><RankBadge xp={state.xp} size="lg" /></div>
             <h2 className="font-display text-2xl md:text-3xl font-bold">{state.xp} XP totales</h2>
-            <p className="mt-2 text-muted-foreground text-sm md:text-base">{current.description}</p>
+            <p className="mt-2 text-muted-foreground text-sm md:text-base">{rank.description} · {current.description}</p>
             <div className="mt-4">
               <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
                 <span>{state.xp - currentLevelXp} / {nextLevelXp - currentLevelXp} XP</span>
@@ -123,9 +126,47 @@ export function RewardsPage() {
                 Próxima evolución: <span className="text-foreground font-medium">{next.emoji} {next.name}</span> al nivel {next.minLevel}
               </p>
             )}
+            {nextRank && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Siguiente rango: <span className="text-foreground font-medium">{nextRank.insignia} {nextRank.name}</span> al nivel {nextRank.minLevel}
+              </p>
+            )}
           </div>
         </div>
       </section>
+
+      {/* ===== Progresión de rangos militares ===== */}
+      <section className="rounded-3xl border border-border bg-card p-5 md:p-6 mb-6 md:mb-8 shadow-card">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🎖️</span>
+          <h3 className="font-display font-bold text-lg">Carrera militar</h3>
+          <span className="text-xs text-muted-foreground">Recluta → César</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {MILITARY_RANKS.map((r) => {
+            const reached = level >= r.minLevel;
+            const isCurrent = rank.id === r.id;
+            return (
+              <div
+                key={r.id}
+                className={cn(
+                  "relative rounded-2xl border p-3 text-center transition-all",
+                  reached ? "border-primary/40 bg-secondary/40" : "border-border bg-muted/30 opacity-60",
+                  isCurrent && "ring-2 ring-primary shadow-glow",
+                )}
+              >
+                <div className={cn("mx-auto w-12 h-12 rounded-full flex items-center justify-center text-2xl bg-gradient-to-br", r.gradient, !reached && "grayscale")}>
+                  {reached ? r.insignia : <Lock className="w-4 h-4 text-white/80" />}
+                </div>
+                <div className="mt-2 font-display font-bold text-sm">{r.name}</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Nivel {r.minLevel}+</div>
+                {isCurrent && <div className="mt-1 text-[10px] font-bold text-primary uppercase">Actual</div>}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
 
       <Tabs defaultValue="quests" className="w-full">
         <TabsList className="grid grid-cols-5 w-full mb-6">

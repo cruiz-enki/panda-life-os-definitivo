@@ -56,6 +56,7 @@ import {
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
+import { RankBadge } from "@/components/RankBadge";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 import { QuickActionsFab } from "@/components/QuickActionsFab";
 import { useFocusMode } from "@/hooks/use-focus-mode";
@@ -268,7 +269,10 @@ export function MobileNav({ onCapture }: { onCapture?: () => void }) {
             <div className="px-5 pt-4 pb-2 flex items-center gap-3">
               <PandaAvatar xp={state.xp} size="sm" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Nivel {level}</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Nivel {level}</span>
+                  <RankBadge xp={state.xp} size="sm" />
+                </div>
                 <div className="font-display font-bold text-sm">{state.xp} XP</div>
                 <div className="mt-1 h-1.5 rounded-full bg-secondary overflow-hidden">
                   <div

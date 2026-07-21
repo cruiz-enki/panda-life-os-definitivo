@@ -14,6 +14,7 @@ import {
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { PandaAvatar } from "@/components/PandaAvatar";
+import { RankBadge } from "@/components/RankBadge";
 import { GlobalSearchTrigger } from "@/components/GlobalSearch";
 import { useFocusMode } from "@/hooks/use-focus-mode";
 import { useLifeMode, type CategoryKey } from "@/hooks/use-life-mode";
@@ -266,7 +267,9 @@ export function AppSidebar() {
           <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Nivel {level}</div>
             <div className="font-display font-bold text-sm truncate">{state.xp} XP</div>
+            <div className="mt-1"><RankBadge xp={state.xp} size="sm" /></div>
           </div>
+
         </div>
         <div className="h-2 rounded-full bg-secondary overflow-hidden">
           <div
