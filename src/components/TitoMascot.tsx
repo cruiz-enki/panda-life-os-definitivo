@@ -162,8 +162,17 @@ export function TitoMascot() {
   if (hiddenToday) return null;
 
   const onTap = () => {
-    const pool = messages.length > 0 ? messages : [{ mood: "happy" as Mood, text: "¡Aquí estoy, general!" }];
-    showBubble(pool[Math.floor(Math.random() * pool.length)]);
+    // Toggle del panel de acciones (Tito ES el FAB)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("tito:toggleFab"));
+    }
+    // Además, si va a abrirse el panel, no mostramos burbuja para no encimar
+    if (fabOpen) {
+      const pool = messages.length > 0 ? messages : [{ mood: "happy" as Mood, text: "¡Aquí estoy, general!" }];
+      showBubble(pool[Math.floor(Math.random() * pool.length)]);
+    } else {
+      setBubble(null);
+    }
   };
 
   const minimize = () => {
