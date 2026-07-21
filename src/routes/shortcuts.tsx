@@ -190,6 +190,22 @@ const SHORTCUTS: Shortcut[] = [
     example: "/quick/water?amount=250",
     params: [{ name: "amount", desc: "ml (default 250)" }],
   },
+  {
+    id: "sleep-start",
+    action: "sleep-start",
+    label: "Me acuesto (bedtime)",
+    emoji: "🌙",
+    example: "/quick/sleep-start",
+    params: [{ name: "—", desc: "Guarda bedtime = ahora. Ideal para NFC junto a la cama." }],
+  },
+  {
+    id: "sleep-end",
+    action: "sleep-end",
+    label: "Ya desperté (wake)",
+    emoji: "☀️",
+    example: "/quick/sleep-end",
+    params: [{ name: "—", desc: "Guarda wake_time = ahora y calcula la duración total." }],
+  },
 ];
 
 function ShortcutsPage() {
