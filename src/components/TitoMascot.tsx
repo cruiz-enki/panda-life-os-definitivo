@@ -83,6 +83,7 @@ export function TitoMascot() {
   const [hiddenToday, setHiddenToday] = useState(false);
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [mood, setMood] = useState<Mood>("idle");
+  const [fabOpen, setFabOpen] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hydrate persistencia
