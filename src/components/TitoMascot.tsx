@@ -311,6 +311,9 @@ export function TitoMascot() {
         @keyframes tito-wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
         @keyframes tito-bounce { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-14px) scale(1.05); } }
         @keyframes tito-pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes tito-sad { 0%,100% { transform: translateY(2px) rotate(-2deg); } 50% { transform: translateY(6px) rotate(-2deg); } }
+        @keyframes tito-hungry { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.02); } }
+        @keyframes tito-tired { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(3px) rotate(4deg); } }
       `}</style>
 
       <div className="fixed z-[60] bottom-24 right-3 md:bottom-6 md:right-6 pointer-events-none select-none">
