@@ -96,6 +96,20 @@ function SleepPage() {
         </Card>
       </div>
 
+      {/* Tap ahora (NFC / botón rápido) */}
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="font-semibold text-sm">Tap ahora</h2>
+            <p className="text-xs text-muted-foreground">Marca el momento exacto. Ideal para NFC tags.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <TapNowButton kind="bedtime" />
+          <TapNowButton kind="wake" />
+        </div>
+      </Card>
+
       {/* Form */}
       <Card className="p-5 space-y-4">
         <h2 className="font-semibold">Registrar noche</h2>
