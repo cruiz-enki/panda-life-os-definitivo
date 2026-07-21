@@ -186,6 +186,16 @@ export function TitoMascot() {
   const vitals = useMemo(() => computeVitals(state), [state]);
   const hourNow = new Date().getHours();
   const ambient = useMemo(() => ambientMood(vitals, hourNow), [vitals, hourNow]);
+  const level = useMemo(() => levelFromXp(state.xp).level, [state.xp]);
+  const activeSkin = useMemo(() => resolveActiveSkin(level, skinId), [level, skinId]);
+  const posture = useMemo(
+    () => currentPosture(hourNow, reaction?.type ?? null),
+    [hourNow, reaction],
+  );
+  const accessories: TitoSkinAccessory[] = useMemo(
+    () => [...activeSkin.accessories, ...posture.extras],
+    [activeSkin, posture],
+  );
 
   const messages = useMemo(() => {
     const base = pickTimeMessages(state);
