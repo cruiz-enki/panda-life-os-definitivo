@@ -295,6 +295,77 @@ function QuickActionPage() {
           setDetail(`+${amount} ml · Hoy: ${total} ml`);
           break;
         }
+        case "sleep-start":
+        case "bedtime":
+        case "dormir": {
+          const now = new Date();
+          const hour = now.getHours();
+          // Si te acuestas después de las 18h, la "noche" pertenece al día siguiente (wake day).
+          // Si registras entre 00-06h, la noche pertenece a hoy.
+          const wakeDay = new Date(now);
+          if (hour >= 18) wakeDay.setDate(wakeDay.getDate() + 1);
+          const dateStr = wakeDay.toISOString().slice(0, 10);
+          const { data: existing } = await (supabase as any)
+            .from("sleep_logs")
+            .select("id, wake_time")
+            .eq("user_id", user.id)
+            .eq("date", dateStr)
+            .maybeSingle();
+          let duration: number | null = null;
+          if (existing?.wake_time) {
+            duration = Math.round((new Date(existing.wake_time).getTime() - now.getTime()) / 60000);
+            if (duration < 0) duration += 24 * 60;
+          }
+          const { error } = await (supabase as any).from("sleep_logs").upsert(
+            {
+              user_id: user.id,
+              date: dateStr,
+              bedtime: now.toISOString(),
+              duration_minutes: duration,
+              source: "nfc",
+            },
+            { onConflict: "user_id,date" },
+          );
+          if (error) throw new Error(error.message);
+          setMessage("🌙 Buenas noches");
+          setDetail(`Bedtime: ${now.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })} · noche del ${dateStr}`);
+          break;
+        }
+        case "sleep-end":
+        case "wake":
+        case "despertar": {
+          const now = new Date();
+          const dateStr = todayCDMX();
+          const { data: existing } = await (supabase as any)
+            .from("sleep_logs")
+            .select("id, bedtime")
+            .eq("user_id", user.id)
+            .eq("date", dateStr)
+            .maybeSingle();
+          let duration: number | null = null;
+          if (existing?.bedtime) {
+            duration = Math.round((now.getTime() - new Date(existing.bedtime).getTime()) / 60000);
+            if (duration < 0) duration += 24 * 60;
+          }
+          const { error } = await (supabase as any).from("sleep_logs").upsert(
+            {
+              user_id: user.id,
+              date: dateStr,
+              wake_time: now.toISOString(),
+              duration_minutes: duration,
+              source: "nfc",
+            },
+            { onConflict: "user_id,date" },
+          );
+          if (error) throw new Error(error.message);
+          setMessage("☀️ Buenos días");
+          setDetail(
+            duration
+              ? `Dormiste ${Math.floor(duration / 60)}h ${duration % 60}m`
+              : `Wake: ${now.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}`,
+          );
+          break;
+        }
         default:
           throw new Error(`Acción "${action}" no existe`);
       }
