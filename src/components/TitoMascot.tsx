@@ -16,6 +16,28 @@ type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think" | "hungry" | 
 
 type Bubble = { text: string; mood: Mood; ttl?: number };
 
+type ReactionType = "med" | "water" | "exercise" | "mood" | "sleep" | "task" | "expense" | "meal" | "habit";
+
+type ReactionSpec = {
+  anim: string;
+  duration: number;
+  emojis: string[];
+  text: string;
+  mood: Mood;
+};
+
+const REACTIONS: Record<ReactionType, ReactionSpec> = {
+  med:      { anim: "tito-salute",      duration: 1200, emojis: ["💊","🫡","✨"], text: "¡Medicina tomada, general! 🫡", mood: "cheer" },
+  water:    { anim: "tito-splash",      duration: 1000, emojis: ["💧","💦","🫧"], text: "¡Hidratado! 💧",                  mood: "happy" },
+  exercise: { anim: "tito-pushup",      duration: 1400, emojis: ["💪","🔥","⚡"], text: "¡Uno, dos, uno, dos! 💪",         mood: "cheer" },
+  mood:     { anim: "tito-heart",       duration: 1200, emojis: ["❤️","🧠","✨"], text: "Registrado. Aquí estoy contigo.", mood: "happy" },
+  sleep:    { anim: "tito-sleepy",      duration: 1400, emojis: ["😴","💤","🌙"], text: "Buenas noches, legionario.",       mood: "sleep" },
+  task:     { anim: "tito-bounce-run",  duration: 900,  emojis: ["✅","⚔️","✨"], text: "¡Otra menos, general!",           mood: "cheer" },
+  expense:  { anim: "tito-coin",        duration: 1100, emojis: ["💰","🧾","✨"], text: "Anotado en el libro mayor.",       mood: "think" },
+  meal:     { anim: "tito-eat",         duration: 1100, emojis: ["🍽️","😋","✨"], text: "¡Provecho!",                       mood: "happy" },
+  habit:    { anim: "tito-bounce-run",  duration: 900,  emojis: ["🎯","⚔️","✨"], text: "Otro día firme en la formación.", mood: "cheer" },
+};
+
 type Vitals = { happy: number; hunger: number; energy: number; care: number };
 
 /**
@@ -135,7 +157,9 @@ export function TitoMascot() {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [mood, setMood] = useState<Mood>("idle");
   const [fabOpen, setFabOpen] = useState(false);
+  const [reaction, setReaction] = useState<{ spec: ReactionSpec; id: number } | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hydrate persistencia
   useEffect(() => {
@@ -211,12 +235,28 @@ export function TitoMascot() {
       const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
       setFabOpen(!!detail?.open);
     };
+    const onReact = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { type?: ReactionType; text?: string; emojis?: string[] } | undefined;
+      const type = detail?.type;
+      if (!type || !REACTIONS[type]) return;
+      const base = REACTIONS[type];
+      const spec: ReactionSpec = {
+        ...base,
+        emojis: detail?.emojis ?? base.emojis,
+      };
+      setReaction({ spec, id: Date.now() });
+      showBubble({ mood: spec.mood, text: detail?.text ?? spec.text, ttl: Math.max(spec.duration + 800, 2500) });
+      if (reactionTimerRef.current) clearTimeout(reactionTimerRef.current);
+      reactionTimerRef.current = setTimeout(() => setReaction(null), spec.duration + 200);
+    };
     window.addEventListener("tito:cheer", onCheer);
     window.addEventListener("tito:say", onCheer);
+    window.addEventListener("tito:react", onReact);
     window.addEventListener("fab:state", onFabState);
     return () => {
       window.removeEventListener("tito:cheer", onCheer);
       window.removeEventListener("tito:say", onCheer);
+      window.removeEventListener("tito:react", onReact);
       window.removeEventListener("fab:state", onFabState);
     };
   }, [showBubble]);
@@ -314,6 +354,19 @@ export function TitoMascot() {
         @keyframes tito-sad { 0%,100% { transform: translateY(2px) rotate(-2deg); } 50% { transform: translateY(6px) rotate(-2deg); } }
         @keyframes tito-hungry { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.02); } }
         @keyframes tito-tired { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(3px) rotate(4deg); } }
+
+        /* Reacciones en tiempo real */
+        @keyframes tito-salute { 0% { transform: rotate(0) translateY(0); } 25% { transform: rotate(-8deg) translateY(-4px); } 50% { transform: rotate(-8deg) translateY(-4px) scale(1.04); } 100% { transform: rotate(0) translateY(0); } }
+        @keyframes tito-splash { 0%,100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-6px) scale(1.05,.95); } 60% { transform: translateY(4px) scale(.95,1.05); } }
+        @keyframes tito-pushup { 0%,100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(6px) rotate(-4deg) scale(1.02,.96); } 50% { transform: translateY(-6px) rotate(2deg) scale(.98,1.04); } 75% { transform: translateY(6px) rotate(-4deg) scale(1.02,.96); } }
+        @keyframes tito-heart { 0%,100% { transform: scale(1); } 20% { transform: scale(1.12); } 40% { transform: scale(.98); } 60% { transform: scale(1.08); } }
+        @keyframes tito-sleepy { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(4px) rotate(6deg); } }
+        @keyframes tito-bounce-run { 0%,100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-8px) rotate(-4deg); } 50% { transform: translateY(0) rotate(0); } 75% { transform: translateY(-6px) rotate(4deg); } }
+        @keyframes tito-coin { 0%,100% { transform: rotateY(0) translateY(0); } 50% { transform: rotateY(180deg) translateY(-6px); } }
+        @keyframes tito-eat { 0%,100% { transform: scale(1); } 25% { transform: scale(1.05,.95); } 50% { transform: scale(.98,1.05); } 75% { transform: scale(1.05,.95); } }
+
+        /* Ráfaga de emojis */
+        @keyframes tito-burst { 0% { opacity: 0; transform: translate(0,0) scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: var(--tito-burst-end) scale(1.1); } }
       `}</style>
 
       <div className="fixed z-[60] bottom-24 right-3 md:bottom-6 md:right-6 pointer-events-none select-none">
@@ -346,9 +399,37 @@ export function TitoMascot() {
               <img
                 src={titoAsset.url}
                 alt="Tito"
-                className={`w-full h-full object-contain ${moodFrame(mood)}`}
+                className={`w-full h-full object-contain ${reaction ? "" : moodFrame(mood)}`}
+                style={
+                  reaction
+                    ? { animation: `${reaction.spec.anim} ${reaction.spec.duration}ms ease-in-out both`, transformOrigin: "50% 80%" }
+                    : undefined
+                }
                 draggable={false}
               />
+              {reaction && (
+                <div key={reaction.id} className="pointer-events-none absolute inset-0 overflow-visible">
+                  {reaction.spec.emojis.map((emo, i) => {
+                    const angle = (-90 + (i - (reaction.spec.emojis.length - 1) / 2) * 30) * (Math.PI / 180);
+                    const dist = 70;
+                    const dx = Math.cos(angle) * dist;
+                    const dy = Math.sin(angle) * dist;
+                    return (
+                      <span
+                        key={i}
+                        className="absolute left-1/2 top-1/2 text-2xl"
+                        style={{
+                          ["--tito-burst-end" as string]: `translate(${dx.toFixed(0)}px, ${dy.toFixed(0)}px)`,
+                          animation: `tito-burst ${reaction.spec.duration}ms ease-out both`,
+                          animationDelay: `${i * 60}ms`,
+                        }}
+                      >
+                        {emo}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </button>
 
             {/* Vitales tipo Tamagotchi — visibles cuando algo anda bajo */}

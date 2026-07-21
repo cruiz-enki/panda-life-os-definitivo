@@ -271,6 +271,8 @@ export function useExercise() {
       completed: true, xp_awarded: xp,
     } as never);
     await refresh();
+    const { titoReact } = await import("@/lib/tito-react");
+    titoReact("exercise", ex ? { text: `${ex.name} ✅ +${xp} XP` } : {});
     return xp;
   };
 
@@ -309,6 +311,8 @@ export function useExercise() {
       updated_at: new Date().toISOString()
     } as never).eq("id", workoutLogId);
     await refresh();
+    const { titoReact } = await import("@/lib/tito-react");
+    titoReact("exercise", { text: `Workout completo 💪 +${bonus} XP` });
     return bonus;
   };
 
@@ -347,6 +351,8 @@ export function useExercise() {
       xp_awarded: xp,
     } as never);
     await refresh();
+    const { titoReact } = await import("@/lib/tito-react");
+    titoReact("exercise", ex ? { text: `${ex.name} 💪 +${xp} XP` } : {});
     return xp;
   };
 

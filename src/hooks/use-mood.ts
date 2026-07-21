@@ -79,7 +79,12 @@ export function useMood() {
       dominant_thought: input.dominant_thought ?? null,
     };
     const { error } = await supabase.from("mood_logs" as never).insert(payload as never);
-    if (!error) refresh();
+    if (!error) {
+      const { titoReact } = await import("@/lib/tito-react");
+      const emoji = MOOD_OPTIONS.find((m) => m.key === input.mood)?.emoji ?? "❤️";
+      titoReact("mood", { text: `${emoji} Ánimo registrado. Aquí estoy contigo.` });
+      refresh();
+    }
     return error;
   };
 
