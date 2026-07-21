@@ -174,11 +174,11 @@ export const Route = createFileRoute("/api/public/hooks/telegram-reminders")({
                 const target = parseHM((slot.time as string).slice(0, 5));
                 if (!withinWindow(now, target)) continue;
                 const items = (slot.med_slot_items ?? []) as Array<{
-                  health_medications: { id: string; name: string; dose: string | null; active: boolean } | null;
+                  health_medications: Array<{ id: string; name: string; dose: string | null; active: boolean }> | { id: string; name: string; dose: string | null; active: boolean } | null;
                 }>;
                 const meds = items
-                  .map((i) => i.health_medications)
-                  .filter((m): m is NonNullable<typeof m> => !!m && m.active);
+                  .flatMap((i) => (Array.isArray(i.health_medications) ? i.health_medications : i.health_medications ? [i.health_medications] : []))
+                  .filter((m) => m.active);
                 if (!meds.length) continue;
                 const key = `${now.ymd}|slot|${slot.id}`;
                 const list = meds.map((m) => `• ${m.name}${m.dose ? ` (${m.dose})` : ""}`).join("\n");
