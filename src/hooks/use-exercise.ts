@@ -311,6 +311,8 @@ export function useExercise() {
       updated_at: new Date().toISOString()
     } as never).eq("id", workoutLogId);
     await refresh();
+    const { titoReact } = await import("@/lib/tito-react");
+    titoReact("exercise", { text: `Workout completo 💪 +${bonus} XP` });
     return bonus;
   };
 
