@@ -12,9 +12,56 @@ import { useAppState } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { todayCDMX } from "@/lib/date-utils";
 
-type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think";
+type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think" | "hungry" | "tired";
 
 type Bubble = { text: string; mood: Mood; ttl?: number };
+
+type Vitals = { happy: number; hunger: number; energy: number; care: number };
+
+/**
+ * Calcula "vitales" tipo Tamagotchi a partir del estado del usuario.
+ * - happy: hábitos completados hoy / total
+ * - hunger: 1 = lleno, 0 = hambriento (baja con las horas del día sin registrar comida/agua)
+ * - energy: 1 = descansado, 0 = agotado (baja de noche si no hay hábito de sueño)
+ * - care: promedio ponderado → mood ambiental
+ */
+function computeVitals(state: ReturnType<typeof useAppState>["state"]): Vitals {
+  const today = todayCDMX();
+  const h = new Date().getHours();
+  const habits = state.habits ?? [];
+  const total = habits.length;
+  const doneToday = habits.filter((x) => x.lastCompleted === today).length;
+  const happy = total > 0 ? doneToday / total : 0.8;
+
+  // Hambre: hábitos con métrica de agua/comida cumplidos hoy
+  const nutritionHabits = habits.filter((x) =>
+    ["water_ml", "meals_count", "protein_g"].includes(x.linkedMetric ?? ""),
+  );
+  const nutritionDone = nutritionHabits.filter((x) => x.lastCompleted === today).length;
+  const nutritionRatio = nutritionHabits.length > 0 ? nutritionDone / nutritionHabits.length : happy;
+  // Decae con la hora del día (a mediodía debería haber al menos 30% cumplido)
+  const dayProgress = Math.min(1, Math.max(0, (h - 7) / 14)); // 7am→0, 9pm→1
+  const hunger = Math.max(0, Math.min(1, nutritionRatio - dayProgress * 0.3 + 0.3));
+
+  // Energía: si es muy noche o muy tarde sin sueño registrado
+  const sleepHabits = habits.filter((x) => (x.linkedMetric ?? "").startsWith("sleep"));
+  const sleepDone = sleepHabits.some((x) => x.lastCompleted === today);
+  let energy = happy;
+  if (h >= 23 || h < 5) energy = sleepDone ? 0.6 : 0.15;
+  else if (h >= 21) energy = Math.min(energy, 0.4);
+
+  const care = happy * 0.5 + hunger * 0.25 + energy * 0.25;
+  return { happy, hunger, energy, care };
+}
+
+function ambientMood(v: Vitals, hour: number): Mood {
+  if (hour >= 23 || hour < 5) return v.energy < 0.3 ? "tired" : "sleep";
+  if (v.care < 0.25) return "sad";
+  if (v.hunger < 0.3) return "hungry";
+  if (v.energy < 0.3) return "tired";
+  if (v.care > 0.85) return "happy";
+  return "idle";
+}
 
 const LS_MIN = "tito:minimized";
 const LS_HIDDEN = "tito:hidden-until"; // fecha ISO
@@ -66,7 +113,11 @@ function moodFrame(mood: Mood): string {
     case "happy":
       return "animate-[tito-wiggle_2.4s_ease-in-out_infinite]";
     case "sad":
-      return "opacity-70 saturate-50";
+      return "opacity-60 saturate-[.4] animate-[tito-sad_3s_ease-in-out_infinite]";
+    case "hungry":
+      return "opacity-80 animate-[tito-hungry_1.6s_ease-in-out_infinite]";
+    case "tired":
+      return "opacity-70 saturate-75 animate-[tito-tired_4s_ease-in-out_infinite]";
     case "sleep":
       return "opacity-80";
     case "think":
@@ -94,7 +145,24 @@ export function TitoMascot() {
     if (until && new Date(until).getTime() > Date.now()) setHiddenToday(true);
   }, []);
 
-  const messages = useMemo(() => pickTimeMessages(state), [state]);
+  const vitals = useMemo(() => computeVitals(state), [state]);
+  const hourNow = new Date().getHours();
+  const ambient = useMemo(() => ambientMood(vitals, hourNow), [vitals, hourNow]);
+
+  const messages = useMemo(() => {
+    const base = pickTimeMessages(state);
+    const extra: Bubble[] = [];
+    if (vitals.care < 0.25) {
+      extra.push({ mood: "sad", text: "Me siento decaído… llevamos varios pendientes. ¿Un tap y arrancamos?" });
+    }
+    if (vitals.hunger < 0.3) {
+      extra.push({ mood: "hungry", text: "Tengo hambre 🍙 ¿Registramos comida o un vaso de agua?" });
+    }
+    if (vitals.energy < 0.3) {
+      extra.push({ mood: "tired", text: "Estoy agotado 😴 ¿Ya registraste tu sueño?" });
+    }
+    return [...base, ...extra];
+  }, [state, vitals]);
 
   const showBubble = useCallback((b: Bubble) => {
     setBubble(b);
@@ -105,6 +173,11 @@ export function TitoMascot() {
       setMood("idle");
     }, b.ttl ?? 5000);
   }, []);
+
+  // Mood ambiental cuando no hay burbuja activa (Tamagotchi)
+  useEffect(() => {
+    if (!bubble) setMood(ambient);
+  }, [ambient, bubble]);
 
   // Bocadillo inicial + rotación
   useEffect(() => {
@@ -238,6 +311,9 @@ export function TitoMascot() {
         @keyframes tito-wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
         @keyframes tito-bounce { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-14px) scale(1.05); } }
         @keyframes tito-pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes tito-sad { 0%,100% { transform: translateY(2px) rotate(-2deg); } 50% { transform: translateY(6px) rotate(-2deg); } }
+        @keyframes tito-hungry { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.02); } }
+        @keyframes tito-tired { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(3px) rotate(4deg); } }
       `}</style>
 
       <div className="fixed z-[60] bottom-24 right-3 md:bottom-6 md:right-6 pointer-events-none select-none">
@@ -274,6 +350,24 @@ export function TitoMascot() {
                 draggable={false}
               />
             </button>
+
+            {/* Vitales tipo Tamagotchi — visibles cuando algo anda bajo */}
+            {!minimized && vitals.care < 0.75 && (
+              <div
+                className="pointer-events-none absolute -top-2 -right-1 flex flex-col gap-1"
+                title={`Ánimo ${Math.round(vitals.happy * 100)}% · Hambre ${Math.round(vitals.hunger * 100)}% · Energía ${Math.round(vitals.energy * 100)}%`}
+              >
+                {vitals.happy < 0.5 && (
+                  <span className="text-[11px] leading-none bg-card/90 border border-border rounded-full px-1 py-0.5 shadow-sm">❤️</span>
+                )}
+                {vitals.hunger < 0.4 && (
+                  <span className="text-[11px] leading-none bg-card/90 border border-border rounded-full px-1 py-0.5 shadow-sm">🍙</span>
+                )}
+                {vitals.energy < 0.4 && (
+                  <span className="text-[11px] leading-none bg-card/90 border border-border rounded-full px-1 py-0.5 shadow-sm">⚡</span>
+                )}
+              </div>
+            )}
 
             {/* Controles */}
             {!minimized ? (
