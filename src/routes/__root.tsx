@@ -16,6 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useGamification } from "@/hooks/use-gamification";
 import { GlobalSearchProvider } from "@/components/GlobalSearch";
 import { HabitAutoSyncer } from "@/components/HabitAutoSyncer";
+import { TitoMascot } from "@/components/TitoMascot";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -200,6 +201,7 @@ function AuthGate() {
         
         <DeferredGamification />
         <HabitAutoSyncer />
+        <TitoMascot />
         <Toaster />
       </div>
     </GlobalSearchProvider>
