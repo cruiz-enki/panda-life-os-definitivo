@@ -5,7 +5,7 @@
  * de Tito. La postura activa se resuelve dinámicamente a partir de la hora
  * del día y (opcionalmente) el tipo de reacción en curso.
  */
-import type { ReactionType } from "@/lib/tito-react";
+import type { TitoReactionType } from "@/lib/tito-react";
 
 const LS_SKIN = "tito:skin";
 
