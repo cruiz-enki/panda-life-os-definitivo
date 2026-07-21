@@ -8,9 +8,15 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { X, Minus } from "lucide-react";
 import titoAsset from "@/assets/tito.png.asset.json";
-import { useAppState } from "@/lib/storage";
+import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { todayCDMX } from "@/lib/date-utils";
+import {
+  resolveActiveSkin,
+  readStoredSkinId,
+  currentPosture,
+  type TitoSkinAccessory,
+} from "@/lib/tito-skins";
 
 type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think" | "hungry" | "tired";
 
