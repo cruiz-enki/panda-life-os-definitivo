@@ -163,7 +163,8 @@ export function TitoMascot() {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [mood, setMood] = useState<Mood>("idle");
   const [fabOpen, setFabOpen] = useState(false);
-  const [reaction, setReaction] = useState<{ spec: ReactionSpec; id: number } | null>(null);
+  const [reaction, setReaction] = useState<{ spec: ReactionSpec; id: number; type: ReactionType } | null>(null);
+  const [skinId, setSkinId] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -173,6 +174,13 @@ export function TitoMascot() {
     setMinimized(window.localStorage.getItem(LS_MIN) === "1");
     const until = window.localStorage.getItem(LS_HIDDEN);
     if (until && new Date(until).getTime() > Date.now()) setHiddenToday(true);
+    setSkinId(readStoredSkinId());
+    const onSkin = (e: Event) => {
+      const id = (e as CustomEvent).detail?.id as string | undefined;
+      setSkinId(id ?? readStoredSkinId());
+    };
+    window.addEventListener("tito:skin-change", onSkin);
+    return () => window.removeEventListener("tito:skin-change", onSkin);
   }, []);
 
   const vitals = useMemo(() => computeVitals(state), [state]);
