@@ -12,9 +12,56 @@ import { useAppState } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { todayCDMX } from "@/lib/date-utils";
 
-type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think";
+type Mood = "idle" | "happy" | "cheer" | "sad" | "sleep" | "think" | "hungry" | "tired";
 
 type Bubble = { text: string; mood: Mood; ttl?: number };
+
+type Vitals = { happy: number; hunger: number; energy: number; care: number };
+
+/**
+ * Calcula "vitales" tipo Tamagotchi a partir del estado del usuario.
+ * - happy: hábitos completados hoy / total
+ * - hunger: 1 = lleno, 0 = hambriento (baja con las horas del día sin registrar comida/agua)
+ * - energy: 1 = descansado, 0 = agotado (baja de noche si no hay hábito de sueño)
+ * - care: promedio ponderado → mood ambiental
+ */
+function computeVitals(state: ReturnType<typeof useAppState>["state"]): Vitals {
+  const today = todayCDMX();
+  const h = new Date().getHours();
+  const habits = state.habits ?? [];
+  const total = habits.length;
+  const doneToday = habits.filter((x) => x.lastCompleted === today).length;
+  const happy = total > 0 ? doneToday / total : 0.8;
+
+  // Hambre: hábitos con métrica de agua/comida cumplidos hoy
+  const nutritionHabits = habits.filter((x) =>
+    ["water_ml", "meals_count", "protein_g"].includes(x.linkedMetric ?? ""),
+  );
+  const nutritionDone = nutritionHabits.filter((x) => x.lastCompleted === today).length;
+  const nutritionRatio = nutritionHabits.length > 0 ? nutritionDone / nutritionHabits.length : happy;
+  // Decae con la hora del día (a mediodía debería haber al menos 30% cumplido)
+  const dayProgress = Math.min(1, Math.max(0, (h - 7) / 14)); // 7am→0, 9pm→1
+  const hunger = Math.max(0, Math.min(1, nutritionRatio - dayProgress * 0.3 + 0.3));
+
+  // Energía: si es muy noche o muy tarde sin sueño registrado
+  const sleepHabits = habits.filter((x) => (x.linkedMetric ?? "").startsWith("sleep"));
+  const sleepDone = sleepHabits.some((x) => x.lastCompleted === today);
+  let energy = happy;
+  if (h >= 23 || h < 5) energy = sleepDone ? 0.6 : 0.15;
+  else if (h >= 21) energy = Math.min(energy, 0.4);
+
+  const care = happy * 0.5 + hunger * 0.25 + energy * 0.25;
+  return { happy, hunger, energy, care };
+}
+
+function ambientMood(v: Vitals, hour: number): Mood {
+  if (hour >= 23 || hour < 5) return v.energy < 0.3 ? "tired" : "sleep";
+  if (v.care < 0.25) return "sad";
+  if (v.hunger < 0.3) return "hungry";
+  if (v.energy < 0.3) return "tired";
+  if (v.care > 0.85) return "happy";
+  return "idle";
+}
 
 const LS_MIN = "tito:minimized";
 const LS_HIDDEN = "tito:hidden-until"; // fecha ISO
