@@ -257,6 +257,129 @@ function ShortcutsPage() {
           <li>• <b>Automatización por ubicación:</b> al llegar a "Gimnasio", corre un atajo que haga check-in.</li>
         </ul>
       </Card>
+
+      {/* ============ MCP SERVER ============ */}
+      <div className="pt-4 border-t border-border" id="mcp">
+        <div className="flex items-center gap-2 mb-2">
+          <Bot className="w-7 h-7 text-primary" />
+          <h2 className="text-3xl font-display font-bold">MCP Server</h2>
+        </div>
+        <p className="text-muted-foreground max-w-2xl mb-4">
+          Panda OS expone un servidor <b>MCP (Model Context Protocol)</b> con OAuth 2.1. Conéctalo a ChatGPT,
+          Claude, Cursor, n8n o cualquier cliente compatible para que un LLM registre gastos, medicinas,
+          notas, tareas y consulte tu resumen diario en lenguaje natural.
+        </p>
+      </div>
+
+      <Card className="p-5 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
+        <div className="flex items-start gap-3">
+          <Link2 className="w-5 h-5 text-primary mt-1 shrink-0" />
+          <div className="space-y-2 w-full">
+            <h3 className="font-display font-bold text-lg">Endpoint</h3>
+            <div className="bg-muted/50 rounded-lg p-3 flex items-center justify-between gap-2 overflow-x-auto">
+              <code className="text-sm font-mono">{base}/mcp</code>
+              <Button variant="secondary" size="sm" onClick={() => copy("/mcp")}>
+                {copied === "/mcp" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Descubrimiento OAuth: <code>{base}/.well-known/oauth-protected-resource</code>. El cliente hace
+              Dynamic Client Registration solo — no necesitas dar de alta la app a mano.
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-5">
+        <div className="flex items-start gap-3">
+          <ShieldCheck className="w-5 h-5 text-primary mt-1 shrink-0" />
+          <div>
+            <h3 className="font-display font-bold text-lg mb-2">Cómo conectarlo</h3>
+            <ol className="text-sm space-y-1.5 list-decimal list-inside text-muted-foreground">
+              <li><b>ChatGPT (plan con conectores):</b> Settings → Connectors → Add custom connector → pega <code>{base}/mcp</code> → aprueba en la pantalla de consentimiento con tu cuenta de Panda OS.</li>
+              <li><b>Claude Desktop / claude.ai:</b> Settings → Connectors → Add custom → misma URL.</li>
+              <li><b>Cursor:</b> Settings → MCP → Add server → tipo <b>HTTP</b> → URL <code>{base}/mcp</code>.</li>
+              <li><b>n8n:</b> nodo <b>MCP Client Tool</b> → transport <b>HTTP Streamable</b> → URL <code>{base}/mcp</code> → auth OAuth2.</li>
+              <li>Al conectar por primera vez, el cliente te manda a la pantalla de consentimiento (<code>/.lovable/oauth/consent</code>). Aprueba y listo.</li>
+            </ol>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-5">
+        <h3 className="font-display font-bold text-lg mb-3">Herramientas disponibles</h3>
+        <div className="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <div className="font-semibold text-primary mb-1">💸 Finanzas</div>
+            <ul className="text-muted-foreground space-y-0.5">
+              <li>• <code>add_expense</code> — registrar gasto</li>
+              <li>• <code>add_income</code> — registrar ingreso</li>
+              <li>• <code>list_recent_expenses</code> — gastos recientes</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-semibold text-primary mb-1">📝 Notas</div>
+            <ul className="text-muted-foreground space-y-0.5">
+              <li>• <code>add_note</code> — crear nota</li>
+              <li>• <code>list_notes</code> — últimas notas</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-semibold text-primary mb-1">💊 Salud</div>
+            <ul className="text-muted-foreground space-y-0.5">
+              <li>• <code>log_medication</code> — tomé medicina</li>
+              <li>• <code>list_medications</code> — meds activos</li>
+              <li>• <code>log_mood</code> — check-in emocional</li>
+              <li>• <code>log_sleep</code> — registro de sueño</li>
+              <li>• <code>log_water</code> — hidratación</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-semibold text-primary mb-1">✅ Productividad</div>
+            <ul className="text-muted-foreground space-y-0.5">
+              <li>• <code>add_task</code> / <code>list_tasks</code> / <code>complete_task</code></li>
+              <li>• <code>list_habits</code> / <code>add_habit</code> / <code>complete_habit</code></li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-semibold text-primary mb-1">📍 Ubicación</div>
+            <ul className="text-muted-foreground space-y-0.5">
+              <li>• <code>checkin_location</code> — check-in de lugar</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-semibold text-primary mb-1">📊 Resumen</div>
+            <ul className="text-muted-foreground space-y-0.5">
+              <li>• <code>daily_summary</code> — recap del día</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-5 bg-muted/30">
+        <div className="flex items-start gap-3">
+          <Terminal className="w-5 h-5 text-primary mt-1 shrink-0" />
+          <div>
+            <h3 className="font-display font-bold text-lg mb-2">Ejemplos de prompts</h3>
+            <ul className="text-sm space-y-2 text-muted-foreground">
+              <li>• "Me acabo de tomar un café de $65 y las pastillas de la mañana" → llama <code>add_expense</code> + <code>log_medication</code>.</li>
+              <li>• "¿Cómo va mi día?" → <code>daily_summary</code> con gastos, mood, sueño, agua, meds y tareas cerradas.</li>
+              <li>• "Recuérdame llamar a Juan mañana 3pm, alta prioridad" → <code>add_task</code> con fecha y prioridad parseadas.</li>
+              <li>• "¿Los días que duermo menos de 6h gasto más?" → el LLM cruza <code>list_recent_expenses</code> + resúmenes.</li>
+              <li>• <b>n8n cron nocturno:</b> llama <code>daily_summary</code> a las 10pm y te lo manda por Telegram como recap.</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-5 border-amber-500/30 bg-amber-500/5">
+        <h3 className="font-display font-bold mb-2">⚠️ Seguridad</h3>
+        <ul className="text-sm space-y-1 text-muted-foreground">
+          <li>• Cada cliente MCP se conecta con <b>tu cuenta</b> — las herramientas actúan como tú, respetando RLS.</li>
+          <li>• Puedes revocar accesos desde tu Supabase Auth → OAuth clients.</li>
+          <li>• Solo conecta clientes MCP en los que confíes. Un LLM con acceso escribe en tu base de datos personal.</li>
+        </ul>
+      </Card>
     </div>
   );
 }
