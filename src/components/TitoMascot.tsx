@@ -258,7 +258,7 @@ export function TitoMascot() {
         ...base,
         emojis: detail?.emojis ?? base.emojis,
       };
-      setReaction({ spec, id: Date.now() });
+      setReaction({ spec, id: Date.now(), type });
       showBubble({ mood: spec.mood, text: detail?.text ?? spec.text, ttl: Math.max(spec.duration + 800, 2500) });
       if (reactionTimerRef.current) clearTimeout(reactionTimerRef.current);
       reactionTimerRef.current = setTimeout(() => setReaction(null), spec.duration + 200);
