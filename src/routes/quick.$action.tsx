@@ -424,7 +424,14 @@ function QuickActionPage() {
       <Card className="w-full max-w-md p-8 text-center space-y-4">
         <div className="flex justify-center">
           {status === "running" && <Loader2 className="w-14 h-14 animate-spin text-primary" />}
-          {status === "success" && <CheckCircle2 className="w-14 h-14 text-green-500" />}
+          {status === "success" && (
+            <div className="relative">
+              <div className="text-6xl animate-[scale-in_0.3s_ease-out] drop-shadow-lg" style={{ animation: "scale-in 0.3s ease-out, bounce 1s ease-in-out 0.3s 2" }}>🐼</div>
+              <CheckCircle2 className="absolute -bottom-1 -right-1 w-6 h-6 text-green-500 bg-background rounded-full animate-[fade-in_0.5s_ease-out_0.4s_both]" />
+              <div className="absolute -top-2 -left-2 text-2xl animate-[fade-in_0.4s_ease-out_0.2s_both]">✨</div>
+              <div className="absolute -top-2 -right-2 text-2xl animate-[fade-in_0.4s_ease-out_0.35s_both]">⭐</div>
+            </div>
+          )}
           {status === "error" && <XCircle className="w-14 h-14 text-destructive" />}
           {status === "idle" && <ArrowRight className="w-14 h-14 text-muted-foreground" />}
         </div>
