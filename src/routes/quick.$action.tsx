@@ -24,6 +24,34 @@ import { useMood } from "@/hooks/use-mood";
 import { supabase } from "@/integrations/supabase/client";
 import { todayCDMX } from "@/lib/date-utils";
 import { toast } from "sonner";
+import { titoReact, type TitoReactionType } from "@/lib/tito-react";
+
+/** Mapea la acción del deep link al tipo de reacción visual de Tito. */
+function reactionForAction(action: string): { type: TitoReactionType; emojis?: string[]; text?: string } | null {
+  switch (action) {
+    case "expense": return { type: "expense", text: "¡Anotado, soldado!" };
+    case "income": return { type: "expense", emojis: ["💰", "✨", "🪙"], text: "¡Botín asegurado!" };
+    case "med":
+    case "meds":
+    case "slot": return { type: "med", text: "Dosis cumplida 🫡" };
+    case "water": return { type: "water", text: "¡A hidratar!" };
+    case "mood": return { type: "mood" };
+    case "meal":
+    case "desayuno":
+    case "comida":
+    case "cena":
+    case "snack": return { type: "meal", text: "¡Ración registrada!" };
+    case "location":
+    case "checkin": return { type: "habit", emojis: ["📍", "🗺️", "✨"], text: "Terreno marcado" };
+    case "sleep-start":
+    case "bedtime":
+    case "dormir": return { type: "sleep", emojis: ["🌙", "😴", "✨"], text: "Buenas noches, César" };
+    case "sleep-end":
+    case "wake":
+    case "despertar": return { type: "sleep", emojis: ["☀️", "⚡", "✨"], text: "¡A la batalla!" };
+    default: return null;
+  }
+}
 
 /** Normaliza texto: minúsculas + sin acentos, para hacer match tolerante. */
 const norm = (s: string) =>
