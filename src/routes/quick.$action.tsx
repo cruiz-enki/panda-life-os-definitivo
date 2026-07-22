@@ -398,6 +398,8 @@ function QuickActionPage() {
       }
       setStatus("success");
       toast.success(message || "Registrado");
+      const reaction = reactionForAction(action);
+      if (reaction) titoReact(reaction.type, { text: reaction.text, emojis: reaction.emojis });
       goHomeAfter();
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
