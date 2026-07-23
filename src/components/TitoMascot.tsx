@@ -421,7 +421,7 @@ export function TitoMascot() {
               className={`relative block ${minimized ? "w-14 h-14" : "w-24 h-24 md:w-28 md:h-28"} drop-shadow-[0_10px_20px_rgba(0,0,0,0.35)] transition-all`}
             >
               <img
-                src={titoAsset.url}
+                src={pickSpriteUrl({ reaction: reaction?.type ?? null, mood, hour: hourNow, skinId })}
                 alt="Tito"
                 className={`w-full h-full object-contain ${reaction ? "" : moodFrame(mood)}`}
                 style={
