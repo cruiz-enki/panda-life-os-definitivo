@@ -7,7 +7,7 @@
  */
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { X, Minus } from "lucide-react";
-import titoAsset from "@/assets/tito.png.asset.json";
+import { pickSpriteUrl } from "@/lib/tito-sprites";
 import { useAppState, levelFromXp } from "@/lib/storage";
 import { useAuth } from "@/lib/auth-context";
 import { todayCDMX } from "@/lib/date-utils";
