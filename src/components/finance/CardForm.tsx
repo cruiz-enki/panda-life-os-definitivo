@@ -131,6 +131,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
               Dato público, útil para recibir transferencias.
             </p>
           </div>
+          <div>
             <Label>Color</Label>
             <div className="flex flex-wrap gap-2 mt-2">
               {CARD_COLORS.map((c) => (
