@@ -74,7 +74,10 @@ function CardDetailPage() {
           </div>
           <div>
             <div className="text-xs opacity-70">Deuda total</div>
-            <div className="text-xl font-bold">{formatMXN(card.current_balance)}</div>
+            <div className="text-xl font-bold">{formatMXN(effectiveDebt)}</div>
+            {effectiveDebt > card.current_balance && (
+              <div className="text-[10px] opacity-70">declarado: {formatMXN(card.current_balance)}</div>
+            )}
           </div>
         </div>
 
