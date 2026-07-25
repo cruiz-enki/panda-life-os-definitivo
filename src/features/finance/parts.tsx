@@ -278,9 +278,14 @@ function MsiList({ msiCommitted }: { msiCommitted: number }) {
     <div className="space-y-3">
       <Card>
         <CardContent className="p-4">
-          <div className="text-xs text-muted-foreground">Total comprometido en MSI</div>
-          <div className="text-2xl font-display font-bold">{formatMXN(msiCommitted)}</div>
-          <div className="text-xs text-muted-foreground mt-1">{active.length} planes activos</div>
+          <div className="flex justify-between items-start gap-2">
+            <div>
+              <div className="text-xs text-muted-foreground">Total comprometido en MSI</div>
+              <div className="text-2xl font-display font-bold">{formatMXN(msiCommitted)}</div>
+              <div className="text-xs text-muted-foreground mt-1">{active.length} planes activos</div>
+            </div>
+            <MsiImport />
+          </div>
         </CardContent>
       </Card>
 
