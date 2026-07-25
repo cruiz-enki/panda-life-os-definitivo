@@ -56,7 +56,7 @@ export function CardTile({ card, expenses, msiPlans }: { card: CreditCard; expen
         </div>
         <div>
           <div className="opacity-70">Deuda</div>
-          <div className="font-bold">{formatMXN(card.current_balance)}</div>
+          <div className="font-bold">{formatMXN(effectiveDebt)}</div>
         </div>
       </div>
 
