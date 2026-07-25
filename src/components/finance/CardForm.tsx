@@ -118,6 +118,19 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
             </p>
           </div>
           <div>
+            <Label>CLABE interbancaria (18 dígitos)</Label>
+            <Input
+              inputMode="numeric"
+              maxLength={18}
+              value={form.clabe || ""}
+              onChange={(e) => setForm({ ...form, clabe: e.target.value.replace(/\D/g, "").slice(0, 18) })}
+              placeholder="014975000000000000"
+              className="font-mono"
+            />
+            <p className="text-[10px] text-muted-foreground mt-1 px-1">
+              Dato público, útil para recibir transferencias.
+            </p>
+          </div>
             <Label>Color</Label>
             <div className="flex flex-wrap gap-2 mt-2">
               {CARD_COLORS.map((c) => (
