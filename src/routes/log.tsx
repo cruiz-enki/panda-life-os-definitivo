@@ -729,26 +729,46 @@ const MEAL_TYPES = [
 ] as const;
 
 function MealsQuick() {
-  // Import dinámico ligero: usamos useMeals directo si existe. Fallback a link.
-  // Nota: use-meals expone setPlanEntry(date, meal_type, dish_id, custom_name)
   const [date, setDate] = useState(todayCDMX());
   const [type, setType] = useState<typeof MEAL_TYPES[number]["key"]>("comida");
   const [name, setName] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [query, setQuery] = useState("");
+  const [saving, setSaving] = useState<string | null>(null);
 
   const meals = useMeals();
 
-  const submit = async () => {
-    if (!name.trim()) return;
-    setSaving(true);
+  const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  const filteredDishes = useMemo(() => {
+    const q = norm(query.trim());
+    return meals.dishes.filter((d) => {
+      const allowed = d.allowed_meal_types ?? [];
+      if (allowed.length > 0 && !allowed.includes(type as never)) return false;
+      if (!q) return true;
+      return norm(d.name).includes(q);
+    });
+  }, [meals.dishes, type, query]);
+
+  const registerDish = async (dishId: string | null, customName = "") => {
+    setSaving(dishId ?? "custom");
     try {
-      await meals.setPlanEntry(date, type as never, null, name.trim());
+      await meals.setPlanEntry(date, type as never, dishId, customName);
+      // Marcar completado para que quede registrado en health_meals + XP
+      const entry = meals.plan.find((p) => p.date === date && p.meal_type === type);
+      if (entry && !entry.completed) {
+        await meals.togglePlanComplete(entry.id);
+      }
       toast.success("Comida registrada");
       setName("");
     } catch {
       toast.error("No se pudo guardar");
     }
-    setSaving(false);
+    setSaving(null);
+  };
+
+  const submitCustom = async () => {
+    if (!name.trim()) return;
+    await registerDish(null, name.trim());
   };
 
   return (
@@ -777,22 +797,69 @@ function MealsQuick() {
           ))}
         </div>
 
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="¿Qué comiste?"
-          className="w-full bg-secondary/20 border border-border rounded-xl px-3 py-2 text-sm outline-none"
-          onKeyDown={(e) => e.key === "Enter" && submit()}
-        />
+        {/* Platillos guardados */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Mis platillos {filteredDishes.length > 0 && `(${filteredDishes.length})`}
+            </p>
+            <Link to="/meals" className="text-[11px] text-primary">Gestionar →</Link>
+          </div>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar platillo…"
+            className="w-full bg-secondary/20 border border-border rounded-xl px-3 py-2 text-sm outline-none"
+          />
+          {meals.loading ? (
+            <p className="text-xs text-muted-foreground py-3 text-center">Cargando…</p>
+          ) : filteredDishes.length === 0 ? (
+            <p className="text-xs text-muted-foreground py-3 text-center">
+              No hay platillos {query ? "que coincidan" : "para este tipo"}. <Link to="/meals" className="text-primary underline">Crea uno</Link>.
+            </p>
+          ) : (
+            <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1">
+              {filteredDishes.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  disabled={saving !== null}
+                  onClick={() => registerDish(d.id)}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-border bg-secondary/10 hover:bg-secondary/30 text-left disabled:opacity-40"
+                >
+                  <span className="text-xl">{d.emoji || "🍽️"}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm truncate">{d.name}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {d.classification} · +{d.xp_reward} XP
+                    </p>
+                  </div>
+                  {saving === d.id && <span className="text-xs text-muted-foreground">…</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-        <button
-          type="button"
-          onClick={submit}
-          disabled={!name.trim() || saving}
-          className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium disabled:opacity-40"
-        >
-          {saving ? "Guardando…" : "Registrar comida"}
-        </button>
+        {/* Opción libre */}
+        <div className="pt-2 border-t border-border space-y-2">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">O captura libre</p>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="¿Qué comiste?"
+            className="w-full bg-secondary/20 border border-border rounded-xl px-3 py-2 text-sm outline-none"
+            onKeyDown={(e) => e.key === "Enter" && submitCustom()}
+          />
+          <button
+            type="button"
+            onClick={submitCustom}
+            disabled={!name.trim() || saving !== null}
+            className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium disabled:opacity-40"
+          >
+            {saving === "custom" ? "Guardando…" : "Registrar comida libre"}
+          </button>
+        </div>
       </div>
 
       <Link
@@ -804,6 +871,7 @@ function MealsQuick() {
     </div>
   );
 }
+
 
 /* ---------------- Energía ---------------- */
 function EnergyQuick() {
