@@ -40,8 +40,9 @@ function CardDetailPage() {
   const { msiThisMonth, msiCommitted, nextCutNormal, nextCutCharge } = breakdown;
   const recon = cardReconciliation(card, f.expenses, f.msiPlans);
 
-  const available = Math.max(0, card.credit_limit - card.current_balance);
-  const usage = card.credit_limit > 0 ? (card.current_balance / card.credit_limit) * 100 : 0;
+  const effectiveDebt = Math.max(card.current_balance, msiCommitted + nextCutCharge);
+  const available = Math.max(0, card.credit_limit - effectiveDebt);
+  const usage = card.credit_limit > 0 ? (effectiveDebt / card.credit_limit) * 100 : 0;
 
   const cutDate = nextCutDate(card.cut_day);
   const payDate = nextPaymentDate(card.payment_day);
