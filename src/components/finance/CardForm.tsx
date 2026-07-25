@@ -31,6 +31,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
     icon: existing?.icon || "💳",
     status: (existing?.status || "active") as CardStatus,
     nip_code: existing?.nip_code || "",
+    clabe: existing?.clabe || "",
   });
 
   const submit = async () => {
