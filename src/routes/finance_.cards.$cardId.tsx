@@ -81,6 +81,24 @@ function CardDetailPage() {
           </div>
         </div>
 
+        {card.clabe && (
+          <div className="mt-4 rounded-2xl bg-white/10 backdrop-blur-sm p-3 flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <div className="text-[10px] opacity-70 uppercase tracking-wide">CLABE</div>
+              <div className="font-mono text-sm tracking-wider truncate">{card.clabe}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard?.writeText(card.clabe || "");
+              }}
+              className="shrink-0 rounded-lg bg-white/20 hover:bg-white/30 px-3 py-1.5 text-xs font-semibold"
+            >
+              Copiar
+            </button>
+          </div>
+        )}
+
         {/* Desglose de saldo */}
         <div className="mt-4 rounded-2xl bg-white/10 backdrop-blur-sm p-3 space-y-2">
           <div className="flex justify-between items-baseline">
