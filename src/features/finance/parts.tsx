@@ -11,6 +11,7 @@ import { CardTile } from "@/components/finance/CardTile";
 import { CardForm } from "@/components/finance/CardForm";
 import { ExpenseForm } from "@/components/finance/ExpenseForm";
 import { PaymentForm } from "@/components/finance/PaymentForm";
+import { MsiImport } from "@/components/finance/MsiImport";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
