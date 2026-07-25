@@ -204,6 +204,7 @@ function DailySupplements({ today, addBonusXp }: { today: string; addBonusXp: (n
   const items = [
     { key: "creatina", label: "Creatina", emoji: "💪" },
     { key: "electrolitos", label: "Electrolitos", emoji: "⚡" },
+    { key: "batido_proteina", label: "Batido de proteína", emoji: "🥤" },
   ];
   const storageKey = `daily-supplements:${today}`;
   const [done, setDone] = useState<Record<string, boolean>>({});
