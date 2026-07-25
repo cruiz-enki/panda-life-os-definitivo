@@ -44,15 +44,9 @@ function MealsPage() {
       });
 
     const desayuno = findByName(["huevos", "estrellado"]);
-    const snack = findByName(["creatina"]);
-    const cena =
-      m.dishes.find((d) => d.allowed_meal_types?.includes("cena") && norm(d.name).includes("batido")) ||
-      findByName(["batido", "proteina"]);
-
     if (desayuno) m.setPlanEntry(m.today, "desayuno", desayuno.id, "");
-    if (snack) m.setPlanEntry(m.today, "snack", snack.id, "");
-    if (cena) m.setPlanEntry(m.today, "cena", cena.id, "");
   }, [m.loading, m.dishes.length, m.todayPlan.length, m.today, user?.id]);
+
 
   const todayDone = m.dayCompletion(m.today);
 
