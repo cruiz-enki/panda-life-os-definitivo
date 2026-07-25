@@ -24,6 +24,7 @@ export type CreditCard = {
   icon: string;
   status: CardStatus;
   nip_code?: string;
+  clabe?: string;
 };
 
 export type FinanceExpense = {

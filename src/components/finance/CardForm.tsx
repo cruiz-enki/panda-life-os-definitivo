@@ -31,6 +31,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
     icon: existing?.icon || "💳",
     status: (existing?.status || "active") as CardStatus,
     nip_code: existing?.nip_code || "",
+    clabe: existing?.clabe || "",
   });
 
   const submit = async () => {
@@ -114,6 +115,20 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
             />
             <p className="text-[10px] text-muted-foreground mt-1 px-1">
               Se guardará de forma privada. Útil para consultas rápidas en cajeros.
+            </p>
+          </div>
+          <div>
+            <Label>CLABE interbancaria (18 dígitos)</Label>
+            <Input
+              inputMode="numeric"
+              maxLength={18}
+              value={form.clabe || ""}
+              onChange={(e) => setForm({ ...form, clabe: e.target.value.replace(/\D/g, "").slice(0, 18) })}
+              placeholder="014975000000000000"
+              className="font-mono"
+            />
+            <p className="text-[10px] text-muted-foreground mt-1 px-1">
+              Dato público, útil para recibir transferencias.
             </p>
           </div>
           <div>
