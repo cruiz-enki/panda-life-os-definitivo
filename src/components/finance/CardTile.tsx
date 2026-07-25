@@ -8,13 +8,14 @@ import { InitialBalanceWizard } from "./InitialBalanceWizard";
 import { CardNipSafety } from "./CardNipSafety";
 
 export function CardTile({ card, expenses, msiPlans }: { card: CreditCard; expenses: FinanceExpense[]; msiPlans: MsiPlan[] }) {
-  const used = card.credit_limit > 0 ? (card.current_balance / card.credit_limit) * 100 : 0;
-  const available = Math.max(0, card.credit_limit - card.current_balance);
+  const { nextCutCharge, msiCommitted } = cardBalanceBreakdown(card, expenses, msiPlans);
+  const effectiveDebt = Math.max(card.current_balance, msiCommitted + nextCutCharge);
+  const used = card.credit_limit > 0 ? (effectiveDebt / card.credit_limit) * 100 : 0;
+  const available = Math.max(0, card.credit_limit - effectiveDebt);
   const cutD = nextCutDate(card.cut_day);
   const payD = nextPaymentDate(card.payment_day);
   const daysCut = daysUntil(cutD);
   const daysPay = daysUntil(payD);
-  const { nextCutCharge, msiCommitted } = cardBalanceBreakdown(card, expenses, msiPlans);
 
   const usageColor = used >= 80 ? "bg-red-500" : used >= 50 ? "bg-yellow-500" : "bg-green-500";
 
@@ -55,7 +56,7 @@ export function CardTile({ card, expenses, msiPlans }: { card: CreditCard; expen
         </div>
         <div>
           <div className="opacity-70">Deuda</div>
-          <div className="font-bold">{formatMXN(card.current_balance)}</div>
+          <div className="font-bold">{formatMXN(effectiveDebt)}</div>
         </div>
       </div>
 
