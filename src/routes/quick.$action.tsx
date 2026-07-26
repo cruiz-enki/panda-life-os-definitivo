@@ -26,7 +26,7 @@ import { todayCDMX } from "@/lib/date-utils";
 import { toast } from "sonner";
 import { titoReact, type TitoReactionType } from "@/lib/tito-react";
 
-/** Mapea la acción del deep link al tipo de reacción visual de Tito. */
+/** Mapea la acción del deep link al tipo de reacción visual de Pandus Maximus. */
 function reactionForAction(action: string): { type: TitoReactionType; emojis?: string[]; text?: string } | null {
   switch (action) {
     case "expense": return { type: "expense", text: "¡Anotado, soldado!" };

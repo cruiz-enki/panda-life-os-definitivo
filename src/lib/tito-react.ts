@@ -1,9 +1,9 @@
 /**
- * Dispara una **reacción visual de Tito** en el mundo real.
+ * Dispara una **reacción visual de Pandus Maximus** en el mundo real.
  *
  * Escuchado por `TitoMascot` (evento `tito:react`) que reproduce:
  * - una mini-animación específica por tipo (saludo militar, salpicón, flexión…)
- * - una ráfaga de emojis alrededor de Tito
+ * - una ráfaga de emojis alrededor de Pandus Maximus
  * - opcionalmente, un bocadillo corto
  */
 export type TitoReactionType =
@@ -18,7 +18,7 @@ export type TitoReactionType =
   | "habit";
 
 export type TitoReactionOptions = {
-  /** Texto corto que Tito dirá (opcional). */
+  /** Texto corto que Pandus Maximus dirá (opcional). */
   text?: string;
   /** Override de emojis para la ráfaga (opcional). */
   emojis?: string[];

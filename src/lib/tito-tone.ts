@@ -1,6 +1,6 @@
 /**
- * **Tito's legionary tone** — helpers para firmar recordatorios (push/telegram)
- * con el estilo de Tito, el panda-legionario.
+ * **Pandus Maximus's legionary tone** — helpers para firmar recordatorios (push/telegram)
+ * con el estilo de Pandus Maximus, el panda-legionario.
  *
  * `level`:
  *   - 1 → primer aviso, tono firme pero amable.
@@ -22,7 +22,7 @@ const CLOSERS: Record<TitoToneLevel, string[]> = {
   2: ["No me hagas repetirlo. 🛡️", "El deber llama. ⚔️", "Muévete. 🐼"],
   3: [
     "Tercer aviso. Ninguna legión se rinde por pereza. 🛡️⚔️",
-    "Van tres. Tito no te suelta hasta que caiga esta misión. 🐼🔥",
+    "Van tres. Pandus Maximus no te suelta hasta que caiga esta misión. 🐼🔥",
     "Ya ignoraste dos. Esta es la buena. ¡Ahora! ⚔️",
   ],
 };
@@ -41,7 +41,7 @@ function verbFor(kind: TitoReminderKind, level: TitoToneLevel): string {
 }
 
 /**
- * Devuelve `{ title, body }` firmados por Tito.
+ * Devuelve `{ title, body }` firmados por Pandus Maximus.
  * `seed` estabiliza la selección aleatoria (usa el id de la tarea/med).
  */
 export function titoReminderMessage(params: {
@@ -65,7 +65,7 @@ export function titoReminderMessage(params: {
     `${emoji} ${opener}, ${verb} *${subject}*.`,
     detail ?? "",
     "",
-    `— Tito ${closer}`,
+    `— Pandus Maximus ${closer}`,
   ]
     .filter(Boolean)
     .join("\n");
