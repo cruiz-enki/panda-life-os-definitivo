@@ -8,7 +8,7 @@ import { LIFE_MODES, LIFE_MODE_ORDER, useLifeMode, type LifeMode } from "@/hooks
 export const Route = createFileRoute("/mode")({
   head: () => ({
     meta: [
-      { title: "Modo · Panda's LIFE OS" },
+      { title: "Modo · Pandus Maximus" },
       { name: "description", content: "Elige el modo de vida con el que vas a usar la app." },
     ],
   }),

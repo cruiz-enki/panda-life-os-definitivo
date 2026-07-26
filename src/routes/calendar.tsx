@@ -51,7 +51,7 @@ import { AnalysisView, DayView, EventFormModal, MonthView, Stat, WeekView } from
 export const Route = createFileRoute("/calendar")({
   head: () => ({
     meta: [
-      { title: "Calendario · Panda's LIFE OS" },
+      { title: "Calendario · Pandus Maximus" },
       { name: "description", content: "Sincroniza Google Calendar con tareas y energía: huecos libres, time-blocking y plan del día." },
     ],
   }),

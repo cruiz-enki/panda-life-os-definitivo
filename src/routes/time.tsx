@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/time")({
   head: () => ({
     meta: [
-      { title: "Tiempo · Panda's LIFE OS" },
+      { title: "Tiempo · Pandus Maximus" },
       { name: "description", content: "Registra bloques de tiempo por categoría y proyecto. Sabe en qué se te fue el día." },
     ],
   }),

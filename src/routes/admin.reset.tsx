@@ -14,7 +14,7 @@ import { AlertTriangle, Trash2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/reset")({
-  head: () => ({ meta: [{ title: "Reset · Panda's LIFE OS" }] }),
+  head: () => ({ meta: [{ title: "Reset · Pandus Maximus" }] }),
   component: ResetPage,
 });
 

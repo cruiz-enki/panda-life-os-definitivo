@@ -7,7 +7,7 @@ import { ProjectDashboardPage } from "@/features/projects/dashboard";
 export const Route = createFileRoute("/projects/$projectId")({
   head: () => ({
     meta: [
-      { title: "Proyecto · Panda's LIFE OS" },
+      { title: "Proyecto · Pandus Maximus" },
       { name: "description", content: "Dashboard del proyecto: tareas, hitos, recursos y bitácora." },
     ],
   }),

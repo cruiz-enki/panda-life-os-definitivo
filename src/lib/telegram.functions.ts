@@ -16,7 +16,7 @@ export const sendTelegramTest = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await sendTelegramMessage(
       data.chatId,
-      "✅ *Conexión OK*\n\nPanda's LIFE OS está conectado. Te avisaré de tus tareas vencidas y puedes escribirme cualquier captura.",
+      "✅ *Conexión OK*\n\nPandus Maximus está conectado. Te avisaré de tus tareas vencidas y puedes escribirme cualquier captura.",
     );
     return { ok: true };
   });

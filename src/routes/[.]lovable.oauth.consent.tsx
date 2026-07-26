@@ -1,7 +1,7 @@
 /**
  * **Ruta OAuth consent** — `/.lovable/oauth/consent`
  * Pantalla donde el usuario aprueba/deniega un cliente OAuth (ChatGPT, Claude, etc.)
- * que se conecta al servidor MCP de Panda OS.
+ * que se conecta al servidor MCP de Pandus Maximus.
  */
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
@@ -87,9 +87,9 @@ function Consent() {
           <div className="inline-flex w-14 h-14 rounded-2xl bg-gradient-primary items-center justify-center text-2xl shadow-glow mb-3">
             🐼
           </div>
-          <h1 className="font-display text-2xl font-bold">Conectar {clientName} a Panda OS</h1>
+          <h1 className="font-display text-2xl font-bold">Conectar {clientName} a Pandus Maximus</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Esto permite que {clientName} use Panda OS como tú.
+            Esto permite que {clientName} use Pandus Maximus como tú.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ function Consent() {
           <div className="flex items-start gap-3 text-sm">
             <ShieldCheck className="w-5 h-5 mt-0.5 text-primary" />
             <div className="text-muted-foreground">
-              El cliente podrá invocar las herramientas de tu Panda OS (registrar gastos, notas,
+              El cliente podrá invocar las herramientas de tu Pandus Maximus (registrar gastos, notas,
               medicamentos, tareas, sueño, mood, ubicaciones y consultar resúmenes).
               No se otorgan permisos fuera de lo que las políticas RLS permiten.
             </div>

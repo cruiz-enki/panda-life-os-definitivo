@@ -85,7 +85,7 @@ export function InstallPWA({ compact = false }: { compact?: boolean }) {
           <Smartphone className="w-6 h-6 text-primary" />
         </div>
         <div className="flex-1">
-          <h3 className="font-display text-lg font-bold mb-1">Instala Panda OS en tu dispositivo</h3>
+          <h3 className="font-display text-lg font-bold mb-1">Instala Pandus Maximus en tu dispositivo</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Instálala como app: se abre en pantalla completa, recibe push notifications y arranca desde tu home screen.
           </p>

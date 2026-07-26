@@ -1072,7 +1072,7 @@ export function GoogleDrivePicker({ onSelect }: { onSelect: (url: string) => voi
         </div>
         <div className="mt-4 text-[10px] text-muted-foreground flex items-center gap-1 bg-secondary/20 p-2 rounded-lg leading-tight">
           <Info className="w-3 h-3 shrink-0" />
-          Nota: Asegúrate de que las imágenes tengan el acceso compartido (Cualquiera con el enlace) para que Panda OS pueda visualizarlas.
+          Nota: Asegúrate de que las imágenes tengan el acceso compartido (Cualquiera con el enlace) para que Pandus Maximus pueda visualizarlas.
         </div>
       </DialogContent>
     </Dialog>

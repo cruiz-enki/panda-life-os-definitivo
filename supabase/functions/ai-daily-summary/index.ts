@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "snapshot demasiado grande" }), { status: 413, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
-    const systemPrompt = `Eres el coach personal de un usuario en "Panda's LIFE OS", una app de productividad y bienestar.
+    const systemPrompt = `Eres el coach personal de un usuario en "Pandus Maximus", una app de productividad y bienestar.
 Tu tono: cercano, motivador pero realista, conciso, en español. Usa emojis con moderación.
 Devuelves un resumen ESTRUCTURADO en markdown con estas secciones cortas:
 **🎯 Foco del día**: 1 frase con la prioridad más importante.

@@ -22,7 +22,7 @@ export const Route = createFileRoute("/future")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
-      { title: "Futuro · Panda's LIFE OS" },
+      { title: "Futuro · Pandus Maximus" },
       { name: "description", content: "Sueños, horizontes, cartas al futuro, simulación de escenarios y vision board — todo en un solo lugar." },
     ],
   }),

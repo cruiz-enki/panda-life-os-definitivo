@@ -439,7 +439,7 @@ export function AprenderPage() {
         <div className="md:col-span-2 mt-4">
           <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
-            Curaduría Panda OS
+            Curaduría Pandus Maximus
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <RecommendationItem 

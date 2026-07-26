@@ -18,7 +18,7 @@ import {
 export const Route = createFileRoute("/timeline")({
   head: () => ({
     meta: [
-      { title: "Timeline · Panda's LIFE OS" },
+      { title: "Timeline · Pandus Maximus" },
       { name: "description", content: "Un día, todo lo que pasó: sueño, gastos, comidas, meds, mood, tareas, contactos." },
     ],
   }),

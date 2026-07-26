@@ -15,7 +15,7 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianG
 export const Route = createFileRoute("/sleep")({
   head: () => ({
     meta: [
-      { title: "Sueño · Panda's LIFE OS" },
+      { title: "Sueño · Pandus Maximus" },
       { name: "description", content: "Registra tu sueño, calidad y monitorea tu deuda semanal." },
     ],
   }),

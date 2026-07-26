@@ -1,6 +1,6 @@
 /**
  * **Atajos & Deep links** — /shortcuts
- * Página de documentación completa de los deep links de Panda OS.
+ * Página de documentación completa de los deep links de Pandus Maximus.
  * Accesible desde SETUP en el sidebar.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -14,8 +14,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/shortcuts")({
   head: () => ({
     meta: [
-      { title: "Atajos & Deep links · Panda OS" },
-      { name: "description", content: "Todas las URLs de acceso rápido para automatizar Panda OS desde Apple Shortcuts, widgets y otras apps." },
+      { title: "Atajos & Deep links · Pandus Maximus" },
+      { name: "description", content: "Todas las URLs de acceso rápido para automatizar Pandus Maximus desde Apple Shortcuts, widgets y otras apps." },
     ],
   }),
   component: ShortcutsPage,
@@ -228,7 +228,7 @@ function ShortcutsPage() {
           <h1 className="text-3xl font-display font-bold">Atajos & Deep links</h1>
         </div>
         <p className="text-muted-foreground max-w-2xl">
-          URLs mágicas que registran algo en Panda OS de un solo tap. Úsalas desde Apple Shortcuts, widgets,
+          URLs mágicas que registran algo en Pandus Maximus de un solo tap. Úsalas desde Apple Shortcuts, widgets,
           NFC, Tasker o cualquier app que abra URLs.
         </p>
       </header>
@@ -257,7 +257,7 @@ function ShortcutsPage() {
                   <li>Abre la app <b>Atajos</b> → toca <b>+</b> → <b>Añadir acción</b>.</li>
                   <li>Busca <b>"Abrir URLs"</b> y pega la URL del atajo que quieras.</li>
                   <li>Ponle nombre e ícono. Añádelo a la pantalla de inicio o widget.</li>
-                  <li>Al tocarlo, se abre Panda OS y ejecuta la acción automáticamente.</li>
+                  <li>Al tocarlo, se abre Pandus Maximus y ejecuta la acción automáticamente.</li>
                   <li>Con "Oye Siri, [nombre del atajo]" también funciona por voz.</li>
                 </ol>
                 <p className="text-xs text-muted-foreground mt-3">
@@ -363,7 +363,7 @@ function ShortcutsPage() {
               <h2 className="text-2xl font-display font-bold">MCP Server</h2>
             </div>
             <p className="text-muted-foreground max-w-2xl">
-              Panda OS expone un servidor <b>MCP (Model Context Protocol)</b> con OAuth 2.1. Conéctalo a ChatGPT,
+              Pandus Maximus expone un servidor <b>MCP (Model Context Protocol)</b> con OAuth 2.1. Conéctalo a ChatGPT,
               Claude, Cursor, n8n o cualquier cliente compatible para que un LLM registre gastos, medicinas,
               notas, tareas y consulte tu resumen diario en lenguaje natural.
             </p>

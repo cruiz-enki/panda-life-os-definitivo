@@ -68,7 +68,7 @@ type QuickSearch = {
 const s = (v: unknown, d = "") => (typeof v === "string" ? v : v == null ? d : String(v));
 
 export const Route = createFileRoute("/quick/$action")({
-  head: () => ({ meta: [{ title: "Acción rápida · Panda OS" }] }),
+  head: () => ({ meta: [{ title: "Acción rápida · Pandus Maximus" }] }),
   validateSearch: (r: Record<string, unknown>): QuickSearch => ({
     amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
     method: s(r.method, "cash"), name: s(r.name), names: s(r.names), id: s(r.id),

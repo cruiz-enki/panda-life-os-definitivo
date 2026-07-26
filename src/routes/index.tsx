@@ -38,7 +38,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Hoy · Panda's LIFE OS" },
+      { title: "Hoy · Pandus Maximus" },
       { name: "description", content: "Tu día en una vista: qué registrar, qué falta y cómo vas." },
     ],
   }),

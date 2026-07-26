@@ -5,7 +5,7 @@ import { supabaseForUser, ok, err } from "../supabase";
 export default defineTool({
   name: "add_note",
   title: "Crear nota",
-  description: "Crea una nota rápida en Panda OS.",
+  description: "Crea una nota rápida en Pandus Maximus.",
   inputSchema: {
     title: z.string().min(1),
     content: z.string().default(""),

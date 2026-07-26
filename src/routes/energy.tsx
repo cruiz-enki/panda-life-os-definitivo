@@ -11,7 +11,7 @@ import { HealthHeader } from "@/components/health/HealthHeader";
 export const Route = createFileRoute("/energy")({
   head: () => ({
     meta: [
-      { title: "Energía · Panda's LIFE OS" },
+      { title: "Energía · Pandus Maximus" },
       { name: "description", content: "Registra y analiza tu energía física, mental y emocional." },
     ],
   }),

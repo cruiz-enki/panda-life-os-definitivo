@@ -7,7 +7,7 @@ import { DecisionsPage } from "@/features/decisions/parts";
 export const Route = createFileRoute("/decisions")({
   head: () => ({
     meta: [
-      { title: "Tomar Decisiones · Panda's LIFE OS" },
+      { title: "Tomar Decisiones · Pandus Maximus" },
       { name: "description", content: "Herramienta para ayudarte a tomar decisiones usando aleatoriedad, IA o análisis de pros y contras." },
     ],
   }),

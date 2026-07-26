@@ -27,10 +27,10 @@ const projectRef =
 
 export default defineMcp({
   name: "panda-os-mcp",
-  title: "Panda OS",
+  title: "Pandus Maximus",
   version: "0.1.0",
   instructions:
-    "Herramientas de Panda OS (life OS de Carlos): registra gastos, ingresos, notas, medicamentos, mood, sueño, agua, ubicaciones y tareas; consulta resúmenes diarios y listas recientes. Los cambios impactan la base de datos personal del usuario autenticado.",
+    "Herramientas de Pandus Maximus (life OS de Carlos): registra gastos, ingresos, notas, medicamentos, mood, sueño, agua, ubicaciones y tareas; consulta resúmenes diarios y listas recientes. Los cambios impactan la base de datos personal del usuario autenticado.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

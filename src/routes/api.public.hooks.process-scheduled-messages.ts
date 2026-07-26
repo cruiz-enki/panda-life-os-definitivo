@@ -47,7 +47,7 @@ async function sendEmail(to: string, title: string, body: string) {
       "X-Connection-Api-Key": resendKey,
     },
     body: JSON.stringify({
-      from: "Panda OS <onboarding@resend.dev>",
+      from: "Pandus Maximus <onboarding@resend.dev>",
       to: [to],
       subject: title,
       html: `<div style="font-family:sans-serif;line-height:1.6"><h2>${title}</h2><p>${body.replace(/\n/g, "<br/>")}</p><hr/><p style="color:#888;font-size:12px">Mensaje que te agendaste desde <a href="https://os.cmrs.mx/scheduled">os.cmrs.mx</a></p></div>`,

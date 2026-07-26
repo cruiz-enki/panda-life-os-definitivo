@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/mood")({
   head: () => ({
     meta: [
-      { title: "Mood · Panda's LIFE OS" },
+      { title: "Mood · Pandus Maximus" },
       { name: "description", content: "Registra tu ánimo con emoji + tags y descubre qué lo correlaciona." },
     ],
   }),

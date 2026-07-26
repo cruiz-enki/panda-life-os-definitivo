@@ -78,7 +78,7 @@ export function CardNipSafety({ card }: { card: CreditCard }) {
       </div>
       
       <p className="text-[9px] text-white/40 mt-1 leading-tight">
-        Almacenado localmente en tu nube privada Panda OS. Solo visible para ti.
+        Almacenado localmente en tu nube privada Pandus Maximus. Solo visible para ti.
       </p>
     </div>
   );
