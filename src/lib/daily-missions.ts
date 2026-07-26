@@ -1,5 +1,5 @@
 /**
- * **Misiones diarias de Tito** — 3 misiones deterministas por día basadas en
+ * **Misiones diarias de Pandus Maximus** — 3 misiones deterministas por día basadas en
  * el estado real del usuario (hábitos, tareas, aprendizajes, daily wins).
  *
  * - Selección deterministica por hash de fecha+userId → mismas misiones todo el día.
@@ -51,7 +51,7 @@ function winsToday(state: AppState): number {
   return (state.dailyWins ?? []).filter((w) => w.date === t).length;
 }
 
-/** Pool de misiones — Tito rota entre estas cada día. */
+/** Pool de misiones — Pandus Maximus rota entre estas cada día. */
 export const MISSION_POOL: Mission[] = [
   {
     id: "water_2l",

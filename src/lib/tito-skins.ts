@@ -1,8 +1,8 @@
 /**
- * **Skins de Tito** — atuendos desbloqueables por nivel + posturas por hora/evento.
+ * **Skins de Pandus Maximus** — atuendos desbloqueables por nivel + posturas por hora/evento.
  *
  * Cada skin agrega accesorios en overlay (emoji-based) sobre el sprite base
- * de Tito. La postura activa se resuelve dinámicamente a partir de la hora
+ * de Pandus Maximus. La postura activa se resuelve dinámicamente a partir de la hora
  * del día y (opcionalmente) el tipo de reacción en curso.
  */
 import type { TitoReactionType } from "@/lib/tito-react";
@@ -26,7 +26,7 @@ export type TitoSkin = {
   description: string;
   minLevel: number;   // nivel requerido
   bg?: string;        // tailwind gradient para el chip
-  aura?: string;      // color CSS para halo alrededor de Tito
+  aura?: string;      // color CSS para halo alrededor de Pandus Maximus
   accessories: TitoSkinAccessory[];
 };
 

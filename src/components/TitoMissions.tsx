@@ -1,8 +1,8 @@
 /**
- * **TitoMissions** — Motor + panel de misiones diarias de Tito.
+ * **TitoMissions** — Motor + panel de misiones diarias de Pandus Maximus.
  *
  * - `TitoMissionsEngine`: componente invisible que evalúa progreso, dispara
- *   confetti, cheer de Tito y otorga bonus XP. Se monta una sola vez en root.
+ *   confetti, cheer de Pandus Maximus y otorga bonus XP. Se monta una sola vez en root.
  * - `TitoMissionsPanel`: lista embebible (usada dentro del FAB) con el
  *   estado en vivo de las 3 misiones del día.
  */
@@ -147,7 +147,7 @@ export function TitoMissionsPanel() {
       <div className="flex items-center gap-2 px-1 pb-2">
         <Sparkles className="w-3.5 h-3.5 text-primary" />
         <div className="text-[11px] uppercase tracking-wide text-muted-foreground leading-none">
-          Misión de Tito
+          Misión de Pandus Maximus
         </div>
         <div className="ml-auto text-[11px] font-medium">
           {allDone ? "👑 ¡Día conquistado!" : `${doneCount}/${missions.length}`}
