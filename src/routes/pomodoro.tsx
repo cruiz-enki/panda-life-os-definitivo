@@ -8,7 +8,7 @@ import { PomodoroSection } from "@/components/exercise/PomodoroSection";
 export const Route = createFileRoute("/pomodoro")({
   head: () => ({
     meta: [
-      { title: "Pomodoro · Panda's LIFE OS" },
+      { title: "Pomodoro · Pandus Maximus" },
       { name: "description", content: "Temporizador Pomodoro para enfoque y productividad." },
     ],
   }),

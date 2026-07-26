@@ -26,7 +26,7 @@ import { SKILL_TREE_DATA } from "@/lib/skills-data";
 export const Route = createFileRoute("/learnings-history")({
   head: () => ({
     meta: [
-      { title: "Aprendizajes · Panda's LIFE OS" },
+      { title: "Aprendizajes · Pandus Maximus" },
       { name: "description", content: "Tu bitácora personal de aprendizajes y conocimientos adquiridos." },
     ],
   }),

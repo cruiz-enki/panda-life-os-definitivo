@@ -27,7 +27,7 @@ export type IdentityDef = {
 export const IDENTITY_DEFS: IdentityDef[] = [
   { key: "ceo", name: "CEO", emoji: "👑", description: "Operador de sistemas y dirección.",
     title: "👑 Mensaje del CEO", body: "Los sistemas crean libertad. Una acción pequeña hoy reduce caos mañana.", link: "/projects" },
-  { key: "builder", name: "Builder", emoji: "🤖", description: "Construye Panda OS una mejora a la vez.",
+  { key: "builder", name: "Builder", emoji: "🤖", description: "Construye Pandus Maximus una mejora a la vez.",
     title: "🤖 Builder", body: "Panda se construye una mejora a la vez. Avanza 10 minutos.", link: "/projects" },
   { key: "learner", name: "Aprendiz", emoji: "📚", description: "Mente entrenada todos los días.",
     title: "📚 Aprendiz", body: "Tu mente también necesita entrenamiento diario.", link: "/learnings" },

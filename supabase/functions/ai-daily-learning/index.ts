@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
   const auth = await verifyUser(req);
   if ("error" in auth) return auth.error;
 
-  const systemPrompt = `Eres un generador de contenido educativo para "Panda's LIFE OS".
+  const systemPrompt = `Eres un generador de contenido educativo para "Pandus Maximus".
 Generas un objeto JSON con esta estructura exacta:
 {
   "quote": { "text": "", "author": "" },

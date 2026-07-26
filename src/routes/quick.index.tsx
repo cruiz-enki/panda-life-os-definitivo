@@ -12,8 +12,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/quick/")({
   head: () => ({
     meta: [
-      { title: "Atajos rápidos · Panda OS" },
-      { name: "description", content: "Deep links para automatizar Panda OS desde Apple Shortcuts, widgets y otras apps." },
+      { title: "Atajos rápidos · Pandus Maximus" },
+      { name: "description", content: "Deep links para automatizar Pandus Maximus desde Apple Shortcuts, widgets y otras apps." },
     ],
   }),
   component: QuickIndex,
@@ -134,7 +134,7 @@ function QuickIndex() {
           <h1 className="text-3xl font-display font-bold">Atajos rápidos</h1>
         </div>
         <p className="text-muted-foreground">
-          Deep links para automatizar Panda OS desde Apple Shortcuts, widgets de iOS,
+          Deep links para automatizar Pandus Maximus desde Apple Shortcuts, widgets de iOS,
           Tasker/Android o cualquier app. Cada URL registra una acción y regresa a Home.
         </p>
       </header>
@@ -145,7 +145,7 @@ function QuickIndex() {
           <li>Abre la app <b>Atajos</b> → toca <b>+</b> → <b>Añadir acción</b>.</li>
           <li>Busca <b>"Abrir URLs"</b> y pega la URL del atajo que quieras.</li>
           <li>Ponle nombre e ícono. Añádelo a la pantalla de inicio o widget.</li>
-          <li>Al tocarlo, se abre Panda OS y ejecuta la acción automáticamente.</li>
+          <li>Al tocarlo, se abre Pandus Maximus y ejecuta la acción automáticamente.</li>
         </ol>
         <p className="text-xs text-muted-foreground mt-3">
           💡 Tip: usa "Preguntar cada vez" en el parámetro <code>amount</code> para que iOS te pida el monto al vuelo.

@@ -1,5 +1,5 @@
 /**
- * **Sprites de Pandus Maximus** — mapa priorizado de imágenes contextuales.
+ * **Sprites de Tito** — mapa priorizado de imágenes contextuales.
  *
  * Cada key apunta a un `.asset.json` (CDN). Si una key no está registrada,
  * `pickSpriteUrl` cae al sprite `default`.

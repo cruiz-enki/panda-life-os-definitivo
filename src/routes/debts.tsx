@@ -23,7 +23,7 @@ import { useDebts, simulatePayoff, DEBT_KIND_META, type Debt, type DebtKind, typ
 export const Route = createFileRoute("/debts")({
   head: () => ({
     meta: [
-      { title: "Deudas · Panda's LIFE OS" },
+      { title: "Deudas · Pandus Maximus" },
       { name: "description", content: "Estrategia de pago de deudas: avalancha vs bola de nieve y fecha de libertad de deudas." },
     ],
   }),

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/invites")({
   head: () => ({
-    meta: [{ title: "Invitados · Panda's LIFE OS" }],
+    meta: [{ title: "Invitados · Pandus Maximus" }],
   }),
   component: InvitesPage,
 });

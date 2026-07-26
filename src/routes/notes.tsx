@@ -7,7 +7,7 @@ import { NotesPage } from "@/features/notes/parts";
 export const Route = createFileRoute("/notes")({
   head: () => ({
     meta: [
-      { title: "Notas · Panda's LIFE OS" },
+      { title: "Notas · Pandus Maximus" },
       { name: "description", content: "Tu second brain: captura ideas, organiza aprendizajes y conviértelos en acción." },
     ],
   }),

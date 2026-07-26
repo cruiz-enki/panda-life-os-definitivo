@@ -29,7 +29,7 @@ export const Route = createFileRoute("/log")({
   },
   head: () => ({
     meta: [
-      { title: "Registrar · Panda's LIFE OS" },
+      { title: "Registrar · Pandus Maximus" },
       { name: "description", content: "Captura rápida de hábitos, tareas, mood, sueño, comidas y gastos." },
     ],
   }),

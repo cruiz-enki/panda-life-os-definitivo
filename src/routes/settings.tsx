@@ -59,7 +59,7 @@ function SettingsPage() {
           <h3 className="font-display text-lg font-semibold">Instalar como app</h3>
         </div>
         <p className="text-sm text-muted-foreground">
-          Añade Panda's LIFE OS a tu pantalla de inicio para acceder con un toque y recibir notificaciones nativas.
+          Añade Pandus Maximus a tu pantalla de inicio para acceder con un toque y recibir notificaciones nativas.
         </p>
         <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
           <li><strong className="text-foreground">iPhone (Safari):</strong> botón Compartir → "Añadir a pantalla de inicio".</li>

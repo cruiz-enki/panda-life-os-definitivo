@@ -5,7 +5,7 @@ import { supabaseForUser, ok, err, todayCDMX } from "../supabase";
 export default defineTool({
   name: "add_expense",
   title: "Registrar gasto",
-  description: "Registra un gasto en Panda OS para el usuario autenticado.",
+  description: "Registra un gasto en Pandus Maximus para el usuario autenticado.",
   inputSchema: {
     amount: z.number().positive().describe("Monto en MXN"),
     category: z.string().describe("Categoría (ej. comida, transporte, salud)"),

@@ -71,7 +71,7 @@ async function handleStart(ctx: ProcessCtx, msg: NonNullable<TgUpdate["message"]
 
 async function handleAyuda(): Promise<string> {
   return [
-    "*Panda's LIFE OS — comandos*",
+    "*Pandus Maximus — comandos*",
     "",
     "/tareas — ver tareas pendientes",
     "/t <texto> — crear tarea directa (NLP)",

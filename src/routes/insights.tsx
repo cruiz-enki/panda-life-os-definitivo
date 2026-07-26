@@ -7,7 +7,7 @@ import { InsightsPage } from "@/features/insights/parts";
 export const Route = createFileRoute("/insights")({
   head: () => ({
     meta: [
-      { title: "Insights · Panda's LIFE OS" },
+      { title: "Insights · Pandus Maximus" },
       { name: "description", content: "Estadísticas de productividad, energía y correlaciones para optimizar tu sistema." },
     ],
   }),

@@ -51,7 +51,7 @@ export function QuickActionsFab({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Pandus Maximus abre el panel al tocarlo
+  // Tito abre el panel al tocarlo
   useEffect(() => {
     const onOpen = () => setOpen(true);
     const onClose = () => setOpen(false);
@@ -66,7 +66,7 @@ export function QuickActionsFab({
     };
   }, []);
 
-  // Notificar estado para que Pandus Maximus no se encime con el panel
+  // Notificar estado para que Tito no se encime con el panel
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("fab:state", { detail: { open } }));
   }, [open]);
@@ -90,7 +90,7 @@ export function QuickActionsFab({
         />
       )}
 
-      {/* Panel de atajos anclado abajo-derecha (donde vive Pandus Maximus) */}
+      {/* Panel de atajos anclado abajo-derecha (donde vive Tito) */}
       <div
         className={`${panelPositionClass} transition-all duration-200 origin-bottom-right ${
           open
@@ -102,7 +102,7 @@ export function QuickActionsFab({
         <div className="flex flex-col gap-2 min-w-[15rem] max-w-[17rem] p-2 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-card">
           <div className="flex items-center justify-between px-2 pt-1 pb-1">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              Pandus Maximus · Acciones
+              Tito · Acciones
             </span>
             <button
               type="button"

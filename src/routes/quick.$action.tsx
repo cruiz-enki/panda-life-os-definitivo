@@ -26,7 +26,7 @@ import { todayCDMX } from "@/lib/date-utils";
 import { toast } from "sonner";
 import { titoReact, type TitoReactionType } from "@/lib/tito-react";
 
-/** Mapea la acción del deep link al tipo de reacción visual de Pandus Maximus. */
+/** Mapea la acción del deep link al tipo de reacción visual de Tito. */
 function reactionForAction(action: string): { type: TitoReactionType; emojis?: string[]; text?: string } | null {
   switch (action) {
     case "expense": return { type: "expense", text: "¡Anotado, soldado!" };
@@ -68,7 +68,7 @@ type QuickSearch = {
 const s = (v: unknown, d = "") => (typeof v === "string" ? v : v == null ? d : String(v));
 
 export const Route = createFileRoute("/quick/$action")({
-  head: () => ({ meta: [{ title: "Acción rápida · Panda OS" }] }),
+  head: () => ({ meta: [{ title: "Acción rápida · Pandus Maximus" }] }),
   validateSearch: (r: Record<string, unknown>): QuickSearch => ({
     amount: s(r.amount), cat: s(r.cat), category: s(r.category), note: s(r.note),
     method: s(r.method, "cash"), name: s(r.name), names: s(r.names), id: s(r.id),

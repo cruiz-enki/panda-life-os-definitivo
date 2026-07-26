@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 export const Route = createFileRoute("/import")({
   head: () => ({
     meta: [
-      { title: "Importar contenido — Panda's LIFE OS" },
+      { title: "Importar contenido — Pandus Maximus" },
       { name: "description", content: "Importa hábitos, ingredientes, platillos y recompensas desde plantillas, archivos o texto con IA." },
     ],
   }),

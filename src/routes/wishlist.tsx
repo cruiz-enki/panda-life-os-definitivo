@@ -7,7 +7,7 @@ import { WishlistPage } from "@/features/wishlist/parts";
 export const Route = createFileRoute("/wishlist")({
   head: () => ({
     meta: [
-      { title: "Wishlist · Panda's LIFE OS" },
+      { title: "Wishlist · Pandus Maximus" },
       { name: "description", content: "Lo que quieres leer, ver, escuchar o comprar." },
     ],
   }),

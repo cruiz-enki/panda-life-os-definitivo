@@ -1,5 +1,5 @@
 /**
- * **Componente global** — Pandus Maximus, el panda-legionario mascota de ENKI OS.
+ * **Componente global** — Tito, el panda-legionario mascota de ENKI OS.
  * Burbuja flotante persistente que reacciona a eventos, hora y estado.
  *
  * Estados: idle · happy · cheer · sad · sleep · think
@@ -300,7 +300,7 @@ export function TitoMascot() {
     if (typeof window !== "undefined") window.localStorage.removeItem(LS_HIDDEN);
   };
 
-  // Permite volver a mostrar a Pandus Maximus desde cualquier lado con window.dispatchEvent(new Event('tito:show'))
+  // Permite volver a mostrar a Tito desde cualquier lado con window.dispatchEvent(new Event('tito:show'))
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onShow = () => unhide();
@@ -313,8 +313,8 @@ export function TitoMascot() {
     return (
       <button
         onClick={unhide}
-        aria-label="Mostrar a Pandus Maximus"
-        title="Mostrar a Pandus Maximus"
+        aria-label="Mostrar a Tito"
+        title="Mostrar a Tito"
         style={{
           position: "fixed",
           right: 12,
@@ -338,7 +338,7 @@ export function TitoMascot() {
   }
 
   const onTap = () => {
-    // Toggle del panel de acciones (Pandus Maximus ES el FAB)
+    // Toggle del panel de acciones (Tito ES el FAB)
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("tito:toggleFab"));
     }
@@ -417,12 +417,12 @@ export function TitoMascot() {
             <button
               type="button"
               onClick={onTap}
-              aria-label="Pandus Maximus"
+              aria-label="Tito"
               className={`relative block ${minimized ? "w-14 h-14" : "w-24 h-24 md:w-28 md:h-28"} drop-shadow-[0_10px_20px_rgba(0,0,0,0.35)] transition-all`}
             >
               <img
                 src={pickSpriteUrl({ reaction: reaction?.type ?? null, mood, hour: hourNow, skinId })}
-                alt="Pandus Maximus"
+                alt="Tito"
                 className={`w-full h-full object-contain ${reaction ? "" : moodFrame(mood)}`}
                 style={
                   reaction
@@ -524,8 +524,8 @@ export function TitoMascot() {
               <button
                 onClick={expand}
                 className="absolute inset-0 w-full h-full rounded-full"
-                aria-label="Traer a Pandus Maximus"
-                title="Traer a Pandus Maximus"
+                aria-label="Traer a Tito"
+                title="Traer a Tito"
               />
             )}
           </div>

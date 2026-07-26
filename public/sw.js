@@ -1,4 +1,4 @@
-// Minimal service worker for Panda's LIFE OS
+// Minimal service worker for Pandus Maximus
 // IMPORTANT: No caching strategy — only handles push notifications.
 // This avoids the "stale content" problem in iframed previews.
 
@@ -20,7 +20,7 @@ self.addEventListener("fetch", () => {
 // Web Push: receive a push payload from the server and show a notification
 self.addEventListener("push", (event) => {
   let data = { 
-    title: "Panda OS", 
+    title: "Pandus Maximus", 
     body: "Tienes una nueva notificación", 
     url: "/",
     tag: "panda-os"

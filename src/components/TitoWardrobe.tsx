@@ -1,5 +1,5 @@
 /**
- * **Componente** — Vestidor de Pandus Maximus. Elige skin desbloqueada por nivel.
+ * **Componente** — Vestidor de Tito. Elige skin desbloqueada por nivel.
  */
 import { useEffect, useState } from "react";
 import { Lock } from "lucide-react";
@@ -62,7 +62,7 @@ export function TitoWardrobe() {
     <section className="rounded-3xl border border-border bg-card p-5 md:p-6 mb-6 md:mb-8 shadow-card">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-lg">🎽</span>
-        <h3 className="font-display font-bold text-lg">Vestidor de Pandus Maximus</h3>
+        <h3 className="font-display font-bold text-lg">Vestidor de Tito</h3>
         <span className="text-xs text-muted-foreground">Desbloquea atuendos con XP</span>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -106,7 +106,7 @@ export function TitoWardrobe() {
         })}
       </div>
       <p className="mt-4 text-[11px] text-muted-foreground">
-        💡 Además del atuendo, Pandus Maximus cambia de postura según la hora: ☕ mañana, ☀️ mediodía, 📜 tarde, 🌙 noche. Al entrenar saca la 🗡️.
+        💡 Además del atuendo, Tito cambia de postura según la hora: ☕ mañana, ☀️ mediodía, 📜 tarde, 🌙 noche. Al entrenar saca la 🗡️.
       </p>
     </section>
   );

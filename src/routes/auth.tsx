@@ -10,8 +10,8 @@ import { Sparkles } from "lucide-react";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Acceder · Panda's LIFE OS" },
-      { name: "description", content: "Inicia sesión o crea tu cuenta para sincronizar Panda's LIFE OS en la nube." },
+      { title: "Acceder · Pandus Maximus" },
+      { name: "description", content: "Inicia sesión o crea tu cuenta para sincronizar Pandus Maximus en la nube." },
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { next?: string } => ({
@@ -101,7 +101,7 @@ function AuthPage() {
           <div className="inline-flex w-16 h-16 rounded-3xl bg-gradient-primary items-center justify-center text-3xl shadow-glow mb-4">
             🐼
           </div>
-          <h1 className="font-display text-3xl font-bold">Panda's LIFE OS</h1>
+          <h1 className="font-display text-3xl font-bold">Pandus Maximus</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {mode === "login" ? "Bienvenido de vuelta" : "Crea tu cuenta"}
           </p>

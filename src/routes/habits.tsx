@@ -7,7 +7,7 @@ import { HabitsPage } from "@/features/habits/parts";
 export const Route = createFileRoute("/habits")({
   head: () => ({
     meta: [
-      { title: "Hábitos · Panda's LIFE OS" },
+      { title: "Hábitos · Pandus Maximus" },
       { name: "description", content: "Sistema de hábitos con rachas, puntos XP y check diario." },
     ],
   }),
