@@ -11,7 +11,7 @@
   },
   "mcp": {
     "server": {
-      "name": "panda-os-mcp",
+      "name": "pandus-maximus-mcp",
       "version": "0.1.0",
       "title": "Pandus Maximus"
     },
