@@ -26,7 +26,7 @@ const projectRef =
   "project-ref-unset";
 
 export default defineMcp({
-  name: "panda-os-mcp",
+  name: "pandus-maximus-mcp",
   title: "Pandus Maximus",
   version: "0.1.0",
   instructions:

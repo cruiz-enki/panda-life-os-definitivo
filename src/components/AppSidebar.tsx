@@ -251,8 +251,8 @@ export function AppSidebar() {
             🐼
           </div>
           <div>
-            <div className="font-display font-bold text-base leading-tight">Panda's</div>
-            <div className="font-display font-bold text-sm text-gradient-primary leading-tight">LIFE OS</div>
+            <div className="font-display font-bold text-base leading-tight text-primary">Pandus</div>
+            <div className="font-display font-bold text-sm text-gradient-primary leading-tight">MAXIMUS</div>
           </div>
         </Link>
       </div>
