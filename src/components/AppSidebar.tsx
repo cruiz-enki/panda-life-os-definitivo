@@ -252,7 +252,7 @@ export function AppSidebar() {
           </div>
           <div>
             <div className="font-display font-bold text-base leading-tight text-primary">Pandus</div>
-            <div className="font-display font-bold text-sm text-gradient-primary leading-tight">MAXIMUS</div>
+            <div className="font-display font-bold text-sm text-gradient-primary leading-tight">Maximus</div>
           </div>
         </Link>
       </div>
