@@ -169,7 +169,7 @@ export function QuickCapture() {
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-xl rounded-2xl border border-border bg-card shadow-card overflow-hidden"
+            className="w-full max-w-xl rounded-2xl border border-border bg-card shadow-card overflow-hidden my-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-5 py-3 border-b border-border">
