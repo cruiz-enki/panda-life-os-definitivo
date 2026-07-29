@@ -154,19 +154,18 @@ export function HomeDashboard() {
 
       {/* Mantenimiento pendiente */}
       {pendingMaintenance.length > 0 && (
-        <Link to="/maintenance" className="block rounded-2xl border border-border bg-card p-4 hover:border-primary/40 transition-colors">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1">
-                <Wrench className="w-3 h-3" /> Mantenimiento
-              </div>
-              <div className="font-display text-2xl font-bold mt-1">{pendingMaintenance.length}</div>
-              <div className="text-xs text-muted-foreground">pendientes / programados</div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        <MobileCollapsibleSection
+          title="Mantenimiento"
+          emoji="🔧"
+          badge={pendingMaintenance.length}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="font-display text-xs font-bold text-muted-foreground uppercase tracking-widest">Pendientes / Programados</div>
+            <Link to="/maintenance" className="text-xs text-primary hover:underline">Ver todo →</Link>
           </div>
-        </Link>
+        </MobileCollapsibleSection>
       )}
+
 
       {/* Vehículos - próximos vencimientos */}
       {vehicles.length > 0 && (
@@ -227,13 +226,17 @@ export function HomeDashboard() {
 
       {/* Garantías por expirar */}
       {warrantiesSoon.length > 0 && (
-        <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-4">
+        <MobileCollapsibleSection
+          title="Garantías por expirar"
+          emoji="⚠️"
+          badge={warrantiesSoon.length}
+          className="border-yellow-500/30 bg-yellow-500/5"
+        >
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-display text-sm font-bold flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 text-yellow-500" /> Garantías por expirar
-            </h3>
-            <Link to="/inventory" className="text-[11px] font-bold text-primary uppercase tracking-wider">Ver</Link>
+            <div className="font-display text-xs font-bold text-yellow-600 uppercase tracking-widest">Alertas</div>
+            <Link to="/inventory" className="text-xs text-primary hover:underline">Ver inventario →</Link>
           </div>
+
           <ul className="space-y-1.5">
             {warrantiesSoon.map((i) => (
               <li key={i.id} className="flex items-center gap-2 text-sm">
@@ -242,7 +245,7 @@ export function HomeDashboard() {
               </li>
             ))}
           </ul>
-        </section>
+        </MobileCollapsibleSection>
       )}
     </div>
   );
