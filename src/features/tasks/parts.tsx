@@ -1241,8 +1241,8 @@ function TaskComposer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>
-      <div className="w-full max-w-xl mt-0 mb-8 sm:my-8 rounded-2xl bg-card border border-border p-5 sm:p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
+      <div className="w-full max-w-xl mt-0 mb-8 sm:mt-4 sm:mb-8 rounded-2xl bg-card border border-border p-5 sm:p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-display text-xl font-bold">{task ? "Editar tarea" : "Nueva tarea"}</h2>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
