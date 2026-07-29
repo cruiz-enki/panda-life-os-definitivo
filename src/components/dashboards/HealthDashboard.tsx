@@ -5,10 +5,11 @@
  */
 import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, TrendingUp, TrendingDown } from "lucide-react";
+import { ChevronRight, TrendingUp, TrendingDown, Plus } from "lucide-react";
 import { useHealth } from "@/hooks/use-health";
 import { useSleep } from "@/hooks/use-sleep";
 import { useMood, MOOD_OPTIONS } from "@/hooks/use-mood";
+import { MobileCollapsibleSection } from "@/components/MobileCollapsibleSection";
 
 function fmtHM(min: number) {
   if (!min || !Number.isFinite(min)) return "—";
@@ -154,14 +155,16 @@ export function HealthDashboard() {
 
       {/* Medicación pendiente hoy */}
       {medications.length > 0 && (
-        <Link to="/health" hash="meds" className="block rounded-2xl border border-border bg-card p-4 hover:border-primary/40 transition-colors">
+        <MobileCollapsibleSection
+          title="Medicación pendiente hoy"
+          emoji="💊"
+          badge={pendingMeds.length > 0 ? pendingMeds.length : undefined}
+        >
           <div className="flex items-center justify-between mb-2">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Medicación pendiente hoy</div>
-              <div className="font-display text-base font-bold">{pendingMeds.length} por tomar</div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            <div className="font-display text-xs font-bold text-muted-foreground uppercase tracking-widest">Estado</div>
+            <Link to="/health" hash="meds" className="text-xs text-primary hover:underline">Ver plan →</Link>
           </div>
+
           {pendingMeds.length === 0 ? (
             <p className="text-xs text-emerald-500">✓ Todo tomado hoy</p>
           ) : (
@@ -175,7 +178,7 @@ export function HealthDashboard() {
               ))}
             </ul>
           )}
-        </Link>
+        </MobileCollapsibleSection>
       )}
 
       {/* Accesos rápidos */}
