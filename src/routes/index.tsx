@@ -32,6 +32,7 @@ import {
   ChevronDown,
   PenLine,
   Battery,
+  LayoutGrid,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -336,6 +337,17 @@ function Dashboard() {
       )}
         </>
       )}
+      
+      {/* Selector de modo rápido */}
+      <div className="mt-8 flex justify-center">
+        <Link 
+          to="/mode"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-muted text-xs font-medium text-muted-foreground transition-colors active:scale-95"
+        >
+          <LayoutGrid className="w-3.5 h-3.5" />
+          <span>Cambiar Modo</span>
+        </Link>
+      </div>
     </div>
   );
 }
