@@ -242,7 +242,10 @@ function ShortcutsPage() {
             <Link2 className="w-4 h-4" /> <span>Deep links</span>
           </TabsTrigger>
           <TabsTrigger value="mcp" className="gap-2">
-            <Bot className="w-4 h-4" /> <span>MCP</span>
+            <Bot className="w-4 h-4" /> <span>IA / MCP</span>
+          </TabsTrigger>
+          <TabsTrigger value="telegram" className="gap-2">
+            <Link2 className="w-4 h-4" /> <span>Telegram</span>
           </TabsTrigger>
         </TabsList>
 
