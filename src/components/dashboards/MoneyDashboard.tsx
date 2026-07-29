@@ -5,11 +5,12 @@
  */
 import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
+import { ChevronRight, TrendingUp, TrendingDown, AlertTriangle, Plus } from "lucide-react";
 import { useFinance } from "@/hooks/use-finance";
 import { useNetWorth } from "@/hooks/use-net-worth";
 import { useCashflow } from "@/hooks/use-cashflow";
 import { useSavingsGoals } from "@/hooks/use-savings-goals";
+import { MobileCollapsibleSection } from "@/components/MobileCollapsibleSection";
 import { formatMXN, monthKey } from "@/lib/finance-types";
 
 export function MoneyDashboard() {
@@ -194,14 +195,16 @@ export function MoneyDashboard() {
       </div>
 
       {/* Próximos cargos */}
-      <Link to="/cashflow" className="block rounded-2xl border border-border bg-card p-4 hover:border-primary/40 transition-colors">
+      <MobileCollapsibleSection
+        title="Próximos cargos (7d)"
+        emoji="📅"
+        badge={upcoming.length > 0 ? `-${formatMXN(next7Outflow)}` : undefined}
+      >
         <div className="flex items-center justify-between mb-2">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Próximos 7 días</div>
-            <div className="font-display text-base font-bold">-{formatMXN(next7Outflow)}</div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          <div className="font-display text-xs font-bold text-muted-foreground uppercase tracking-widest">Movimientos</div>
+          <Link to="/cashflow" className="text-xs text-primary hover:underline">Ver flujo →</Link>
         </div>
+
         {upcoming.length === 0 ? (
           <p className="text-xs text-muted-foreground">Sin cargos próximos</p>
         ) : (
@@ -218,7 +221,7 @@ export function MoneyDashboard() {
             ))}
           </ul>
         )}
-      </Link>
+      </MobileCollapsibleSection>
 
       {/* Accesos rápidos */}
       <div className="grid grid-cols-4 gap-2 pt-1">
