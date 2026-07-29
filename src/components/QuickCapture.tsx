@@ -165,11 +165,11 @@ export function QuickCapture() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex items-start justify-center pt-[5vh] sm:pt-[10vh] px-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex items-start sm:items-center justify-center pt-0 sm:pt-[5vh] px-4 overflow-y-auto"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-xl rounded-2xl border border-border bg-card shadow-card overflow-hidden my-4"
+            className="w-full max-w-xl rounded-2xl border border-border bg-card shadow-card overflow-hidden mt-0 mb-8 sm:my-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-5 py-3 border-b border-border">
