@@ -1242,34 +1242,41 @@ function TaskComposer({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
-      <div className="w-full max-w-xl mt-0 mb-8 sm:mt-4 sm:mb-8 rounded-2xl bg-card border border-border p-5 sm:p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-display text-xl font-bold">{task ? "Editar tarea" : "Nueva tarea"}</h2>
+      <div className="w-full max-w-xl mt-0 mb-8 sm:mt-4 sm:mb-8 rounded-3xl bg-card border border-border overflow-hidden shadow-card" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <h2 className="font-display text-lg font-bold flex items-center gap-2">
+            <ListChecks className="w-5 h-5 text-primary" />
+            {task ? "Editar tarea" : "Nueva tarea"}
+          </h2>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="space-y-4">
-          <div>
+        <div className="p-4 sm:p-6 space-y-5">
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">¿Qué hay que hacer?</label>
             <input
               autoFocus
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="¿Qué necesitas hacer?"
-              className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-lg font-medium"
+              placeholder="Ej: Comprar café..."
+              className="w-full bg-transparent text-xl font-bold outline-none placeholder:text-muted-foreground/30"
             />
           </div>
 
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Descripción (opcional)"
-            rows={2}
-            className="w-full px-4 py-2.5 rounded-xl bg-secondary border border-border focus:border-primary outline-none text-sm resize-none"
-          />
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Notas adicionales</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Detalles, enlaces..."
+              rows={2}
+              className="w-full bg-transparent text-sm outline-none resize-none min-h-[60px]"
+            />
+          </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block flex items-center gap-1">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
                 <Play className="w-3 h-3" /> Inicia
               </label>
               <DateTimePicker
@@ -1278,8 +1285,8 @@ function TaskComposer({
                 placeholder="Sin fecha inicio"
               />
             </div>
-            <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block flex items-center gap-1">
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
                 <CalendarIcon className="w-3 h-3" /> Vence
               </label>
               <DateTimePicker
@@ -1290,9 +1297,9 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-              <Timer className="w-3 h-3" /> Duración estimada (minutos)
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
+              <Timer className="w-3 h-3" /> Duración estimada
             </label>
             <div className="mt-1 flex items-center gap-2">
               <input
@@ -1322,9 +1329,9 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-              <Bell className="w-3 h-3" /> Recordatorios (antes del vencimiento)
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
+              <Bell className="w-3 h-3" /> Recordatorios
             </label>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {REMINDER_PRESETS.map((p) => (
@@ -1409,8 +1416,8 @@ function TaskComposer({
             )}
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Prioridad</label>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Prioridad</label>
             <div className="mt-1 grid grid-cols-3 gap-2">
               {(["high", "medium", "low"] as Priority[]).map((p) => (
                 <button
@@ -1432,8 +1439,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Lista</label>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Lista</label>
             <div className="mt-1 flex flex-wrap gap-2">
               {state.taskLists.map((l) => (
                 <button
@@ -1449,8 +1456,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Etiquetas</label>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Etiquetas</label>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {state.tags.map((tag) => {
                 const active = tagIds.includes(tag.id);
@@ -1470,8 +1477,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
               <Repeat className="w-3 h-3" /> Repetir
             </label>
             <div className="mt-1 space-y-2 rounded-xl border border-border bg-secondary/30 p-3">
@@ -1579,8 +1586,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
               <Zap className="w-3 h-3" /> XP al completar
             </label>
             <input
