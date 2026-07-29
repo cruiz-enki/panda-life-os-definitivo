@@ -182,19 +182,24 @@ export function QuickCapture() {
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <textarea
-              ref={ref}
-              value={text}
-              onChange={(e) => { setText(e.target.value); setSuggestion(null); }}
-              onKeyDown={(e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-                  if (e.shiftKey) { createTaskFromNLP(); }
-                  else submit(false);
-                }
-              }}
-              placeholder={`Escribe tu idea…\n⌘Enter guarda como nota · ⇧⌘Enter crea tarea\nTip tarea: "Llamar a Juan mañana 3pm #trabajo !alta"`}
-              className="w-full bg-transparent px-5 py-4 text-base outline-none resize-none min-h-[120px]"
-            />
+            <div className="p-4 sm:p-5 space-y-1">
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold block">
+                ¿Qué tienes en mente?
+              </label>
+              <textarea
+                ref={ref}
+                value={text}
+                onChange={(e) => { setText(e.target.value); setSuggestion(null); }}
+                onKeyDown={(e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                    if (e.shiftKey) { createTaskFromNLP(); }
+                    else submit(false);
+                  }
+                }}
+                placeholder={`Escribe tu idea o tarea…\nTip: "Llamar a Juan mañana 3pm #trabajo !alta"`}
+                className="w-full bg-transparent py-2 text-base outline-none resize-none min-h-[100px] sm:min-h-[120px]"
+              />
+            </div>
 
             {parsed && parsedHasSignal && (
               <div className="mx-5 mb-3 rounded-xl border border-primary/20 bg-primary/5 p-3">

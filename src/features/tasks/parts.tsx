@@ -1322,9 +1322,9 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-              <Bell className="w-3 h-3" /> Recordatorios (antes del vencimiento)
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
+              <Bell className="w-3 h-3" /> Recordatorios
             </label>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {REMINDER_PRESETS.map((p) => (
@@ -1409,8 +1409,8 @@ function TaskComposer({
             )}
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Prioridad</label>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Prioridad</label>
             <div className="mt-1 grid grid-cols-3 gap-2">
               {(["high", "medium", "low"] as Priority[]).map((p) => (
                 <button
@@ -1432,8 +1432,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Lista</label>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Lista</label>
             <div className="mt-1 flex flex-wrap gap-2">
               {state.taskLists.map((l) => (
                 <button
@@ -1449,8 +1449,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Etiquetas</label>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Etiquetas</label>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {state.tags.map((tag) => {
                 const active = tagIds.includes(tag.id);
@@ -1470,8 +1470,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
               <Repeat className="w-3 h-3" /> Repetir
             </label>
             <div className="mt-1 space-y-2 rounded-xl border border-border bg-secondary/30 p-3">
@@ -1579,8 +1579,8 @@ function TaskComposer({
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1 font-semibold">
               <Zap className="w-3 h-3" /> XP al completar
             </label>
             <input
