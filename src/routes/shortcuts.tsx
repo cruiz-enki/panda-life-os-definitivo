@@ -482,6 +482,61 @@ function ShortcutsPage() {
             </ul>
           </Card>
         </TabsContent>
+
+        {/* ============ TELEGRAM ============ */}
+        <TabsContent value="telegram" className="space-y-4 mt-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Link2 className="w-6 h-6 text-[#229ED9]" />
+              <h2 className="text-2xl font-display font-bold">Bot de Telegram</h2>
+            </div>
+            <p className="text-muted-foreground max-w-2xl">
+              Crea tareas, registra gastos o habla con tu coach directamente desde Telegram.
+            </p>
+          </div>
+
+          <Card className="p-5 border-[#229ED9]/20 bg-[#229ED9]/5">
+            <h3 className="font-display font-bold text-lg mb-3">Cómo empezar</h3>
+            <ol className="text-sm space-y-2.5 list-decimal list-inside text-muted-foreground">
+              <li>Busca al bot en Telegram (o pídele el enlace al admin).</li>
+              <li>Escribe el comando <code className="text-[#229ED9] font-bold">/start</code> o <code className="text-[#229ED9] font-bold">/setup</code>.</li>
+              <li>Si eres el <b>dueño (owner)</b>, el bot se vinculará automáticamente a tu cuenta.</li>
+              <li>¡Listo! Ya puedes empezar a enviar mensajes.</li>
+            </ol>
+          </Card>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card className="p-5">
+              <h3 className="font-display font-bold mb-3 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-primary" /> Comandos
+              </h3>
+              <ul className="text-sm space-y-2 text-muted-foreground">
+                <li>• <code className="text-primary">/tareas</code> — Ver pendientes</li>
+                <li>• <code className="text-primary">/t [tarea]</code> — Crear tarea rápida con NLP</li>
+                <li>• <code className="text-primary">/ayuda</code> — Ver todos los comandos</li>
+              </ul>
+            </Card>
+
+            <Card className="p-5">
+              <h3 className="font-display font-bold mb-3 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-primary" /> Captura Natural
+              </h3>
+              <ul className="text-sm space-y-2 text-muted-foreground">
+                <li>• <b>"comprar café $45"</b> → Gasto automático</li>
+                <li>• <b>"recordarme llamar a mamá"</b> → Tarea</li>
+                <li>• <b>"idea: app de recetas"</b> → Nota</li>
+                <li>• <b>Cualquier texto</b> → El coach te responderá</li>
+              </ul>
+            </Card>
+          </div>
+
+          <Card className="p-5 border-amber-500/30 bg-amber-500/5">
+            <h3 className="font-display font-bold text-amber-600 mb-2">¿No funciona?</h3>
+            <p className="text-sm text-muted-foreground">
+              Asegúrate de que la <b>TELEGRAM_API_KEY</b> esté configurada en los Secrets de Supabase y que tu usuario tenga el rol de <b>owner</b> en la tabla <code>user_roles</code>.
+            </p>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
