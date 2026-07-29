@@ -17,6 +17,7 @@ import { HealthDashboard } from "@/components/dashboards/HealthDashboard";
 import { ProductivityDashboard } from "@/components/dashboards/ProductivityDashboard";
 import { MindDashboard } from "@/components/dashboards/MindDashboard";
 import { HomeDashboard } from "@/components/dashboards/HomeDashboard";
+import { MobileCollapsibleSection } from "@/components/MobileCollapsibleSection";
 import {
   Sparkles,
   Flame,
@@ -185,15 +186,12 @@ function Dashboard() {
       </Link>
 
       {/* Pendientes hoy: tareas + hábitos consolidados */}
-      <section className="rounded-2xl border border-border bg-card p-4 mb-5">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display text-base font-bold">Pendientes hoy</h2>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><CheckSquare className="w-3 h-3" />{pendingTasks.length}</span>
-            <span className="flex items-center gap-1"><Check className="w-3 h-3" />{completedHabits}/{totalHabits}</span>
-            {energyAvg !== null && <span className="flex items-center gap-1"><Battery className="w-3 h-3" />{energyAvg.toFixed(1)}</span>}
-          </div>
-        </div>
+      <MobileCollapsibleSection
+        title="Pendientes hoy"
+        badge={pendingTasks.length > 0 || completedHabits < totalHabits ? `${pendingTasks.length} / ${completedHabits}/${totalHabits}` : undefined}
+        className="mb-5"
+      >
+
 
         {pendingTasks.length === 0 && pendingHabits.length === 0 ? (
           <div className="text-center py-6">
@@ -256,28 +254,28 @@ function Dashboard() {
             <Link to="/habits" className="flex-1 text-center text-xs font-medium text-primary hover:underline py-1.5">Ver hábitos →</Link>
           </div>
         )}
-      </section>
+      </MobileCollapsibleSection>
 
       {/* Victorias del día — colapsable */}
-      <section className="rounded-2xl border border-border bg-card p-4 mb-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-yellow-500" />
-            <h2 className="font-display text-sm font-bold">Victorias de hoy</h2>
-            {todayWins.length > 0 && (
-              <span className="text-[11px] font-bold text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 rounded-full px-2 py-0.5">
-                {todayWins.length}
-              </span>
-            )}
-          </div>
+      <MobileCollapsibleSection
+        title="Victorias de hoy"
+        emoji="✨"
+        badge={todayWins.length > 0 ? todayWins.length : undefined}
+        className="mb-5"
+      >
+        <div className="flex items-center justify-end mb-2">
           <button
-            onClick={() => setShowWinInput(!showWinInput)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowWinInput(!showWinInput);
+            }}
             className="p-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
             aria-label="Añadir victoria"
           >
             <Plus className="w-3.5 h-3.5" />
           </button>
         </div>
+
 
         {showWinInput && (
           <div className="flex gap-2 mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
@@ -305,7 +303,7 @@ function Dashboard() {
             ))}
           </div>
         )}
-      </section>
+      </MobileCollapsibleSection>
 
       {/* Ver más — resumen IA y otros */}
       <button
