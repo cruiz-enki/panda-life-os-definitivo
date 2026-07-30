@@ -67,7 +67,16 @@ export function useFinance() {
   };
 
   const updateCard = async (id: string, patch: Partial<CreditCard>) => {
-    const { error } = await supabase.from("credit_cards").update(patch as any).eq("id", id);
+    // Aseguramos que los campos numéricos sean tratados como tales para la DB
+    const cleanPatch = { ...patch };
+    if ('credit_limit' in cleanPatch) cleanPatch.credit_limit = Number(cleanPatch.credit_limit);
+    if ('current_balance' in cleanPatch) cleanPatch.current_balance = Number(cleanPatch.current_balance);
+    if ('min_payment' in cleanPatch) cleanPatch.min_payment = Number(cleanPatch.min_payment);
+    if ('no_interest_payment' in cleanPatch) cleanPatch.no_interest_payment = Number(cleanPatch.no_interest_payment);
+    if ('cut_day' in cleanPatch) cleanPatch.cut_day = Number(cleanPatch.cut_day);
+    if ('payment_day' in cleanPatch) cleanPatch.payment_day = Number(cleanPatch.payment_day);
+
+    const { error } = await supabase.from("credit_cards").update(cleanPatch as any).eq("id", id);
     if (!error) await refresh();
     return error;
   };
