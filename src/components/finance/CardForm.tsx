@@ -30,7 +30,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
     icon: existing?.icon || "💳",
     status: (existing?.status || "active") as CardStatus,
     nip_code: existing?.nip_code || "",
-    clabe: existing?.clabe || "",
+    // clabe: existing?.clabe || "",
   });
 
   // Sincronizar el formulario si los props cambian (importante para que se reflejen cambios tras editar)
@@ -50,7 +50,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
         icon: existing.icon || "💳",
         status: (existing.status || "active") as CardStatus,
         nip_code: existing.nip_code || "",
-        clabe: existing.clabe || "",
+        // clabe: existing.clabe || "",
       });
     }
   }, [existing, open]);
@@ -157,13 +157,14 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
               Se guardará de forma privada. Útil para consultas rápidas en cajeros.
             </p>
           </div>
+          {/* 
           <div>
             <Label>CLABE interbancaria (18 dígitos)</Label>
             <Input
               inputMode="numeric"
               maxLength={18}
-              value={form.clabe || ""}
-              onChange={(e) => setForm({ ...form, clabe: e.target.value.replace(/\D/g, "").slice(0, 18) })}
+              value={(form as any).clabe || ""}
+              onChange={(e) => setForm({ ...form, clabe: e.target.value.replace(/\D/g, "").slice(0, 18) } as any)}
               placeholder="014975000000000000"
               className="font-mono"
             />
@@ -171,6 +172,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
               Dato público, útil para recibir transferencias.
             </p>
           </div>
+          */}
           <div>
             <Label>Color</Label>
             <div className="flex flex-wrap gap-2 mt-2">
