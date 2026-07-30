@@ -8,9 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/hooks/use-finance";
-import { CARD_COLORS, type CardStatus } from "@/lib/finance-types";
+import { CARD_COLORS, type CardStatus, type CreditCard } from "@/lib/finance-types";
 import { Plus, Pencil } from "lucide-react";
-import type { CreditCard } from "@/lib/finance-types";
+import { useEffect } from "react";
 
 const ICONS = ["💳", "🏦", "💎", "🌟", "🔥", "⚡", "🎯", "👑", "🦾", "🧊"];
 
@@ -33,6 +33,28 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
     nip_code: existing?.nip_code || "",
     clabe: existing?.clabe || "",
   });
+21:
+22:   // Sincronizar el formulario si los props cambian (importante para que se reflejen cambios tras editar)
+23:   useEffect(() => {
+24:     if (existing && open) {
+25:       setForm({
+26:         name: existing.name || "",
+27:         bank: existing.bank || "",
+28:         last_four: existing.last_four || "",
+29:         credit_limit: existing.credit_limit || 0,
+30:         current_balance: existing.current_balance || 0,
+31:         cut_day: existing.cut_day || 1,
+32:         payment_day: existing.payment_day || 20,
+33:         min_payment: existing.min_payment || 0,
+34:         no_interest_payment: existing.no_interest_payment || 0,
+35:         color: existing.color || CARD_COLORS[0],
+36:         icon: existing.icon || "💳",
+37:         status: (existing.status || "active") as CardStatus,
+38:         nip_code: existing.nip_code || "",
+39:         clabe: existing.clabe || "",
+40:       });
+41:     }
+42:   }, [existing, open]);
 
   const submit = async () => {
     if (!form.name.trim()) return;
