@@ -73,7 +73,8 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
       const result = await updateCard(existing.id, submission);
       if (result) {
         console.error("Error al actualizar tarjeta:", result);
-        alert("No se pudieron guardar los cambios. Revisa tu conexión.");
+        // Mostrar el error real de la base de datos para depurar
+        alert(`No se pudieron guardar los cambios: ${result.message || 'Error desconocido'}`);
       }
     } else {
       await createCard(submission);
