@@ -165,7 +165,7 @@ export function QuickCapture() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex items-start sm:items-center justify-center pt-0 sm:pt-[5vh] px-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex items-start sm:items-center justify-center p-0 sm:pt-[5vh] px-0 sm:px-4 overflow-y-auto"
           onClick={() => setOpen(false)}
         >
           <div
