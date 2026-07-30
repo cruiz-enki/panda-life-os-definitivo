@@ -1,16 +1,15 @@
 /**
  * **Componente** — Formulario CRUD de tarjeta financiera.
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/hooks/use-finance";
-import { CARD_COLORS, type CardStatus } from "@/lib/finance-types";
+import { CARD_COLORS, type CardStatus, type CreditCard } from "@/lib/finance-types";
 import { Plus, Pencil } from "lucide-react";
-import type { CreditCard } from "@/lib/finance-types";
 
 const ICONS = ["💳", "🏦", "💎", "🌟", "🔥", "⚡", "🎯", "👑", "🦾", "🧊"];
 
@@ -33,6 +32,28 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
     nip_code: existing?.nip_code || "",
     clabe: existing?.clabe || "",
   });
+
+  // Sincronizar el formulario si los props cambian (importante para que se reflejen cambios tras editar)
+  useEffect(() => {
+    if (existing && open) {
+      setForm({
+        name: existing.name || "",
+        bank: existing.bank || "",
+        last_four: existing.last_four || "",
+        credit_limit: Number(existing.credit_limit) || 0,
+        current_balance: Number(existing.current_balance) || 0,
+        cut_day: Number(existing.cut_day) || 1,
+        payment_day: Number(existing.payment_day) || 20,
+        min_payment: Number(existing.min_payment) || 0,
+        no_interest_payment: Number(existing.no_interest_payment) || 0,
+        color: existing.color || CARD_COLORS[0],
+        icon: existing.icon || "💳",
+        status: (existing.status || "active") as CardStatus,
+        nip_code: existing.nip_code || "",
+        clabe: existing.clabe || "",
+      });
+    }
+  }, [existing, open]);
 
   const submit = async () => {
     if (!form.name.trim()) return;
@@ -198,6 +219,7 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
             {existing && (
               <Button
                 variant="destructive"
+                type="button"
                 onClick={async () => {
                   if (confirm("¿Eliminar esta tarjeta?")) {
                     await deleteCard(existing.id);
