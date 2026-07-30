@@ -1241,17 +1241,21 @@ function TaskComposer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
-      <div className="w-full max-w-xl mt-0 mb-8 sm:mt-4 sm:mb-8 rounded-3xl bg-card border border-border overflow-hidden shadow-card" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start sm:items-center justify-center p-0 sm:p-4 overflow-y-auto" onClick={onClose}>
+      <div
+        className="w-full max-w-xl bg-card border-x sm:border border-border shadow-2xl mt-0 sm:my-8 sm:rounded-3xl flex flex-col max-h-screen sm:max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-border bg-card/80 backdrop-blur-md">
           <h2 className="font-display text-lg font-bold flex items-center gap-2">
             <ListChecks className="w-5 h-5 text-primary" />
             {task ? "Editar tarea" : "Nueva tarea"}
           </h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1"><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="p-4 sm:p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1">
+
           <div className="space-y-1">
             <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">¿Qué hay que hacer?</label>
             <input
@@ -1799,17 +1803,19 @@ function TaskComposer({
               </button>
             </div>
           </div>
-          <button
-
-            disabled={!title.trim()}
-            onClick={submit}
-            className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50 disabled:shadow-none"
-          >
-            {task ? "Guardar cambios" : "Crear tarea"}
-          </button>
+          <div className="sticky bottom-0 mt-4 pt-4 border-t border-border bg-card pb-2">
+            <button
+              disabled={!title.trim()}
+              onClick={submit}
+              className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50 disabled:shadow-none"
+            >
+              {task ? "Guardar cambios" : "Crear tarea"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
   );
 }
 
