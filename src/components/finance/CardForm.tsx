@@ -58,15 +58,15 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
   const submit = async () => {
     if (!form.name.trim()) return;
     
-    // Forzamos la conversión a números de los campos que vienen de inputs type="number"
+    // Forzamos la conversión a números y manejamos posibles nulos
     const submission = { 
       ...form,
-      credit_limit: Number(form.credit_limit),
-      current_balance: Number(form.current_balance),
-      cut_day: Number(form.cut_day),
-      payment_day: Number(form.payment_day),
-      min_payment: Number(form.min_payment),
-      no_interest_payment: Number(form.no_interest_payment)
+      credit_limit: Number(form.credit_limit) || 0,
+      current_balance: Number(form.current_balance) || 0,
+      cut_day: Number(form.cut_day) || 1,
+      payment_day: Number(form.payment_day) || 1,
+      min_payment: Number(form.min_payment) || 0,
+      no_interest_payment: Number(form.no_interest_payment) || 0
     };
 
     if (existing) {
