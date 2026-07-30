@@ -69,12 +69,12 @@ export function useFinance() {
   const updateCard = async (id: string, patch: Partial<CreditCard>) => {
     // Aseguramos que los campos numéricos sean tratados como tales para la DB
     const cleanPatch = { ...patch };
-    if ('credit_limit' in cleanPatch) cleanPatch.credit_limit = cleanPatch.credit_limit !== undefined ? Number(cleanPatch.credit_limit) : 0;
-    if ('current_balance' in cleanPatch) cleanPatch.current_balance = cleanPatch.current_balance !== undefined ? Number(cleanPatch.current_balance) : 0;
-    if ('min_payment' in cleanPatch) cleanPatch.min_payment = cleanPatch.min_payment !== undefined ? Number(cleanPatch.min_payment) : 0;
-    if ('no_interest_payment' in cleanPatch) cleanPatch.no_interest_payment = cleanPatch.no_interest_payment !== undefined ? Number(cleanPatch.no_interest_payment) : 0;
-    if ('cut_day' in cleanPatch) cleanPatch.cut_day = cleanPatch.cut_day !== undefined ? Number(cleanPatch.cut_day) : 1;
-    if ('payment_day' in cleanPatch) cleanPatch.payment_day = cleanPatch.payment_day !== undefined ? Number(cleanPatch.payment_day) : 20;
+    if ('credit_limit' in cleanPatch) cleanPatch.credit_limit = cleanPatch.credit_limit != null ? Number(cleanPatch.credit_limit) : 0;
+    if ('current_balance' in cleanPatch) cleanPatch.current_balance = cleanPatch.current_balance != null ? Number(cleanPatch.current_balance) : 0;
+    if ('min_payment' in cleanPatch) cleanPatch.min_payment = cleanPatch.min_payment != null ? Number(cleanPatch.min_payment) : 0;
+    if ('no_interest_payment' in cleanPatch) cleanPatch.no_interest_payment = cleanPatch.no_interest_payment != null ? Number(cleanPatch.no_interest_payment) : 0;
+    if ('cut_day' in cleanPatch) cleanPatch.cut_day = cleanPatch.cut_day != null ? Number(cleanPatch.cut_day) : 1;
+    if ('payment_day' in cleanPatch) cleanPatch.payment_day = cleanPatch.payment_day != null ? Number(cleanPatch.payment_day) : 20;
 
     const { error } = await supabase.from("credit_cards").update(cleanPatch as any).eq("id", id);
     if (!error) await refresh();
