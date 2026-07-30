@@ -1799,17 +1799,19 @@ function TaskComposer({
               </button>
             </div>
           </div>
-          <button
-
-            disabled={!title.trim()}
-            onClick={submit}
-            className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50 disabled:shadow-none"
-          >
-            {task ? "Guardar cambios" : "Crear tarea"}
-          </button>
+          <div className="sticky bottom-0 mt-4 pt-4 border-t border-border bg-card pb-2">
+            <button
+              disabled={!title.trim()}
+              onClick={submit}
+              className="w-full py-3 rounded-xl bg-gradient-primary text-primary-foreground font-medium shadow-glow disabled:opacity-50 disabled:shadow-none"
+            >
+              {task ? "Guardar cambios" : "Crear tarea"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
   );
 }
 

@@ -169,10 +169,11 @@ export function QuickCapture() {
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-xl rounded-2xl border border-border bg-card shadow-card overflow-hidden mt-0 mb-8 sm:my-4"
+            className="w-full max-w-xl sm:rounded-2xl border-x sm:border border-border bg-card shadow-card flex flex-col max-h-screen sm:max-h-[85vh] mt-0 mb-8 sm:my-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-5 py-3 border-b border-border">
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-border bg-card/80 backdrop-blur-md">
+
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Sparkles className="w-4 h-4 text-primary" />
                 Captura rápida
@@ -182,7 +183,7 @@ export function QuickCapture() {
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="p-4 sm:p-5 space-y-1">
+            <div className="p-4 sm:p-5 space-y-1 overflow-y-auto flex-1">
               <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold block">
                 ¿Qué tienes en mente?
               </label>
@@ -257,7 +258,7 @@ export function QuickCapture() {
               </div>
             )}
 
-            <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-secondary/20">
+            <div className="sticky bottom-0 flex items-center justify-between px-5 py-3 border-t border-border bg-card">
               <span className="text-xs text-muted-foreground">
                 {saved ? "✓ Guardado" : suggestion ? "Aplica o guarda como nota" : parsedHasSignal ? "Crea como tarea o guarda como nota" : "Se guarda como 💡 Idea"}
               </span>
