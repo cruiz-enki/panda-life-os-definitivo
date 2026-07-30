@@ -29,7 +29,7 @@ export function useFinance() {
     enabled: !!userId,
     queryFn: async () => {
       const [c, e, m, p, b, cat] = await Promise.all([
-        supabase.from("credit_cards").select("*").order("created_at"),
+        supabase.from("credit_cards").select("id, name, bank, last_four, credit_limit, current_balance, cut_day, payment_day, min_payment, no_interest_payment, color, icon, status, nip_code").order("created_at"),
         supabase.from("finance_expenses").select("*").order("date", { ascending: false }).limit(2000),
         supabase.from("msi_plans").select("*").order("start_date", { ascending: false }),
         supabase.from("card_payments").select("*").order("date", { ascending: false }),
