@@ -36,9 +36,27 @@ export function CardForm({ existing, trigger }: { existing?: CreditCard; trigger
 
   const submit = async () => {
     if (!form.name.trim()) return;
-    const submission = { ...form };
-    if (existing) await updateCard(existing.id, submission);
-    else await createCard(submission);
+    
+    // Forzamos la conversión a números de los campos que vienen de inputs type="number"
+    const submission = { 
+      ...form,
+      credit_limit: Number(form.credit_limit),
+      current_balance: Number(form.current_balance),
+      cut_day: Number(form.cut_day),
+      payment_day: Number(form.payment_day),
+      min_payment: Number(form.min_payment),
+      no_interest_payment: Number(form.no_interest_payment)
+    };
+
+    if (existing) {
+      const result = await updateCard(existing.id, submission);
+      if (result) {
+        console.error("Error al actualizar tarjeta:", result);
+        alert("No se pudieron guardar los cambios. Revisa tu conexión.");
+      }
+    } else {
+      await createCard(submission);
+    }
     setOpen(false);
   };
 
